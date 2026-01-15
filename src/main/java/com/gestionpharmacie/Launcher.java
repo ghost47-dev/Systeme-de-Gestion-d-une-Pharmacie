@@ -1,4 +1,4 @@
-package com.example.gestionpharmacie;
+package com.gestionpharmacie;
 
 import javafx.application.Application;
 
