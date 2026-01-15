@@ -77,6 +77,7 @@ public class Main {
         sc = new Scanner(System.in);
         System.out.println("Login:");
         String login = sc.nextLine();
+
         User u = um.fetchUser(login);
         if(u == null){
             System.err.println("User not found!");
@@ -105,10 +106,10 @@ public class Main {
             }else if(choice == 3){
                 handleClientRelatedRequest();
             }else if(choice == 4){
-                if(u.getPrivelage().equals("admin")){
+                if(u.getPrivilege().equals("admin")){
                     handleAdminRelatedRequest();
                 }else{
-                    System.err.println("Unpriveliged user!");
+                    System.err.println("Unprivileged user!");
                 }
             }else{
                 System.err.println("Invalid choice!");

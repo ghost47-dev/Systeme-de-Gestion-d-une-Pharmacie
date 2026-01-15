@@ -3,12 +3,12 @@ package com.gestionpharmacie.model;
 public class User {
     private String login;
     private String password;
-    private String privelage;
+    private String privilege;
 
-    public User(String login, String password, String privelage){
+    public User(String login, String password, String privilege){
         this.login = login;
         this.password = password;
-        this.privelage = privelage;
+        this.privilege = privilege;
     }
 
     public String getLogin() {
@@ -27,11 +27,11 @@ public class User {
         this.password = password;
     }
 
-    public String getPrivelage() {
-        return privelage;
+    public String getPrivilege() {
+        return privilege;
     }
 
-    public void setPrivelage(String privelage) {
-        this.privelage = privelage;
+    public void setPrivilege(String privilege) {
+        this.privilege = privilege;
     }
 }
