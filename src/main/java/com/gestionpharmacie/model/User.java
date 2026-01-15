@@ -5,6 +5,12 @@ public class User {
     private String password;
     private String privelage;
 
+    public User(String login, String password, String privelage){
+        this.login = login;
+        this.password = password;
+        this.privelage = privelage;
+    }
+
     public String getLogin() {
         return login;
     }
