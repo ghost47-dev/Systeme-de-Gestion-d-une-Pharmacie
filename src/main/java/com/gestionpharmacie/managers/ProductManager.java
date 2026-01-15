@@ -9,7 +9,7 @@ public class ProductManager {
 
     public void addProduct(Product product) {
         if (fetchProduct(product.getId()) != null) {
-            System.out.println("This product already exits!"); // will become an exception soon !!
+            System.err.println("This product already exits!"); // will become an exception soon !!
         }
         products.add(product);
     }
