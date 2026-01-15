@@ -10,9 +10,11 @@ public class ProductManager {
     public void addProduct(Product product) {
         if (fetchProduct(product.getId()) != null) {
             System.err.println("This product already exits!"); // will become an exception soon !!
+            return;
         }
         products.add(product);
     }
+
     public Product fetchProduct(int id) {
         for (Product product : products) {
             if (product.getId() == id) {
@@ -24,7 +26,8 @@ public class ProductManager {
     public void updateProduct(int id, String newName, double newPrice, int newQuantity) {
         Product product = fetchProduct(id);
         if (product == null) {
-            System.out.println("This product doesn't exist!"); // turn to exception!
+            System.err.println("This product doesn't exist!"); // turn to exception!
+            return;
         }
         product.setName(newName);
         product.setPrice(newPrice);
@@ -32,9 +35,9 @@ public class ProductManager {
     }
     public void deleteProduct(Product product) {
         if (fetchProduct(product.getId()) == null) {
-            System.out.println("This product doesn't exists!");
-        } else {
-            products.remove(product);
+            System.err.println("This product doesn't exists!");
+            return;
         }
+        products.remove(product);
     }
 }
