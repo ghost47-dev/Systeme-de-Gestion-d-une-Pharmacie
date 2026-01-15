@@ -2,22 +2,30 @@ package com.gestionpharmacie.model;
 
 public class Product {
     private int id;
-    private String nom;
-    private int quantite;
+    private String name;
+	private double price;
+    private int quantity;
+
 
 	public int getId() {
 		return id;
 	}
-	public String getNom() {
-		return nom;
+	public String getName() {
+		return name;
 	}
-	public void setNom(String nom) {
-		this.nom = nom;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public int getQuantite() {
-		return quantite;
+	public int getQuantity() {
+		return quantity;
 	}
-	public void setQuantite(int quantite) {
-		this.quantite = quantite;
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	public void setPrice(double price) {
+		this.price = price;
+	}
+	public double getPrice() {
+		return price;
 	}
 }
