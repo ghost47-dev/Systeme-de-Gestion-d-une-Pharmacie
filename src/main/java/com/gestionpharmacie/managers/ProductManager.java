@@ -30,4 +30,11 @@ public class ProductManager {
         product.setPrice(newPrice);
         product.setQuantity(newQuantity);
     }
+    public void deleteProduct(Product product) {
+        if (fetchProduct(product.getId()) == null) {
+            System.out.println("This product doesn't exists!");
+        } else {
+            products.remove(product);
+        }
+    }
 }
