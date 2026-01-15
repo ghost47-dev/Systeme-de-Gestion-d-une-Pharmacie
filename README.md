@@ -2,6 +2,9 @@
 
 ## Todo (anyone is welcome to add/remove items from this list, this is all speculative):
   - [ ] Make mvp without any graphics or database integration (__make sure to use hashmaps for stuff that'll eventually become persistent!__).
+    - [x] Figure out what the project structure will look like.
+    - [ ] Make a view abstraction (for now the console).
+    - [ ] Implement all the damn commands.
   - [ ] Integrate the database with recieved insight from previous step.
     - [ ] Create a new class that abstracts over the requests to basically give back a hashmap.
     - [ ] Implement it into the code for persistent data.
