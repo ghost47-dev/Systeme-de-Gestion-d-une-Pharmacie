@@ -161,7 +161,6 @@ public class Main {
             ArrayList<ShipmentGood> sgs = sm.receiveShipment(id, d);
             for(ShipmentGood sg : sgs){
                 pm.addToProduct(sg.getProductId(), sg.getQuantity());
-                if(pm.fetchProduct(sg.getProductId()).getQuantity()
             }
         }else{
             System.err.println("Invalid choice!");
