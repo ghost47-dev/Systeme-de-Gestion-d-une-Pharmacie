@@ -1,6 +1,6 @@
 package com.gestionpharmacie.managers;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.model.Shipment;
@@ -11,13 +11,19 @@ public class ShipmentManager {
     private ArrayList<Shipment> shipments;
     private ArrayList<ShipmentGood> shipmentGoods;
 
+    public ShipmentManager() {
+        suppliers = new ArrayList<>();
+        shipments = new ArrayList<>();
+        shipmentGoods = new ArrayList<>();
+    }
+
     public int addSupplier(String name, int phoneNumber){
         int id = suppliers.size();
         suppliers.add(new Supplier(id, name, phoneNumber));
         return id;
     }
 
-    public int addShipment(int sid, Date requestDate, boolean recieved, Date recievalDate){
+    public int addShipment(int sid, LocalDate requestDate, boolean recieved, LocalDate recievalDate){
         int id = shipments.size();
         shipments.add(new Shipment(id, sid, requestDate, recieved, recievalDate));
         return id;
@@ -56,7 +62,7 @@ public class ShipmentManager {
         return null;
     }
 
-    public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate) {
+    public void updateShipment(int id, int newSId, LocalDate newReqDate, boolean newRec, LocalDate newRecDate) {
         Shipment ship = fetchShipment(id);
         if (ship == null) {
             System.err.println("This shipment doesn't exist!"); // turn to exception!
@@ -84,7 +90,7 @@ public class ShipmentManager {
         shipmentGoods.removeAll(bad);
     }
 
-    public ArrayList<ShipmentGood> receiveShipment(int id, Date d){
+    public ArrayList<ShipmentGood> receiveShipment(int id, LocalDate d){
         Shipment ship = fetchShipment(id);
         if (ship == null) {
             System.err.println("This shipment doesn't exist!"); // turn to exception!
