@@ -14,6 +14,7 @@ import com.gestionpharmacie.managers.UserManager;
 import com.gestionpharmacie.model.Client;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
+import org.w3c.dom.ls.LSOutput;
 
 public class Main {
     private static Scanner sc;
@@ -178,7 +179,6 @@ public class Main {
             int cid;
             if(ans.equals("y")){
                 System.out.println("Give name:");
-                sc.nextLine();
                 String name = sc.nextLine();
                 System.out.println("Give surname:");
                 String surname = sc.nextLine();
@@ -223,7 +223,7 @@ public class Main {
             int id = sc.nextInt();
             Sale s = slm.fetchSale(id);
             Client c = slm.fetchClient(s.getClientId());
-            c.display();
+            System.out.println(c);
             ArrayList<SaleProduct> sps = slm.getSaleProducts(id);
             for(SaleProduct sp : sps){
                 String prodName = pm.fetchProduct(sp.getProductId()).getName();
@@ -242,12 +242,19 @@ public class Main {
         if (choice == 1) {
             pm.viewStock();
         }
+        if (choice == 2) {
+            System.out.println("Total revenue: " + slm.getTotalRevenue());
+        }
     }
 
     public static void main(String[] args) {
         pm = new ProductManager();
+        //hardcoded data for testing
+        pm.addProduct("aspirin", 4, 200);
+        pm.addProduct("doliprane", 7, 120);
         um = new UserManager();
         sm = new ShipmentManager();
+        slm = new SaleManager(pm);
 
         um.addUser(new User("salah", "123", "notadmin"));
         um.addUser(new User("admin", "admin", "admin"));

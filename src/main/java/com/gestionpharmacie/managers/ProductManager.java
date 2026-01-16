@@ -5,13 +5,18 @@ import com.gestionpharmacie.model.Product;
 import java.util.ArrayList;
 
 public class ProductManager {
-    private ArrayList<Product> products = new ArrayList<>();
+    private ArrayList<Product> products;
 
-    private static ArrayList<Integer> riskyProducts; // maybe this one should stay like this
+    private ArrayList<Integer> riskyProducts; // maybe this one should stay like this
                                                      // cause this class won't exist in the
                                                      // database so it can have an arraylist
 
     private int quantityRiskThreshold = 10;
+
+    public ProductManager () {
+        products = new ArrayList<>();
+        riskyProducts = new ArrayList<>();
+    }
 
     public int addProduct(String name, double price, int quant) {
         int id = products.size();

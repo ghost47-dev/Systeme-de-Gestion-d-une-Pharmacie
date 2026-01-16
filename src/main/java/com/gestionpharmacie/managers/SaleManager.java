@@ -9,6 +9,16 @@ public class SaleManager {
     ArrayList<Client> clients;
     ArrayList<Sale> sales;
     ArrayList<SaleProduct> saleProducts;
+    ProductManager productManager;
+
+    private double totalRevenue = 0;
+
+    public SaleManager(ProductManager pm) {
+        clients = new ArrayList<>();
+        sales = new ArrayList<>();
+        saleProducts = new ArrayList<>();
+        productManager = pm;
+    }
 
     public int addClient(String name, String surname, int phoneNumber){
         int id = clients.size();
@@ -25,7 +35,13 @@ public class SaleManager {
     public int addSaleProduct(int sid, int pid, int quant){
         int id = saleProducts.size();
         saleProducts.add(new SaleProduct(id, sid, pid, quant));
+        double price = productManager.fetchProduct(pid).getPrice() * quant;
+        totalRevenue += price;
         return id;
+    }
+
+    public double getTotalRevenue() {
+        return totalRevenue;
     }
 
     public Client fetchClient(int id){
