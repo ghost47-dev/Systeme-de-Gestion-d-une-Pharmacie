@@ -5,6 +5,7 @@
     - [x] Figure out what the project structure will look like.
     - [x] The user shouldn't have to specify the id when creating anything (the whateverManager should figure out the id when adding whatever).
     - [x] Track risky quantity products.
+    - [x] Add ability to view sale history.
     - [ ] Implement all the damn commands.
       - [ ] The god damn admin stuff is still undone.
     - [ ] Exceptions on quantity related stuff in product and handling them idk where.

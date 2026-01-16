@@ -16,4 +16,16 @@ public class SaleProduct {
     public int getId(){
         return id;
     }
+
+    public int getProductId(){
+        return productId;
+    }
+
+    public int getSaleId(){
+        return saleId;
+    }
+
+    public int getQuantity(){
+        return quantity;
+    }
 }

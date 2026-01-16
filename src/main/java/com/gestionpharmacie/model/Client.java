@@ -15,4 +15,8 @@ public class Client {
     public int getId(){
         return id;
     }
+
+    public void display(){
+        System.out.println("Client " + name + " " + surname + " " + phoneNumber);
+    }
 }

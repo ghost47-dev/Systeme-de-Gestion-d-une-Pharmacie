@@ -12,4 +12,8 @@ public class Sale {
     public int getId(){
         return id;
     }
+
+    public int getClientId(){
+        return clientId;
+    }
 }

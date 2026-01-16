@@ -168,51 +168,70 @@ public class Main {
     }
 
     static void handleSaleRelatedRequest(){
-        System.out.println("Is this a new client? (y/N)");
-        sc.nextLine();
-        String ans = sc.nextLine();
-        int cid;
-        if(ans.equals("y")){
-            System.out.println("Give name:");
+        System.out.println("1. Add new sale.");
+        System.out.println("2. View sales history.");
+        int choice = sc.nextInt();
+        if(choice == 1){
+            System.out.println("Is this a new client? (y/N)");
             sc.nextLine();
-            String name = sc.nextLine();
-            System.out.println("Give surname:");
-            String surname = sc.nextLine();
-            System.out.println("Give phone number:");
-            int num = sc.nextInt();
+            String ans = sc.nextLine();
+            int cid;
+            if(ans.equals("y")){
+                System.out.println("Give name:");
+                sc.nextLine();
+                String name = sc.nextLine();
+                System.out.println("Give surname:");
+                String surname = sc.nextLine();
+                System.out.println("Give phone number:");
+                int num = sc.nextInt();
 
-            cid = slm.addClient(name, surname, num);
+                cid = slm.addClient(name, surname, num);
+            }else{
+                System.out.println("Give client ID:");
+                cid = sc.nextInt();
+                if(slm.fetchClient(cid) == null){
+                    System.err.println("Invalid client ID!");
+                    return;
+                }
+            }
+            int id = slm.addSale(cid);
+
+            System.out.println("Give sale product:");
+            ans = "y";
+            while(ans.equals("y")){
+                System.out.println("Give product ID:");
+                int pid = sc.nextInt();
+                if(pm.fetchProduct(pid) == null){
+                    System.err.println("Invalid product ID!");
+                    continue;
+                }
+                System.out.println("Give quantity:");
+                int quant = sc.nextInt();
+                sc.nextLine();
+
+                pm.removeFromProduct(pid, quant);
+
+                slm.addSaleProduct(id, pid, quant);
+
+                System.out.println("Does this sale have more products? (y/N)");
+                ans = sc.nextLine();
+            }
+            System.out.println("Created sale with id " + id);
+        }else if(choice == 2){
+            System.out.println("Select sale id:");
+            System.out.println(slm.getSaleIds());
+            int id = sc.nextInt();
+            Sale s = slm.fetchSale(id);
+            Client c = slm.fetchClient(s.getClientId());
+            c.display();
+            ArrayList<SaleProduct> sps = slm.getSaleProducts(id);
+            for(SaleProduct sp : sps){
+                String prodName = pm.fetchProduct(sp.getProductId()).getName();
+                System.out.println("Product " + prodName + " * " + sp.getQuantity());
+            }
         }else{
-            System.out.println("Give client ID:");
-            cid = sc.nextInt();
-            if(slm.fetchClient(cid) == null){
-                System.err.println("Invalid client ID!");
-                return;
-            }
+            System.err.println("Invalid choice!");
         }
-        int id = slm.addSale(cid);
-
-        System.out.println("Give sale product:");
-        ans = "y";
-        while(ans.equals("y")){
-            System.out.println("Give product ID:");
-            int pid = sc.nextInt();
-            if(pm.fetchProduct(pid) == null){
-                System.err.println("Invalid product ID!");
-                continue;
-            }
-            System.out.println("Give quantity:");
-            int quant = sc.nextInt();
-            sc.nextLine();
-
-            pm.removeFromProduct(pid, quant);
-
-            slm.addSaleProduct(id, pid, quant);
-
-            System.out.println("Does this sale have more products? (y/N)");
-            ans = sc.nextLine();
-        }
-        System.out.println("Created sale with id " + id);
     }
 
     static void handleAdminRelatedRequest(){

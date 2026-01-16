@@ -54,4 +54,22 @@ public class SaleManager {
         }
         return null;
     }
+
+    public ArrayList<Integer> getSaleIds(){
+        ArrayList<Integer> out = new ArrayList<>();
+        for(Sale s : sales){
+            out.add(s.getId());
+        }
+        return out;
+    }
+
+    public ArrayList<SaleProduct> getSaleProducts(int id){
+        ArrayList<SaleProduct> out = new ArrayList<>();
+        for(SaleProduct s : saleProducts){
+            if(s.getSaleId() == id){
+                out.add(s);
+            }
+        }
+        return out;
+    }
 }
