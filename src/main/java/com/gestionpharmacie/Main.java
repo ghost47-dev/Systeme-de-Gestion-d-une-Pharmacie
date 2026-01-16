@@ -121,7 +121,7 @@ public class Main {
                 return;
             }
             System.out.println("Give new request date:");
-            Date reqDate = new Date(sc.nextLong());
+            Date reqDate = inputDate();
 
             System.out.println("Give new expected arrival date:");
             Date expDate = inputDate();
