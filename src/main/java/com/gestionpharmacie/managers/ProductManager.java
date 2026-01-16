@@ -7,12 +7,10 @@ import java.util.ArrayList;
 public class ProductManager {
     private ArrayList<Product> products = new ArrayList<>();
 
-    public void addProduct(Product product) {
-        if (fetchProduct(product.getId()) != null) {
-            System.err.println("This product already exits!"); // will become an exception soon !!
-            return;
-        }
-        products.add(product);
+    public int addProduct(String name, double price, int quant) {
+        int id = products.size();
+        products.add(new Product(id, name, price, quant));
+        return id;
     }
 
     public Product fetchProduct(int id) {
@@ -23,6 +21,7 @@ public class ProductManager {
         }
         return null;
     }
+
     public void updateProduct(int id, String newName, double newPrice, int newQuantity) {
         Product product = fetchProduct(id);
         if (product == null) {
@@ -33,13 +32,16 @@ public class ProductManager {
         product.setPrice(newPrice);
         product.setQuantity(newQuantity);
     }
-    public void deleteProduct(Product product) {
-        if (fetchProduct(product.getId()) == null) {
+
+    public void deleteProduct(int id) {
+        Product p = fetchProduct(id);
+        if (p == null) {
             System.err.println("This product doesn't exists!");
             return;
         }
-        products.remove(product);
+        products.remove(p);
     }
+
     public void addToProduct(int id, int quant){
         Product p = fetchProduct(id);
         if(p == null){

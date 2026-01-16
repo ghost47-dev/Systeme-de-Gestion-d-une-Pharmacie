@@ -11,25 +11,22 @@ public class ShipmentManager {
     private ArrayList<Shipment> shipments;
     private ArrayList<ShipmentGood> shipmentGoods;
 
-    public void addSupplier(Supplier s){
-        if(fetchSupplier(s.getId()) != null){
-            System.err.println("Shipment id already exists!");
-        }
-        suppliers.add(s);
+    public int addSupplier(String name, int phoneNumber){
+        int id = suppliers.size();
+        suppliers.add(new Supplier(id, name, phoneNumber));
+        return id;
     }
 
-    public void addShipment(Shipment s){
-        if(fetchShipment(s.getId()) != null){
-            System.err.println("Shipment id already exists!");
-        }
-        shipments.add(s);
+    public int addShipment(int sid, Date requestDate, boolean recieved, Date recievalDate){
+        int id = shipments.size();
+        shipments.add(new Shipment(id, sid, requestDate, recieved, recievalDate));
+        return id;
     }
 
-    public void addShipmentGood(ShipmentGood sg){
-        if(fetchShipmentGood(sg.getId()) != null){
-            System.err.println("ShipmentGood id already exists!");
-        }
-        shipmentGoods.add(sg);
+    public int addShipmentGood(int sid, int pid, double p, int q){
+        int id = shipmentGoods.size();
+        shipmentGoods.add(new ShipmentGood(id, sid, pid, p, q));
+        return id;
     }
 
     public Supplier fetchSupplier(int id){

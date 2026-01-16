@@ -10,28 +10,22 @@ public class SaleManager {
     ArrayList<Sale> sales;
     ArrayList<SaleProduct> saleProducts;
 
-    public void addClient(Client c){
-        if(fetchClient(c.getId()) != null){
-            System.err.println("Client already exists!");
-            return;
-        }
-        clients.add(c);
+    public int addClient(String name, String surname, int phoneNumber){
+        int id = clients.size();
+        clients.add(new Client(id, name, surname, phoneNumber));
+        return id;
     }
 
-    public void addSale(Sale s){
-        if(fetchSale(s.getId()) != null){
-            System.err.println("Sale already exists!");
-            return;
-        }
-        sales.add(s);
+    public int addSale(int cid){
+        int id = sales.size();
+        sales.add(new Sale(id, cid));
+        return id;
     }
 
-    public void addSaleProduct(SaleProduct s){
-        if(fetchSaleProduct(s.getId()) != null){
-            System.err.println("Sale already exists!");
-            return;
-        }
-        saleProducts.add(s);
+    public int addSaleProduct(int sid, int pid, int quant){
+        int id = saleProducts.size();
+        saleProducts.add(new SaleProduct(id, sid, pid, quant));
+        return id;
     }
 
     public Client fetchClient(int id){
