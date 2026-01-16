@@ -37,4 +37,7 @@ public class Product {
     public void addQuantity(int q){
         quantity += q;
     }
+    public void removeQuantity(int q){ // this should throw something probably
+        quantity -= q;
+    }
 }

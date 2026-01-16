@@ -7,6 +7,12 @@ import java.util.ArrayList;
 public class ProductManager {
     private ArrayList<Product> products = new ArrayList<>();
 
+    private static ArrayList<Integer> riskyProducts; // maybe this one should stay like this
+                                                     // cause this class won't exist in the
+                                                     // database so it can have an arraylist
+
+    private int quantityRiskThreshold = 10;
+
     public int addProduct(String name, double price, int quant) {
         int id = products.size();
         products.add(new Product(id, name, price, quant));
@@ -49,5 +55,24 @@ public class ProductManager {
             return;
         }
         p.addQuantity(quant);
+        if(p.getQuantity() > quantityRiskThreshold && riskyProducts.contains(id)){
+            riskyProducts.remove((Integer)id);
+        }
+    }
+
+    public void removeFromProduct(int id, int quant){
+        Product p = fetchProduct(id);
+        if(p == null){
+            System.err.println("This product doesn't exists!");
+            return;
+        }
+        if(p.getQuantity() < quant){
+            System.err.println("Invalid quantity!");
+            return;
+        }
+        p.removeQuantity(quant); // this should throw something
+        if(p.getQuantity() < quantityRiskThreshold && !riskyProducts.contains(id)){
+            riskyProducts.add(id);
+        }
     }
 }

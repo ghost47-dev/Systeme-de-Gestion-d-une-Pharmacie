@@ -161,6 +161,7 @@ public class Main {
             ArrayList<ShipmentGood> sgs = sm.receiveShipment(id, d);
             for(ShipmentGood sg : sgs){
                 pm.addToProduct(sg.getProductId(), sg.getQuantity());
+                if(pm.fetchProduct(sg.getProductId()).getQuantity()
             }
         }else{
             System.err.println("Invalid choice!");
@@ -204,6 +205,8 @@ public class Main {
             System.out.println("Give quantity:");
             int quant = sc.nextInt();
             sc.nextLine();
+
+            pm.removeFromProduct(pid, quant);
 
             slm.addSaleProduct(id, pid, quant);
 
