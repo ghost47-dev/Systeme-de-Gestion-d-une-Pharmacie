@@ -75,4 +75,9 @@ public class ProductManager {
             riskyProducts.add(id);
         }
     }
+    public void viewStock() {
+        for (Product product : products) {
+            System.out.println(product);
+        }
+    }
 }

@@ -40,4 +40,7 @@ public class Product {
     public void removeQuantity(int q){ // this should throw something probably
         quantity -= q;
     }
+	public String toString() {
+		return "id:" + id + "- name: " + name + "- quantity: " + quantity;
+	}
 }

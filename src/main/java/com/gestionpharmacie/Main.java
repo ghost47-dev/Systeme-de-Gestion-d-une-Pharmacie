@@ -235,6 +235,13 @@ public class Main {
     }
 
     static void handleAdminRelatedRequest(){
+        System.out.println("1. View stocks");
+        System.out.println("2. View Revenue");
+        System.out.println("3. View suppliers' performance");
+        int choice = sc.nextInt();
+        if (choice == 1) {
+            pm.viewStock();
+        }
     }
 
     public static void main(String[] args) {
