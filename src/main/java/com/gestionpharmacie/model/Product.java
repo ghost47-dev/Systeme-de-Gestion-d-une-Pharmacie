@@ -34,4 +34,7 @@ public class Product {
 	public double getPrice() {
 		return price;
 	}
+    public void addQuantity(int q){
+        quantity += q;
+    }
 }

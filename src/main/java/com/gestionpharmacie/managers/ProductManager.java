@@ -40,4 +40,12 @@ public class ProductManager {
         }
         products.remove(product);
     }
+    public void addToProduct(int id, int quant){
+        Product p = fetchProduct(id);
+        if(p == null){
+            System.err.println("This product doesn't exists!");
+            return;
+        }
+        p.addQuantity(quant);
+    }
 }
