@@ -8,8 +8,8 @@
       - [ ] The god damn admin stuff is still undone.
     - [ ] Thrannitah micho s8ayyer el mvp. :cry:
   - [ ] Integrate the database with recieved insight from previous step.
-    - [ ] Create a new class that abstracts over the requests to basically give back a hashmap.
-    - [ ] Implement it into the code for persistent data.
+    - [ ] Create a new class that abstracts over the requests (in other words remove ArrayList).
+    - [ ] Implement it into the code for persistent data ([https://www.youtube.com/watch?v=dQw4w9WgXcQ]).
   - [ ] The graphics (hopefully won't be hard, we need to finish other stuff asap to make sure we have ample time for this).
     - [ ] We need more steps here.
   - [ ] profit.
