@@ -7,10 +7,11 @@
     - [x] Track risky quantity products.
     - [x] Add ability to view sale history.
     - [ ] Implement all the damn commands.
-      - [ ] The god damn admin stuff that is still undone:
+      - [x] The god damn admin stuff that is still undone:
         - [x] view stocks
         - [x] view revenue (chiffre d'affaire)
-        - [ ] view suppliers perfermance
+        - [x] view suppliers perfermance
+    - [ ] implement low stock warning
     - [ ] Exceptions on quantity related stuff in product and handling them idk where.
     - [ ] Thrannitah micho s8ayyer el mvp. :cry:
   - [ ] Integrate the database with recieved insight from previous step.

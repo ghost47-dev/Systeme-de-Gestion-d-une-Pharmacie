@@ -17,7 +17,10 @@ import com.gestionpharmacie.managers.UserManager;
 import com.gestionpharmacie.model.Client;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
+import com.gestionpharmacie.utilities.InputUtils;
 import org.w3c.dom.ls.LSOutput;
+
+import static com.gestionpharmacie.utilities.InputUtils.*;
 
 public class Main {
     private static Scanner sc;
@@ -30,31 +33,29 @@ public class Main {
         System.out.println("1. Add.");
         System.out.println("2. Modify.");
         System.out.println("3. Remove.");
-        int choice = sc.nextInt();
+        int choice = readInt();
         if(choice == 1){
             System.out.println("Give name:");
-            sc.nextLine();
             String name = sc.nextLine();
             System.out.println("Give price:");
-            double price = sc.nextDouble();
+            double price = readDouble();
             System.out.println("Give quantity:");
-            int quant = sc.nextInt();
+            int quant = readInt();
             int id = pm.addProduct(name, price, quant);
             System.out.println("Created product with id " + id);
         }else if(choice == 2){
             System.out.println("Give ID:");
-            int id = sc.nextInt();
+            int id = readInt();
             System.out.println("Give new name:");
-            sc.nextLine();
             String name = sc.nextLine();
             System.out.println("Give new price:");
-            double price = sc.nextDouble();
+            double price = readDouble();
             System.out.println("Give new quantity:");
-            int quant = sc.nextInt();
+            int quant = readInt();
             pm.updateProduct(id, name, price, quant);
         }else if(choice == 3){
             System.out.println("Give ID:");
-            int id = sc.nextInt();
+            int id = readInt();
             pm.deleteProduct(id);
         }else{
             System.err.println("Invalid choice!");
@@ -67,25 +68,23 @@ public class Main {
         System.out.println("3. Modify shipment.");
         System.out.println("4. Cancel shipment.");
         System.out.println("5. Receive shipment.");
-        int choice = sc.nextInt();
+        int choice = readInt();
         
         if(choice == 1){
             System.out.println("Give name:");
-            sc.nextLine();
             String name = sc.nextLine();
             System.out.println("Give phone number:");
-            int num = sc.nextInt();
+            int num = readInt();
 
             int id = sm.addSupplier(name, num);
             System.out.println("Created supplier with id " + id);
         }else if(choice == 2){
             System.out.println("Give supplier ID:");
-            int sid = sc.nextInt();
+            int sid = readInt();
             if(sm.fetchSupplier(sid) == null){
                 System.err.println("Invalid supplier ID!");
                 return;
             }
-            sc.nextLine();
             System.out.println("Give request date (dd/MM/yyyy):");
             Date reqDate = inputDate();
             System.out.println("Give expected arrival date:");
@@ -96,16 +95,15 @@ public class Main {
             String ans = "y";
             while(ans.equals("y")){
                 System.out.println("Give product ID:");
-                int pid = sc.nextInt();
+                int pid = readInt();
                 if(pm.fetchProduct(pid) == null){
                     System.err.println("Invalid product ID!");
                     continue;
                 }
                 System.out.println("Give price:");
-                double price = sc.nextDouble();
+                double price = readDouble();
                 System.out.println("Give quantity:");
-                int quant = sc.nextInt();
-                sc.nextLine();
+                int quant = readInt();
 
                 sm.addShipmentGood(id, pid, price, quant);
 
@@ -115,9 +113,9 @@ public class Main {
             System.out.println("Created shipment with id " + id);
         }else if(choice == 3){
             System.out.println("Give ID:");
-            int id = sc.nextInt();
+            int id = readInt();
             System.out.println("Give new supplier ID:");
-            int sid = sc.nextInt();
+            int sid = readInt();
             if(sm.fetchSupplier(sid) == null){
                 System.err.println("Invalid supplier ID!");
                 return;
@@ -131,13 +129,12 @@ public class Main {
             sm.updateShipment(id, sid, reqDate, false, expDate);
         }else if(choice == 4){
             System.out.println("Give ID:");
-            int id = sc.nextInt();
+            int id = readInt();
             sm.cancelShipment(id);
         }else if(choice == 5){
             System.out.println("Give ID:");
-            int id = sc.nextInt();
+            int id = readInt();
             System.out.println("Give date:");
-            sc.nextLine();
             Date d = inputDate();
             ArrayList<ShipmentGood> sgs = sm.receiveShipment(id, d);
             for(ShipmentGood sg : sgs){
@@ -147,23 +144,12 @@ public class Main {
             System.err.println("Invalid choice!");
         }
     }
-    static Date inputDate() {
-        String input = sc.nextLine();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            return sdf.parse(input);
-        } catch (ParseException e) {
-            System.err.println("Invalid date format!");
-        }
-        return null;
-    }
     static void handleSaleRelatedRequest(){
         System.out.println("1. Add new sale.");
         System.out.println("2. View sales history.");
-        int choice = sc.nextInt();
+        int choice = readInt();
         if(choice == 1){
             System.out.println("Is this a new client? (y/N)");
-            sc.nextLine();
             String ans = sc.nextLine();
             int cid;
             if(ans.equals("y")){
@@ -172,12 +158,12 @@ public class Main {
                 System.out.println("Give surname:");
                 String surname = sc.nextLine();
                 System.out.println("Give phone number:");
-                int num = sc.nextInt();
+                int num = readInt();
 
                 cid = slm.addClient(name, surname, num);
             }else{
                 System.out.println("Give client ID:");
-                cid = sc.nextInt();
+                cid = readInt();
                 if(slm.fetchClient(cid) == null){
                     System.err.println("Invalid client ID!");
                     return;
@@ -189,14 +175,13 @@ public class Main {
             ans = "y";
             while(ans.equals("y")){
                 System.out.println("Give product ID:");
-                int pid = sc.nextInt();
+                int pid = readInt();
                 if(pm.fetchProduct(pid) == null){
                     System.err.println("Invalid product ID!");
                     continue;
                 }
                 System.out.println("Give quantity:");
-                int quant = sc.nextInt();
-                sc.nextLine();
+                int quant = readInt();
 
                 pm.removeFromProduct(pid, quant);
 
@@ -209,7 +194,7 @@ public class Main {
         }else if(choice == 2){
             System.out.println("Select sale id:");
             System.out.println(slm.getSaleIds());
-            int id = sc.nextInt();
+            int id = readInt();
             Sale s = slm.fetchSale(id);
             Client c = slm.fetchClient(s.getClientId());
             System.out.println(c);
@@ -227,7 +212,7 @@ public class Main {
         System.out.println("1. View stocks");
         System.out.println("2. View Revenue");
         System.out.println("3. View suppliers' performance");
-        int choice = sc.nextInt();
+        int choice = readInt();
         if (choice == 1) {
             pm.viewStock();
         }  else if (choice == 2) {
@@ -275,7 +260,7 @@ public class Main {
             System.out.println("2. Supplier.");
             System.out.println("3. Sale.");
             System.out.println("4. Analysis.");
-            choice = sc.nextInt();
+            choice = readInt();
             if(choice == 1){
                 handleProductRelatedRequest();
             }else if(choice == 2){
