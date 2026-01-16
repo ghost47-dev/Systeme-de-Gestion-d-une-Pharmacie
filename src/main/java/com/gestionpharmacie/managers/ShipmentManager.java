@@ -1,5 +1,5 @@
 package com.gestionpharmacie.managers;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.ArrayList;
 
 import com.gestionpharmacie.model.Supplier;
@@ -23,7 +23,7 @@ public class ShipmentManager {
         return id;
     }
 
-    public int addShipment(int sid, LocalDate requestDate, boolean recieved, LocalDate recievalDate){
+    public int addShipment(int sid, Date requestDate, boolean recieved, Date recievalDate){
         int id = shipments.size();
         shipments.add(new Shipment(id, sid, requestDate, recieved, recievalDate));
         return id;
@@ -62,7 +62,7 @@ public class ShipmentManager {
         return null;
     }
 
-    public void updateShipment(int id, int newSId, LocalDate newReqDate, boolean newRec, LocalDate newRecDate) {
+    public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate) {
         Shipment ship = fetchShipment(id);
         if (ship == null) {
             System.err.println("This shipment doesn't exist!"); // turn to exception!
@@ -90,11 +90,15 @@ public class ShipmentManager {
         shipmentGoods.removeAll(bad);
     }
 
-    public ArrayList<ShipmentGood> receiveShipment(int id, LocalDate d){
+    public ArrayList<ShipmentGood> receiveShipment(int id, Date d){
         Shipment ship = fetchShipment(id);
         if (ship == null) {
             System.err.println("This shipment doesn't exist!"); // turn to exception!
             return null;
+        }
+        fetchSupplier(ship.getSupplierId()).increaseTotalNoShipments();
+        if (!d.equals(ship.getRecievalDate())) {
+            fetchSupplier(ship.getSupplierId()).increaseNoLateShipments();
         }
         ship.receive(d);
         ArrayList<ShipmentGood> out = new ArrayList<>();
@@ -104,5 +108,16 @@ public class ShipmentManager {
             }
         }
         return out;
+    }
+    public void viewSuppliersPerfermance() {
+        for (Supplier supplier : suppliers) {
+            int total = supplier.getTotalNoShipments();
+            if (total != 0) {
+                double onTimeDeliveryRate = ((double) (total - supplier.getNoLateShipments()) / total) * 100;
+                System.out.println(supplier + " - On time delivery rate: " + onTimeDeliveryRate);
+            } else {
+                System.out.println(supplier + " - No interactions recorded!");
+            }
+        }
     }
 }

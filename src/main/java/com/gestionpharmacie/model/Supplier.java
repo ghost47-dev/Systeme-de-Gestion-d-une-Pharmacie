@@ -5,6 +5,9 @@ public class Supplier {
     private String name;
 	private int phoneNumber;
 
+	private int noLateShipments = 0;
+	private int totalNoShipments = 0;
+
     public Supplier(int id, String name, int phoneNumber){
         this.id = id;
         this.name = name;
@@ -28,5 +31,24 @@ public class Supplier {
 	}
 	public void setNumerotel(int phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public int getNoLateShipments() {
+		return noLateShipments;
+	}
+
+	public void increaseNoLateShipments() {
+		this.noLateShipments++;
+	}
+
+	public int getTotalNoShipments() {
+		return totalNoShipments;
+	}
+
+	public void increaseTotalNoShipments() {
+		this.totalNoShipments++;
+	}
+	public String toString() {
+		return "Supplier's name: " + name;
 	}
 }

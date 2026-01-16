@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import com.gestionpharmacie.model.Client;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
+import com.gestionpharmacie.model.Supplier;
 
 public class SaleManager {
     ArrayList<Client> clients;
@@ -88,4 +89,5 @@ public class SaleManager {
         }
         return out;
     }
+
 }

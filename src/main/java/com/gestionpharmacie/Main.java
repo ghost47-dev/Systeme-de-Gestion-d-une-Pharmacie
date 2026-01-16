@@ -1,4 +1,7 @@
 package com.gestionpharmacie;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -82,28 +85,15 @@ public class Main {
                 System.err.println("Invalid supplier ID!");
                 return;
             }
-            System.out.println("Give request date:");
-            Date reqDate = new Date(sc.nextLong());
-            System.out.println("Is this shipment already recieved? (y/N)");
             sc.nextLine();
-            String ans = sc.nextLine();
-            boolean rec = false;
-            if(ans.equals("y")){
-                rec = true;
-            }
-            int id;
-            if(rec){
-                System.out.println("Give recieval date:");
-                Date recDate = new Date(sc.nextLong());
-                sc.nextLine();
-
-                id = sm.addShipment(sid, reqDate, true, recDate);
-            }else{
-                id = sm.addShipment(sid, reqDate, false, null);
-            }
+            System.out.println("Give request date (dd/MM/yyyy):");
+            Date reqDate = inputDate();
+            System.out.println("Give expected arrival date:");
+            Date expDate = inputDate();
+            int id = sm.addShipment(sid, reqDate, false, expDate);
 
             System.out.println("Give shipment good:");
-            ans = "y";
+            String ans = "y";
             while(ans.equals("y")){
                 System.out.println("Give product ID:");
                 int pid = sc.nextInt();
@@ -134,22 +124,11 @@ public class Main {
             }
             System.out.println("Give new request date:");
             Date reqDate = new Date(sc.nextLong());
-            System.out.println("Give new recieved: (y/N)");
-            sc.nextLine();
-            String ans = sc.nextLine();
-            boolean rec = false;
-            if(ans.equals("y")){
-                rec = true;
-            }
-            if(rec){
-                System.out.println("Give new recieval date:");
-                Date recDate = new Date(sc.nextLong());
-                sc.nextLine();
 
-                sm.updateShipment(id, sid, reqDate, true, recDate);
-            }else{
-                sm.updateShipment(id, sid, reqDate, false, null);
-            }
+            System.out.println("Give new expected arrival date:");
+            Date expDate = inputDate();
+
+            sm.updateShipment(id, sid, reqDate, false, expDate);
         }else if(choice == 4){
             System.out.println("Give ID:");
             int id = sc.nextInt();
@@ -158,7 +137,8 @@ public class Main {
             System.out.println("Give ID:");
             int id = sc.nextInt();
             System.out.println("Give date:");
-            Date d = new Date(sc.nextLong());
+            sc.nextLine();
+            Date d = inputDate();
             ArrayList<ShipmentGood> sgs = sm.receiveShipment(id, d);
             for(ShipmentGood sg : sgs){
                 pm.addToProduct(sg.getProductId(), sg.getQuantity());
@@ -167,7 +147,16 @@ public class Main {
             System.err.println("Invalid choice!");
         }
     }
-
+    static Date inputDate() {
+        String input = sc.nextLine();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            return sdf.parse(input);
+        } catch (ParseException e) {
+            System.err.println("Invalid date format!");
+        }
+        return null;
+    }
     static void handleSaleRelatedRequest(){
         System.out.println("1. Add new sale.");
         System.out.println("2. View sales history.");
@@ -241,9 +230,10 @@ public class Main {
         int choice = sc.nextInt();
         if (choice == 1) {
             pm.viewStock();
-        }
-        if (choice == 2) {
+        }  else if (choice == 2) {
             System.out.println("Total revenue: " + slm.getTotalRevenue());
+        } else if (choice == 3) {
+            sm.viewSuppliersPerfermance();
         }
     }
 
@@ -254,6 +244,8 @@ public class Main {
         pm.addProduct("doliprane", 7, 120);
         um = new UserManager();
         sm = new ShipmentManager();
+        sm.addSupplier("semah", 12345678);
+        sm.addSupplier("awss", 98765432);
         slm = new SaleManager(pm);
 
         um.addUser(new User("salah", "123", "notadmin"));

@@ -1,14 +1,14 @@
 package com.gestionpharmacie.model;
-import java.time.LocalDate;
+import java.util.Date;
 
 public class Shipment {
     private int id;
 	private int supplierId;
-    private LocalDate requestDate;
+    private Date requestDate;
     private boolean recieved;
-    private LocalDate recievalDate;
+    private Date recievalDate;
 
-    public Shipment(int id, int sid, LocalDate reqDate, boolean rec, LocalDate recDate) {
+    public Shipment(int id, int sid, Date reqDate, boolean rec, Date recDate) {
         this.id = id;
         supplierId = sid;
         requestDate = reqDate;
@@ -16,7 +16,7 @@ public class Shipment {
         recievalDate = recDate;
     }
 
-    public void receive(LocalDate d){
+    public void receive(Date d){
         recieved = true;
         recievalDate = d;
     }
@@ -37,11 +37,11 @@ public class Shipment {
 		this.supplierId = supplierId;
 	}
 
-	public LocalDate getRequestDate() {
+	public Date getRequestDate() {
 		return requestDate;
 	}
 
-	public void setRequestDate(LocalDate requestDate) {
+	public void setRequestDate(Date requestDate) {
 		this.requestDate = requestDate;
 	}
 
@@ -53,11 +53,11 @@ public class Shipment {
 		this.recieved = recieved;
 	}
 
-	public LocalDate getRecievalDate() {
+	public Date getRecievalDate() {
 		return recievalDate;
 	}
 
-	public void setRecievalDate(LocalDate recievalDate) {
+	public void setRecievalDate(Date recievalDate) {
 		this.recievalDate = recievalDate;
 	}
 }
