@@ -3,7 +3,7 @@
 ## Todo (anyone is welcome to add/remove items from this list, this is all speculative):
   - [ ] Make mvp without any graphics or database integration (__make sure to use hashmaps for stuff that'll eventually become persistent!__).
     - [x] Figure out what the project structure will look like.
-    - [ ] The user shouldn't have to specify the id when creating anything (the whateverManager should figure out the id when adding whatever).
+    - [ ] !!!The user shouldn't have to specify the id when creating anything (the whateverManager should figure out the id when adding whatever).
     - [ ] Make a view abstraction (for now the console).
     - [ ] Implement all the damn commands.
     - [ ] Thrannitah micho s8ayyer el mvp. :cry:

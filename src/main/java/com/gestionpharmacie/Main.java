@@ -1,5 +1,4 @@
 package com.gestionpharmacie;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -8,15 +7,20 @@ import com.gestionpharmacie.model.Shipment;
 import com.gestionpharmacie.model.ShipmentGood;
 import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.managers.ProductManager;
+import com.gestionpharmacie.managers.SaleManager;
 import com.gestionpharmacie.managers.ShipmentManager;
 import com.gestionpharmacie.model.User;
 import com.gestionpharmacie.managers.UserManager;
+import com.gestionpharmacie.model.Client;
+import com.gestionpharmacie.model.Sale;
+import com.gestionpharmacie.model.SaleProduct;
 
 public class Main {
     private static Scanner sc;
     private static ProductManager pm;
     private static UserManager um;
     private static ShipmentManager sm;
+    private static SaleManager slm;
 
     static void handleProductRelatedRequest(){
         System.out.println("1. Add.");
@@ -110,8 +114,8 @@ public class Main {
                 sm.addShipment(new Shipment(id, sid, reqDate, false, null));
             }
 
-            System.out.println("Does this shipment have goods? (y/N)");
-            ans = sc.nextLine();
+            System.out.println("Give shipment good:");
+            ans = "y";
             while(ans.equals("y")){
                 System.out.println("Give ID:");
                 int gid = sc.nextInt();
@@ -174,6 +178,46 @@ public class Main {
     }
 
     static void handleClientRelatedRequest(){
+        System.out.println("Give sale ID:");
+        int id = sc.nextInt();
+        System.out.println("Is this a new client? (y/N)");
+        sc.nextLine();
+        String ans = sc.nextLine();
+        int cid;
+        if(ans.equals("y")){
+            System.out.println("Give client ID:");
+            cid = sc.nextInt();
+            System.out.println("Give name:");
+            sc.nextLine();
+            String name = sc.nextLine();
+            System.out.println("Give surname:");
+            String surname = sc.nextLine();
+            System.out.println("Give phone number:");
+            int num = sc.nextInt();
+
+            slm.addClient(new Client(cid, name, surname, num));
+        }else{
+            System.out.println("Give client ID:");
+            cid = sc.nextInt();
+        }
+        slm.addSale(new Sale(id, cid));
+
+        System.out.println("Give sale product:");
+        ans = "y";
+        while(ans.equals("y")){
+            System.out.println("Give ID:");
+            int gid = sc.nextInt();
+            System.out.println("Give product ID:");
+            int pid = sc.nextInt();
+            System.out.println("Give quantity:");
+            int quant = sc.nextInt();
+            sc.nextLine();
+
+            slm.addSaleProduct(new SaleProduct(gid, id, pid, quant));
+
+            System.out.println("Does this sale have more products? (y/N)");
+            ans = sc.nextLine();
+        }
     }
 
     static void handleAdminRelatedRequest(){

@@ -24,9 +24,9 @@ public class Supplier {
 		this.name = name;
 	}
 	public int getNumerotel() {
-		return numerotel;
+		return phoneNumber;
 	}
-	public void setNumerotel(int numerotel) {
-		this.numerotel = numerotel;
+	public void setNumerotel(int phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 }

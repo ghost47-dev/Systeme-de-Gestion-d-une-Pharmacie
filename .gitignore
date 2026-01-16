@@ -40,3 +40,4 @@ build/
 
 ### Awss OS ###
 run*.sh
+verify*.sh
