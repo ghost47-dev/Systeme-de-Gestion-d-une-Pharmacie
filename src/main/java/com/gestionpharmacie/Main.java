@@ -36,6 +36,7 @@ public class Main {
         System.out.println("1. Add.");
         System.out.println("2. Modify.");
         System.out.println("3. Remove.");
+        System.out.println("4. Check low stock alerts.");
         int choice = readInt();
         if(choice == 1){
             System.out.println("Give name:");
@@ -68,7 +69,9 @@ public class Main {
             } catch (ProductNotFoundException e) {
                 System.err.println("Error: " + e.getMessage());
             }
-        }else{
+        } else if (choice == 4) {
+            pm.lowStockAlert();
+        } else{
             System.err.println("Invalid choice!");
         }
     }

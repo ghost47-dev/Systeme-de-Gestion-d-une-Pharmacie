@@ -83,10 +83,16 @@ public class ProductManager {
         }
     }
     public void lowStockAlert() {
+        System.out.println("===LOW STOCK PRODUCTS===");
+        boolean found = false;
         for (Product product : products) {
             if (product.getQuantity() < quantityRiskThreshold) {
-
+                found = true;
+                System.out.println(" - " + product.getName() + ": " + product.getQuantity() + " units left!");
             }
+        }
+        if (!found) {
+            System.out.println("All stocks are full!");
         }
     }
 }
