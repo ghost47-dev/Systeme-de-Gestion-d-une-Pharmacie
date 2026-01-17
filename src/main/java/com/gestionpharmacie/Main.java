@@ -1,7 +1,4 @@
 package com.gestionpharmacie;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -9,10 +6,7 @@ import java.util.Scanner;
 import com.gestionpharmacie.exceptions.InsufficientStockException;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
-import com.gestionpharmacie.model.Product;
-import com.gestionpharmacie.model.Shipment;
 import com.gestionpharmacie.model.ShipmentGood;
-import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
 import com.gestionpharmacie.managers.ShipmentManager;
@@ -21,8 +15,6 @@ import com.gestionpharmacie.managers.UserManager;
 import com.gestionpharmacie.model.Client;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
-import com.gestionpharmacie.utilities.InputUtils;
-import org.w3c.dom.ls.LSOutput;
 
 import static com.gestionpharmacie.utilities.InputUtils.*;
 
