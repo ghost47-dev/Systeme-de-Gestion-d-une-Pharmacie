@@ -1,5 +1,6 @@
 package com.gestionpharmacie.managers;
 
+import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.model.Product;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class ProductManager {
                                                      // cause this class won't exist in the
                                                      // database so it can have an arraylist
 
-    private int quantityRiskThreshold = 10;
+    private final int quantityRiskThreshold = 10;
 
     public ProductManager () {
         products = new ArrayList<>();
@@ -33,31 +34,28 @@ public class ProductManager {
         return null;
     }
 
-    public void updateProduct(int id, String newName, double newPrice, int newQuantity) {
+    public void updateProduct(int id, String newName, double newPrice, int newQuantity) throws ProductNotFoundException {
         Product product = fetchProduct(id);
         if (product == null) {
-            System.err.println("This product doesn't exist!"); // turn to exception!
-            return;
+            throw new ProductNotFoundException("This product doesn't exist!");
         }
         product.setName(newName);
         product.setPrice(newPrice);
         product.setQuantity(newQuantity);
     }
 
-    public void deleteProduct(int id) {
+    public void deleteProduct(int id) throws ProductNotFoundException {
         Product p = fetchProduct(id);
         if (p == null) {
-            System.err.println("This product doesn't exists!");
-            return;
+            throw new ProductNotFoundException("This product doesn't exist!");
         }
         products.remove(p);
     }
 
-    public void addToProduct(int id, int quant){
+    public void addToProduct(int id, int quant) throws ProductNotFoundException {
         Product p = fetchProduct(id);
         if(p == null){
-            System.err.println("This product doesn't exists!");
-            return;
+            throw new ProductNotFoundException("This product doesn't exists!");
         }
         p.addQuantity(quant);
         if(p.getQuantity() > quantityRiskThreshold && riskyProducts.contains(id)){
@@ -65,11 +63,10 @@ public class ProductManager {
         }
     }
 
-    public void removeFromProduct(int id, int quant){
+    public void removeFromProduct(int id, int quant) throws ProductNotFoundException {
         Product p = fetchProduct(id);
         if(p == null){
-            System.err.println("This product doesn't exists!");
-            return;
+            throw new ProductNotFoundException("This product doesn't exists!");
         }
         if(p.getQuantity() < quant){
             System.err.println("Invalid quantity!");
@@ -83,6 +80,13 @@ public class ProductManager {
     public void viewStock() {
         for (Product product : products) {
             System.out.println(product);
+        }
+    }
+    public void lowStockAlert() {
+        for (Product product : products) {
+            if (product.getQuantity() < quantityRiskThreshold) {
+
+            }
         }
     }
 }

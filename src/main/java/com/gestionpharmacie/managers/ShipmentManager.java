@@ -2,6 +2,7 @@ package com.gestionpharmacie.managers;
 import java.util.Date;
 import java.util.ArrayList;
 
+import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.model.Shipment;
 import com.gestionpharmacie.model.ShipmentGood;
@@ -62,11 +63,10 @@ public class ShipmentManager {
         return null;
     }
 
-    public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate) {
+    public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate) throws ShipmentNotFoundException {
         Shipment ship = fetchShipment(id);
         if (ship == null) {
-            System.err.println("This shipment doesn't exist!"); // turn to exception!
-            return;
+            throw new ShipmentNotFoundException("This shipment doesn't exist!");
         }
         ship.setSupplierId(newSId);
         ship.setRequestDate(newReqDate);
@@ -74,11 +74,10 @@ public class ShipmentManager {
         ship.setRecievalDate(newRecDate);
     }
 
-    public void cancelShipment(int id){
+    public void cancelShipment(int id) throws ShipmentNotFoundException {
         Shipment ship = fetchShipment(id);
         if (ship == null) {
-            System.err.println("This shipment doesn't exist!"); // turn to exception!
-            return;
+            throw new ShipmentNotFoundException("This shipment doesn't exist!");
         }
         shipments.remove(ship);
         ArrayList<ShipmentGood> bad = new ArrayList<>();
@@ -90,11 +89,10 @@ public class ShipmentManager {
         shipmentGoods.removeAll(bad);
     }
 
-    public ArrayList<ShipmentGood> receiveShipment(int id, Date d){
+    public ArrayList<ShipmentGood> receiveShipment(int id, Date d) throws ShipmentNotFoundException {
         Shipment ship = fetchShipment(id);
         if (ship == null) {
-            System.err.println("This shipment doesn't exist!"); // turn to exception!
-            return null;
+            throw new ShipmentNotFoundException("This shipment doesn't exist!");
         }
         fetchSupplier(ship.getSupplierId()).increaseTotalNoShipments();
         if (!d.equals(ship.getRecievalDate())) {
