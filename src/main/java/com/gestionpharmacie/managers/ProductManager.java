@@ -1,5 +1,6 @@
 package com.gestionpharmacie.managers;
 
+import com.gestionpharmacie.exceptions.InsufficientStockException;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.model.Product;
 
@@ -63,14 +64,13 @@ public class ProductManager {
         }
     }
 
-    public void removeFromProduct(int id, int quant) throws ProductNotFoundException {
+    public void removeFromProduct(int id, int quant) throws ProductNotFoundException, InsufficientStockException {
         Product p = fetchProduct(id);
         if(p == null){
             throw new ProductNotFoundException("This product doesn't exists!");
         }
         if(p.getQuantity() < quant){
-            System.err.println("Invalid quantity!");
-            return;
+            throw new InsufficientStockException("Insufficient stock for " + p.getName() + "only " + p.getQuantity() + " units left");
         }
         p.removeQuantity(quant); // this should throw something
         if(p.getQuantity() < quantityRiskThreshold && !riskyProducts.contains(id)){

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
+import com.gestionpharmacie.exceptions.InsufficientStockException;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.model.Product;
@@ -161,15 +162,11 @@ public class Main {
             ArrayList<ShipmentGood> sgs = null;
             try {
                 sgs = sm.receiveShipment(id, d);
-            } catch (ShipmentNotFoundException e) {
-                System.err.println("Error: " + e.getMessage());
-            }
-            for(ShipmentGood sg : sgs) {
-                try {
+                for (ShipmentGood sg : sgs) {
                     pm.addToProduct(sg.getProductId(), sg.getQuantity());
-                } catch (ProductNotFoundException e) {
-                    System.err.println("Error: " + e.getMessage());
                 }
+            } catch (ShipmentNotFoundException | ProductNotFoundException e) {
+                System.err.println("Error: " + e.getMessage());
             }
         }else{
             System.err.println("Invalid choice!");
@@ -216,7 +213,7 @@ public class Main {
 
                 try {
                     pm.removeFromProduct(pid, quant);
-                } catch (ProductNotFoundException e) {
+                } catch (ProductNotFoundException | InsufficientStockException e) {
                     System.err.println("Error: " + e.getMessage());
                 }
 
