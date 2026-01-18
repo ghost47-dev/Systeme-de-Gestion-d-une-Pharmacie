@@ -247,6 +247,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+
         pm = new ProductManager();
         //hardcoded data for testing
         pm.addProduct("aspirin", 4, 200);
