@@ -18,7 +18,7 @@
   - **Note:** **All SQL commands of creating the db should be saved we will need them later**
     - [ ] design the schema
     - [ ] build the models (Produit, Client, ...)
-  - [ ] Integrate the database with recieved insight from previous step.
+  - [ ] Integrate the database with received insight from previous step.
     - [ ] Create a new class that abstracts over the requests (in other words remove ArrayList).
     - [ ] Implement it into the code for persistent data [Example video](https://www.youtube.com/watch?v=dQw4w9WgXcQ).
   - [ ] The graphics (hopefully won't be hard, we need to finish other stuff asap to make sure we have ample time for this).
