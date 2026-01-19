@@ -24,7 +24,7 @@ public class ShipmentManager {
             stmt.executeUpdate();
             ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
-                return keys.getInt("id");
+                return keys.getInt(1);
             }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());

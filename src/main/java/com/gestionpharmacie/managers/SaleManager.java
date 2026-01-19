@@ -70,8 +70,8 @@ public class SaleManager {
     }
 
     public double getTotalRevenue() {
-        String sql = "SELECT (sp.quantity * price) as total" +
-                "FROM sale_product sp, product p" +
+        String sql = "SELECT SUM(sp.quantity * price) as total " +
+                "FROM sale_product sp, product p " +
                 "WHERE sp.product_id = p.id";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();

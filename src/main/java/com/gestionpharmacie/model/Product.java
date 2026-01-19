@@ -41,6 +41,6 @@ public class Product {
         quantity -= q;
     }
 	public String toString() {
-		return "id:" + id + " - name: " + name + " - quantity: " + quantity;
+		return "id: " + id + " - name: " + name + " - quantity: " + quantity;
 	}
 }
