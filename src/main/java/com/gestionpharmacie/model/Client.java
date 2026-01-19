@@ -1,6 +1,6 @@
 package com.gestionpharmacie.model;
 
-public class Client  {
+public class Client {
     private int id;
     private String name, surname;
     private int phoneNumber;
