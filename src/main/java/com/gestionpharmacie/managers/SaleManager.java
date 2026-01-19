@@ -1,4 +1,5 @@
 package com.gestionpharmacie.managers;
+import java.sql.*;
 import java.util.ArrayList;
 
 import com.gestionpharmacie.model.Client;
@@ -7,85 +8,145 @@ import com.gestionpharmacie.model.SaleProduct;
 import com.gestionpharmacie.model.Supplier;
 
 public class SaleManager {
-    ArrayList<Client> clients;
-    ArrayList<Sale> sales;
-    ArrayList<SaleProduct> saleProducts;
     ProductManager productManager;
-
+    Connection connection;
     private double totalRevenue = 0;
 
-    public SaleManager(ProductManager pm) {
-        clients = new ArrayList<>();
-        sales = new ArrayList<>();
-        saleProducts = new ArrayList<>();
+    public SaleManager(ProductManager pm, Connection connection) {
+        this.connection = connection;
         productManager = pm;
     }
 
-    public int addClient(String name, String surname, int phoneNumber){
-        int id = clients.size();
-        clients.add(new Client(id, name, surname, phoneNumber));
-        return id;
+    public int addClient(String name, String surname, int phoneNumber) {
+        String sql = "INSERT INTO client(name, surname, phone) VALUES(?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, name);
+            stmt.setString(2, surname);
+            stmt.setInt(3, phoneNumber);
+
+            ResultSet keys = stmt.executeQuery();
+            if (keys.next()) {
+                return keys.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return -1;
     }
 
-    public int addSale(int cid){
-        int id = sales.size();
-        sales.add(new Sale(id, cid));
-        return id;
+    public int addSale(int cid) {
+        String sql = "INSERT INTO sale(client_id) VALUES(?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, cid);
+
+            ResultSet keys = stmt.executeQuery();
+            if (keys.next()) {
+                return keys.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return -1;
     }
 
-    public int addSaleProduct(int sid, int pid, int quant){
-        int id = saleProducts.size();
-        saleProducts.add(new SaleProduct(id, sid, pid, quant));
-        double price = productManager.fetchProduct(pid).getPrice() * quant;
-        totalRevenue += price;
-        return id;
+    public int addSaleProduct(int sid, int pid, int quant) {
+        String sql = "INSERT INTO sale_product(sale_id, product_id, quantity) VALUES(?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, sid);
+            stmt.setInt(2, pid);
+            stmt.setInt(3, quant);
+
+            ResultSet keys = stmt.executeQuery();
+            if (keys.next()) {
+                double price = productManager.fetchProduct(pid).getPrice() * quant;
+                totalRevenue += price;
+                return keys.getInt("id");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return -1;
     }
 
     public double getTotalRevenue() {
         return totalRevenue;
     }
 
-    public Client fetchClient(int id){
-        for(Client c : clients){
-            if(c.getId() == id){
-                return c;
+    public Client fetchClient(int id) {
+        String sql = "SELECT * FROM client WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Client(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("surname"),
+                        rs.getInt("phone")
+                );
             }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
         }
         return null;
     }
 
-    public Sale fetchSale(int id){
-        for(Sale s : sales){
-            if(s.getId() == id){
-                return s;
+    public Sale fetchSale(int id) {
+        String sql = "SELECT * FROM sale WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Sale(
+                        rs.getInt("id"),
+                        rs.getInt("client_id")
+                );
             }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
         }
         return null;
     }
 
-    public SaleProduct fetchSaleProduct(int id){
-        for(SaleProduct s : saleProducts){
-            if(s.getId() == id){
-                return s;
+//    public SaleProduct fetchSaleProduct(int id){
+//        for(SaleProduct s : saleProducts){
+//            if(s.getId() == id){
+//                return s;
+//            }
+//        }
+//        return null;
+//    }
+
+    public ArrayList<Integer> getSaleIds() {
+        ArrayList<Integer> ids = new ArrayList<>();
+        String sql = "SELECT id FROM sale";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ids.add(rs.getInt("id"));
             }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
         }
-        return null;
+        return ids;
     }
 
-    public ArrayList<Integer> getSaleIds(){
-        ArrayList<Integer> out = new ArrayList<>();
-        for(Sale s : sales){
-            out.add(s.getId());
-        }
-        return out;
-    }
-
-    public ArrayList<SaleProduct> getSaleProducts(int id){
+    public ArrayList<SaleProduct> getSaleProducts(int id) {
         ArrayList<SaleProduct> out = new ArrayList<>();
-        for(SaleProduct s : saleProducts){
-            if(s.getSaleId() == id){
-                out.add(s);
+        String sql = "SELECT * FROM sale_product WHERE sale_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                out.add(new SaleProduct(
+                        rs.getInt("id"),
+                        rs.getInt("sale_id"),
+                        rs.getInt("product_id"),
+                        rs.getInt("quantity")
+                ));
             }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
         }
         return out;
     }
