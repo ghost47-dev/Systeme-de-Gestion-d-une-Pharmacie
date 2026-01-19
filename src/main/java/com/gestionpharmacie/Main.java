@@ -1,14 +1,12 @@
 package com.gestionpharmacie;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
-import com.gestionpharmacie.model.Product;
-import com.gestionpharmacie.model.Shipment;
+
+import com.gestionpharmacie.exceptions.InsufficientStockException;
+import com.gestionpharmacie.exceptions.ProductNotFoundException;
+import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.model.ShipmentGood;
-import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
 import com.gestionpharmacie.managers.ShipmentManager;
@@ -17,8 +15,6 @@ import com.gestionpharmacie.managers.UserManager;
 import com.gestionpharmacie.model.Client;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
-import com.gestionpharmacie.utilities.InputUtils;
-import org.w3c.dom.ls.LSOutput;
 
 import static com.gestionpharmacie.utilities.InputUtils.*;
 
@@ -33,6 +29,7 @@ public class Main {
         System.out.println("1. Add.");
         System.out.println("2. Modify.");
         System.out.println("3. Remove.");
+        System.out.println("4. Check low stock alerts.");
         int choice = readInt();
         if(choice == 1){
             System.out.println("Give name:");
@@ -52,12 +49,22 @@ public class Main {
             double price = readDouble();
             System.out.println("Give new quantity:");
             int quant = readInt();
-            pm.updateProduct(id, name, price, quant);
+            try {
+                pm.updateProduct(id, name, price, quant);
+            } catch (ProductNotFoundException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
         }else if(choice == 3){
             System.out.println("Give ID:");
             int id = readInt();
-            pm.deleteProduct(id);
-        }else{
+            try {
+                pm.deleteProduct(id);
+            } catch (ProductNotFoundException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
+        } else if (choice == 4) {
+            pm.lowStockAlert();
+        } else{
             System.err.println("Invalid choice!");
         }
     }
@@ -121,24 +128,37 @@ public class Main {
                 return;
             }
             System.out.println("Give new request date:");
-            Date reqDate = new Date(sc.nextLong());
+            Date reqDate = inputDate();
 
             System.out.println("Give new expected arrival date:");
             Date expDate = inputDate();
 
-            sm.updateShipment(id, sid, reqDate, false, expDate);
+            try {
+                sm.updateShipment(id, sid, reqDate, false, expDate);
+            } catch (ShipmentNotFoundException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
         }else if(choice == 4){
             System.out.println("Give ID:");
             int id = readInt();
-            sm.cancelShipment(id);
+            try {
+                sm.cancelShipment(id);
+            } catch (ShipmentNotFoundException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
         }else if(choice == 5){
             System.out.println("Give ID:");
             int id = readInt();
             System.out.println("Give date:");
             Date d = inputDate();
-            ArrayList<ShipmentGood> sgs = sm.receiveShipment(id, d);
-            for(ShipmentGood sg : sgs){
-                pm.addToProduct(sg.getProductId(), sg.getQuantity());
+            ArrayList<ShipmentGood> sgs = null;
+            try {
+                sgs = sm.receiveShipment(id, d);
+                for (ShipmentGood sg : sgs) {
+                    pm.addToProduct(sg.getProductId(), sg.getQuantity());
+                }
+            } catch (ShipmentNotFoundException | ProductNotFoundException e) {
+                System.err.println("Error: " + e.getMessage());
             }
         }else{
             System.err.println("Invalid choice!");
@@ -183,7 +203,11 @@ public class Main {
                 System.out.println("Give quantity:");
                 int quant = readInt();
 
-                pm.removeFromProduct(pid, quant);
+                try {
+                    pm.removeFromProduct(pid, quant);
+                } catch (ProductNotFoundException | InsufficientStockException e) {
+                    System.err.println("Error: " + e.getMessage());
+                }
 
                 slm.addSaleProduct(id, pid, quant);
 
@@ -223,6 +247,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+
         pm = new ProductManager();
         //hardcoded data for testing
         pm.addProduct("aspirin", 4, 200);
