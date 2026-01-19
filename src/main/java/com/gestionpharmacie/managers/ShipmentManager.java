@@ -177,9 +177,9 @@ public class ShipmentManager {
 
     public void viewSuppliersPerfermance() {
         for (Supplier supplier : suppliers) {
-            int total = supplier.getTotalNoShipments();
+            int total = supplier.getTotalNoShipments(connection);
             if (total != 0) {
-                double onTimeDeliveryRate = ((double) (total - supplier.getNoLateShipments()) / total) * 100;
+                double onTimeDeliveryRate = ((double) (total - supplier.getNoLateShipments(connection)) / total) * 100;
                 System.out.println(supplier + " - On time delivery rate: " + onTimeDeliveryRate);
             } else {
                 System.out.println(supplier + " - No interactions recorded!");
