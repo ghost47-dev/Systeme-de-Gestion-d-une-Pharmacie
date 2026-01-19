@@ -1,4 +1,5 @@
 package com.gestionpharmacie;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -16,6 +17,7 @@ import com.gestionpharmacie.model.Client;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
 
+import static com.gestionpharmacie.utilities.DatabaseConnection.getConnection;
 import static com.gestionpharmacie.utilities.InputUtils.*;
 
 public class Main {
@@ -247,7 +249,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-
+        Connection connection = getConnection();
 
         pm = new ProductManager();
         //hardcoded data for testing
