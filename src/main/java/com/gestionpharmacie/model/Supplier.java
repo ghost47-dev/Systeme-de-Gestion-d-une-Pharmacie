@@ -1,17 +1,21 @@
 package com.gestionpharmacie.model;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Supplier {
     private int id;
     private String name;
 	private int phoneNumber;
-
 	private int noLateShipments = 0;
-	private int totalNoShipments = 0;
 
-    public Supplier(int id, String name, int phoneNumber){
+    public Supplier(int id, String name, int phoneNumber, int noLateShipments){
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
+		this.noLateShipments = noLateShipments;
     }
 
 	public int getId() {
@@ -41,13 +45,21 @@ public class Supplier {
 		this.noLateShipments++;
 	}
 
-	public int getTotalNoShipments() {
-		return totalNoShipments;
+	public int getTotalNoShipments(Connection con) {
+		String query = "SELECT COUNT(*) as nb FROM shipment WHERE supplier_id = ? GROUP BY supplier_id";
+		try (PreparedStatement stmt = con.prepareStatement(query)) {
+			stmt.setInt(1, id);
+
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt("nb");
+			}
+		} catch (SQLException e) {
+			System.err.println("Error: " + e.getMessage());
+		}
+		return 0;
 	}
 
-	public void increaseTotalNoShipments() {
-		this.totalNoShipments++;
-	}
 	public String toString() {
 		return "Supplier's name: " + name;
 	}
