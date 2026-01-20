@@ -1,21 +1,9 @@
 package com.gestionpharmacie.model;
 
-<<<<<<< HEAD
-
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-
-=======
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
->>>>>>> origin/testingbranch
 
 public class Supplier {
     private int id;
@@ -49,43 +37,14 @@ public class Supplier {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public int getNoLateShipments(Connection conn) {
-		String query = "SELECT no_late_shipments  FROM supplier WHERE id = ?";
-		try (PreparedStatement ps = conn.prepareStatement(query)) {
-				ps.setInt(1, id);
-				ResultSet res = ps.executeQuery();
-				int nb = 0;
-				if (res.next()) {
-					nb = res.getInt("NoLateShipments");
-				}
-			} catch(SQLException e){
-				e.printStackTrace();
-			}
+	public int getNoLateShipments() {
 		return noLateShipments;
 	}
 
-	
-
-	public int getTotalNoShipments(Connection conn) {
-		String query = "SELECT COUNT(*) as nb FROM shipment WHERE supplier_id = ? GROUP BY supplier_id";
-		try (PreparedStatement ps = conn.prepareStatement(query)){
-
-				ps.setInt(1, id);
-				ResultSet res = ps.executeQuery();
-				int nb = 0;
-				if (res.next()) {
-					nb = res.getInt("nb");
-					return nb;
-				}
-
-			} catch(SQLException e){
-				e.printStackTrace();
-			}
-		return 0;
+	public void increaseNoLateShipments() {
+		this.noLateShipments++;
 	}
 
-<<<<<<< HEAD
-=======
 	public int getTotalNoShipments(Connection con) {
 		String query = "SELECT COUNT(*) as nb FROM shipment WHERE supplier_id = ? GROUP BY supplier_id";
 		try (PreparedStatement stmt = con.prepareStatement(query)) {
@@ -101,7 +60,6 @@ public class Supplier {
 		return 0;
 	}
 
->>>>>>> origin/testingbranch
 	public String toString() {
 		return "Supplier's name: " + name;
 	}
