@@ -137,7 +137,7 @@
 /* Error message (optional) */
 .login-error {
     -fx-text-fill: #e74c3c;
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;
 }
 .dynamic-label {
     -fx-font-size: 14px;
@@ -258,4 +258,5 @@
 .delete-btn:hover {
     -fx-background-color: #c0392b;
 }
+
 

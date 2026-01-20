@@ -65,7 +65,11 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
+<<<<<<< HEAD
                             <mainClass>com.gestionpharmacie/com.gestionpharmacie.Main
+=======
+                            <mainClass>com.gestionpharmacie/com.gestionpharmacie.
+>>>>>>> 4cce736 (add remove and edit buttons to the stock)
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

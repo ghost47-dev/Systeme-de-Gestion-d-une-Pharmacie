@@ -124,9 +124,8 @@ public class MainController {
 
                 String Products_Info = "";
                 for (SaleProduct sp : saleproducts){
-                    int p_id = sp.getId();
+                    int p_id = sp.getProductId();
                     Product p = productManager.fetchProduct(p_id); 
-                    
                     int p_quantity = sp.getQuantity();
                     double p_price = p.getPrice();
                     String p_name = p.getName();
@@ -161,7 +160,7 @@ public class MainController {
     @FXML
     private void addSale(ActionEvent event){
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/gestionpharmacie/sale.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/com/gestionpharmacie/saleAdd.fxml"));
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
@@ -178,8 +177,29 @@ public class MainController {
      * Show dashboard page
      */
     @FXML
-    private void editProductRedirection(){
+    private void editProductRedirection(ActionEvent event , String product){
 
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gestionpharmacie/productEdit.fxml")
+            );
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
+            );
+            
+            ProductController pc = loader.getController();
+            
+            pc.showEdit(product);
+
+            Stage stage = (Stage) ((Node) event.getSource())
+                .getScene().getWindow();
+            stage.setScene(scene);       
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -238,14 +258,13 @@ public class MainController {
             productsList.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
                     String selected = productsList.getSelectionModel().getSelectedItem();
-                        if (selected != null) {
+                        if (selected != null) { 
                             if (editingBtns.getChildren().size() == 1){
-                                
                                 Button editBtn = new Button();
                                 editBtn.getStyleClass().add("edit-btn");
                                 editBtn.setText("edit");
                                 editBtn.setOnAction(editEvent -> {
-                                   editProductRedirection(); 
+                                   editProductRedirection(editEvent,selected); 
                                 }); 
 
                                 Button removeBtn = new Button();
@@ -253,13 +272,29 @@ public class MainController {
                                 removeBtn.setText("delete");
                                 removeBtn.setOnAction(deleteEvent -> {
                                     removeProduct(selected);
-                                });     
+                                });    
 
                                 editingBtns.getChildren().addAll(editBtn,removeBtn);
                             }
+                            if (editingBtns.getChildren().size() == 3){
+                                Button editBtn = (Button)editingBtns.getChildren().get(1);
+                                 editBtn.setOnAction(editEvent -> {
+                                   editProductRedirection(editEvent,selected);
+                                });
+                                Button removeBtn = (Button)editingBtns.getChildren().getLast();
+                                removeBtn.setOnAction(deleteEvent -> {
+                                    removeProduct(selected);
+                                });
+                            }
+                            
                         }
                     }
             });
+            productsList.setOnMouseExited(event -> {
+                
+
+
+            }); 
 
 
             showPage(productsPage);
@@ -310,6 +345,10 @@ public class MainController {
      */
     private void showPage(VBox pageToShow) {
         saleHistoryPage.setVisible(false);
+        if (editingBtns.getChildren().size() == 3 ){
+            editingBtns.getChildren().removeLast();
+             editingBtns.getChildren().removeLast();
+        }
         productsPage.setVisible(false);
         settingsPage.setVisible(false);
         profilePage.setVisible(false);

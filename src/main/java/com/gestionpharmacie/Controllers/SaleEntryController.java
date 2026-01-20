@@ -87,6 +87,7 @@ public class SaleEntryController {
                     try{
                         TextField id = (TextField)productRow.getChildren().get(1);
                         productId = Integer.parseInt(id.getText());
+                         errorLabel.setVisible(false);
                     }
                     catch (NumberFormatException e){
                         errorLabel.setText("Invalid id !");
@@ -105,7 +106,7 @@ public class SaleEntryController {
                         return;
                     }
                     
-                    sm.addSaleProduct(sale_id,productId,productQuantity); 
+                    int sp_id = sm.addSaleProduct(sale_id,productId,productQuantity); 
                 }
                         
                  

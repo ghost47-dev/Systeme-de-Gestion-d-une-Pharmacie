@@ -38,8 +38,8 @@
 
     <!-- BUTTONS -->
     <HBox spacing="15" alignment="CENTER" prefWidth="700">
-        <Button text="Save product" onAction="#saveProduct" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-        <Button text="Back" onAction="#goBack" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+        <Button text="Save product" onAction="#saveProduct" styleClass="add-btn"/>
+        <Button text="Back" onAction="#goBack" styleClass="delete-btn"/>
     </HBox>
 </VBox>
 
