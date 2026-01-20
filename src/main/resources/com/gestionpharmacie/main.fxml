@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.gestionpharmacie.Controllers.MainController" prefHeight="600.0" prefWidth="900.0">
+    
+    <!-- Left Side Panel Container -->
+    <left>
+        <HBox fx:id="sidePanelContainer">
+            <VBox fx:id="sidePanel" styleClass="side-panel-bg" prefWidth="200.0" >
+                <padding>
+                    <Insets top="20" bottom="20"/>
+                </padding>
+                
+                <!-- Navigation Buttons -->
+                <VBox spacing="15" VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets left="15" right="15" top="15"/>
+                    </padding>
+                    
+                    <Button fx:id="saleHistoryBtn" text="Sale Histor" styleClass="nav-btn" 
+                            onAction="#showSaleHistory" maxWidth="Infinity"/>
+                    
+                    <Button fx:id="dashboardBtn" text="📊 Dashboard" styleClass="nav-btn" 
+                            onAction="#showDashboardPage" maxWidth="Infinity"/>
+                    
+                    <Button fx:id="settingsBtn" text="⚙️ Settings" styleClass="nav-btn" 
+                            onAction="#showSettingsPage" maxWidth="Infinity"/>
+                    
+                    <Button fx:id="profileBtn" text="👤 Profile" styleClass="nav-btn" 
+                            onAction="#showProfilePage" maxWidth="Infinity"/>
+                </VBox>
+            </VBox>
+            
+            <!-- Toggle Button (stays visible) -->
+            <VBox fx:id="togglePanel" alignment="TOP_CENTER" style="-fx-background-color: #34495e;">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <Button fx:id="toggleButton" text="◀" styleClass="toggle-btn" 
+                        onAction="#toggleSidePanel"/>
+            </VBox>
+        </HBox>
+    </left>
+    
+    <!-- Main Content Area -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <!-- Pages will be loaded here -->
+            
+            <!-- Default Home Page -->
+            <VBox fx:id="saleHistoryPage" alignment="TOP_CENTER" spacing="20" visible="true">
+                <Label text="Sale History" styleClass="page-title"/>
+                <ListView fx:id="saleHistoryList" styleClass="list-view"/>
+
+            </VBox>
+            
+            <!-- Dashboard Page -->
+            <VBox fx:id="dashboardPage" alignment="CENTER" spacing="20" visible="false">
+                <Label text="Dashboard Page" styleClass="page-title"/>
+                <Label text="Your dashboard content goes here" styleClass="page-subtitle"/>
+            </VBox>
+            
+            <!-- Settings Page -->
+            <VBox fx:id="settingsPage" alignment="CENTER" spacing="20" visible="false">
+                <Label text="Settings Page" styleClass="page-title"/>
+                <Label text="Configure your preferences" styleClass="page-subtitle"/>
+            </VBox>
+            
+            <!-- Profile Page -->
+            <VBox fx:id="profilePage" alignment="CENTER" spacing="20" visible="false">
+                <Label text="Profile Page" styleClass="page-title"/>
+                <Label text="Your profile information" styleClass="page-subtitle"/>
+            </VBox>
+            
+        </StackPane>
+    </center>
+    
+</BorderPane>

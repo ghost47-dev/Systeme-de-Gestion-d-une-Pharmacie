@@ -1,307 +1,43 @@
 package com.gestionpharmacie;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Scanner;
 
-import com.gestionpharmacie.exceptions.InsufficientStockException;
-import com.gestionpharmacie.exceptions.ProductNotFoundException;
-import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
-import com.gestionpharmacie.model.ShipmentGood;
-import com.gestionpharmacie.managers.ProductManager;
-import com.gestionpharmacie.managers.SaleManager;
-import com.gestionpharmacie.managers.ShipmentManager;
-import com.gestionpharmacie.model.User;
-import com.gestionpharmacie.managers.UserManager;
-import com.gestionpharmacie.model.Client;
-import com.gestionpharmacie.model.Sale;
-import com.gestionpharmacie.model.SaleProduct;
 
-import static com.gestionpharmacie.utilities.InputUtils.*;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class Main {
-    private static Scanner sc;
-    private static ProductManager pm;
-    private static UserManager um;
-    private static ShipmentManager sm;
-    private static SaleManager slm;
 
-    static void handleProductRelatedRequest(){
-        System.out.println("1. Add.");
-        System.out.println("2. Modify.");
-        System.out.println("3. Remove.");
-        System.out.println("4. Check low stock alerts.");
-        int choice = readInt();
-        if(choice == 1){
-            System.out.println("Give name:");
-            String name = sc.nextLine();
-            System.out.println("Give price:");
-            double price = readDouble();
-            System.out.println("Give quantity:");
-            int quant = readInt();
-            int id = pm.addProduct(name, price, quant);
-            System.out.println("Created product with id " + id);
-        }else if(choice == 2){
-            System.out.println("Give ID:");
-            int id = readInt();
-            System.out.println("Give new name:");
-            String name = sc.nextLine();
-            System.out.println("Give new price:");
-            double price = readDouble();
-            System.out.println("Give new quantity:");
-            int quant = readInt();
-            try {
-                pm.updateProduct(id, name, price, quant);
-            } catch (ProductNotFoundException e) {
-                System.err.println("Error: " + e.getMessage());
-            }
-        }else if(choice == 3){
-            System.out.println("Give ID:");
-            int id = readInt();
-            try {
-                pm.deleteProduct(id);
-            } catch (ProductNotFoundException e) {
-                System.err.println("Error: " + e.getMessage());
-            }
-        } else if (choice == 4) {
-            pm.lowStockAlert();
-        } else{
-            System.err.println("Invalid choice!");
-        }
+public class Main extends Application {
+    
+    @Override
+    public void start(Stage primaryStage) {
+        loadLogin(primaryStage);
     }
 
-    static void handleShipmentRelatedRequest(){
-        System.out.println("1. Add supplier.");
-        System.out.println("2. Add shipment.");
-        System.out.println("3. Modify shipment.");
-        System.out.println("4. Cancel shipment.");
-        System.out.println("5. Receive shipment.");
-        int choice = readInt();
-        
-        if(choice == 1){
-            System.out.println("Give name:");
-            String name = sc.nextLine();
-            System.out.println("Give phone number:");
-            int num = readInt();
+    private void loadLogin(Stage stage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gestionpharmacie/main.fxml")
+            );
+            Parent root = loader.load();
 
-            int id = sm.addSupplier(name, num);
-            System.out.println("Created supplier with id " + id);
-        }else if(choice == 2){
-            System.out.println("Give supplier ID:");
-            int sid = readInt();
-            if(sm.fetchSupplier(sid) == null){
-                System.err.println("Invalid supplier ID!");
-                return;
-            }
-            System.out.println("Give request date (dd/MM/yyyy):");
-            Date reqDate = inputDate();
-            System.out.println("Give expected arrival date:");
-            Date expDate = inputDate();
-            int id = sm.addShipment(sid, reqDate, false, expDate);
+            Scene scene = new Scene(root, 400, 300);
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
+            );
 
-            System.out.println("Give shipment good:");
-            String ans = "y";
-            while(ans.equals("y")){
-                System.out.println("Give product ID:");
-                int pid = readInt();
-                if(pm.fetchProduct(pid) == null){
-                    System.err.println("Invalid product ID!");
-                    continue;
-                }
-                System.out.println("Give price:");
-                double price = readDouble();
-                System.out.println("Give quantity:");
-                int quant = readInt();
+            stage.setTitle("Login");
+            stage.setScene(scene);
+            stage.show();
 
-                sm.addShipmentGood(id, pid, price, quant);
-
-                System.out.println("Does this shipment have more goods? (y/N)");
-                ans = sc.nextLine();
-            }
-            System.out.println("Created shipment with id " + id);
-        }else if(choice == 3){
-            System.out.println("Give ID:");
-            int id = readInt();
-            System.out.println("Give new supplier ID:");
-            int sid = readInt();
-            if(sm.fetchSupplier(sid) == null){
-                System.err.println("Invalid supplier ID!");
-                return;
-            }
-            System.out.println("Give new request date:");
-            Date reqDate = inputDate();
-
-            System.out.println("Give new expected arrival date:");
-            Date expDate = inputDate();
-
-            try {
-                sm.updateShipment(id, sid, reqDate, false, expDate);
-            } catch (ShipmentNotFoundException e) {
-                System.err.println("Error: " + e.getMessage());
-            }
-        }else if(choice == 4){
-            System.out.println("Give ID:");
-            int id = readInt();
-            try {
-                sm.cancelShipment(id);
-            } catch (ShipmentNotFoundException e) {
-                System.err.println("Error: " + e.getMessage());
-            }
-        }else if(choice == 5){
-            System.out.println("Give ID:");
-            int id = readInt();
-            System.out.println("Give date:");
-            Date d = inputDate();
-            ArrayList<ShipmentGood> sgs = null;
-            try {
-                sgs = sm.receiveShipment(id, d);
-                for (ShipmentGood sg : sgs) {
-                    pm.addToProduct(sg.getProductId(), sg.getQuantity());
-                }
-            } catch (ShipmentNotFoundException | ProductNotFoundException e) {
-                System.err.println("Error: " + e.getMessage());
-            }
-        }else{
-            System.err.println("Invalid choice!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-    static void handleSaleRelatedRequest(){
-        System.out.println("1. Add new sale.");
-        System.out.println("2. View sales history.");
-        int choice = readInt();
-        if(choice == 1){
-            System.out.println("Is this a new client? (y/N)");
-            String ans = sc.nextLine();
-            int cid;
-            if(ans.equals("y")){
-                System.out.println("Give name:");
-                String name = sc.nextLine();
-                System.out.println("Give surname:");
-                String surname = sc.nextLine();
-                System.out.println("Give phone number:");
-                int num = readInt();
-
-                cid = slm.addClient(name, surname, num);
-            }else{
-                System.out.println("Give client ID:");
-                cid = readInt();
-                if(slm.fetchClient(cid) == null){
-                    System.err.println("Invalid client ID!");
-                    return;
-                }
-            }
-            int id = slm.addSale(cid);
-
-            System.out.println("Give sale product:");
-            ans = "y";
-            while(ans.equals("y")){
-                System.out.println("Give product ID:");
-                int pid = readInt();
-                if(pm.fetchProduct(pid) == null){
-                    System.err.println("Invalid product ID!");
-                    continue;
-                }
-                System.out.println("Give quantity:");
-                int quant = readInt();
-
-                try {
-                    pm.removeFromProduct(pid, quant);
-                } catch (ProductNotFoundException | InsufficientStockException e) {
-                    System.err.println("Error: " + e.getMessage());
-                }
-
-                slm.addSaleProduct(id, pid, quant);
-
-                System.out.println("Does this sale have more products? (y/N)");
-                ans = sc.nextLine();
-            }
-            System.out.println("Created sale with id " + id);
-        }else if(choice == 2){
-            System.out.println("Select sale id:");
-            System.out.println(slm.getSaleIds());
-            int id = readInt();
-            Sale s = slm.fetchSale(id);
-            Client c = slm.fetchClient(s.getClientId());
-            System.out.println(c);
-            ArrayList<SaleProduct> sps = slm.getSaleProducts(id);
-            for(SaleProduct sp : sps){
-                String prodName = pm.fetchProduct(sp.getProductId()).getName();
-                System.out.println("Product " + prodName + " * " + sp.getQuantity());
-            }
-        }else{
-            System.err.println("Invalid choice!");
-        }
-    }
-
-    static void handleAdminRelatedRequest(){
-        System.out.println("1. View stocks");
-        System.out.println("2. View Revenue");
-        System.out.println("3. View suppliers' performance");
-        int choice = readInt();
-        if (choice == 1) {
-            pm.viewStock();
-        }  else if (choice == 2) {
-            System.out.println("Total revenue: " + slm.getTotalRevenue());
-        } else if (choice == 3) {
-            sm.viewSuppliersPerfermance();
-        }
-    }
+    
 
     public static void main(String[] args) {
-
-
-        pm = new ProductManager();
-        //hardcoded data for testing
-        pm.addProduct("aspirin", 4, 200);
-        pm.addProduct("doliprane", 7, 120);
-        um = new UserManager();
-        sm = new ShipmentManager();
-        sm.addSupplier("semah", 12345678);
-        sm.addSupplier("awss", 98765432);
-        slm = new SaleManager(pm);
-
-        um.addUser(new User("salah", "123", "notadmin"));
-        um.addUser(new User("admin", "admin", "admin"));
-
-        sc = new Scanner(System.in);
-        System.out.println("Login:");
-        String login = sc.nextLine();
-
-        User u = um.fetchUser(login);
-        if(u == null){
-            System.err.println("User not found!");
-            return;
-        }
-
-        System.out.println("Password:");
-        String password = sc.nextLine();
-
-        if(!password.equals(u.getPassword())){
-            System.err.println("Incorrect password!");
-            return;
-        }
-
-        while(true){
-            int choice;
-            System.out.println("1. Product.");
-            System.out.println("2. Supplier.");
-            System.out.println("3. Sale.");
-            System.out.println("4. Analysis.");
-            choice = readInt();
-            if(choice == 1){
-                handleProductRelatedRequest();
-            }else if(choice == 2){
-                handleShipmentRelatedRequest();
-            }else if(choice == 3){
-                handleSaleRelatedRequest();
-            }else if(choice == 4){
-                if(u.getPrivilege().equals("admin")){
-                    handleAdminRelatedRequest();
-                }else{
-                    System.err.println("Under-privileged user!");
-                }
-            }else{
-                System.err.println("Invalid choice!");
-            }
-        }
+        launch(args);
     }
 }

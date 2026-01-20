@@ -1,0 +1,224 @@
+/* Side Panel Background */
+.side-panel-bg {
+    -fx-background-color: #2c3e50;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 3, 0);
+}
+
+/* Content Area */
+.content-area {
+    -fx-background-color: #ecf0f1;
+}
+
+/* Page Titles */
+.page-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.page-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #7f8c8d;
+}
+
+/* Navigation Button Styles */
+.nav-btn {
+    -fx-background-color: #34495e;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 15px 20px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.nav-btn:hover {
+    -fx-background-color: #3498db;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 4);
+}
+
+.nav-btn:pressed {
+    -fx-background-color: #2980b9;
+}
+
+.nav-btn:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+}
+
+/* Active button state */
+.nav-btn-active {
+    -fx-background-color: #3498db;
+    -fx-font-weight: bold;
+}
+
+/* Toggle Button Styles */
+.toggle-btn {
+    -fx-background-color: #34495e;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 8px 12px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.toggle-btn:hover {
+    -fx-background-color: #3498db;
+}
+
+.toggle-btn:pressed {
+    -fx-background-color: #2980b9;
+}
+/* ===================== */
+/* Login Page Styles     */
+/* ===================== */
+
+/* Login background */
+.login-root {
+    -fx-background-color: linear-gradient(to bottom right, #2c3e50, #34495e);
+}
+
+/* Login card */
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 30px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 20, 0, 0, 5);
+}
+
+/* Login title */
+.login-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Input labels */
+.login-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #7f8c8d;
+}
+
+/* Text fields */
+.login-field {
+    -fx-pref-height: 40px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 1px;
+    -fx-padding: 0 10px;
+}
+
+.login-field:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 2px;
+}
+
+/* Login button */
+.login-btn {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-pref-height: 40px;
+}
+
+.login-btn:hover {
+    -fx-background-color: #2980b9;
+}
+
+.login-btn:pressed {
+    -fx-background-color: #2471a3;
+}
+
+/* Error message (optional) */
+.login-error {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 12px;
+}
+.dynamic-label {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+}
+/* ===== LIST VIEW CONTAINER ===== */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8;
+}
+
+/* Remove default gray background */
+.list-view .virtual-flow {
+    -fx-background-color: transparent;
+}
+
+/* ===== LIST CELLS ===== */
+.list-view.list-cell {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: #333;
+}
+
+/* Space between cells */
+.list-view .list-cell:filled {
+    -fx-margin: 6 0 6 0;
+}
+
+/* Hover effect */
+.list-view .list-cell:hover {
+    -fx-background-color: #8b9097;
+    -fx-cursor: hand;
+}
+
+/* Selected cell */
+.list-view .list-cell:selected {
+    -fx-background-color: #e8f0fe;
+    -fx-border-color: #4a90e2;
+    -fx-text-fill: #1a1a1a;
+}
+
+/* Remove blue focus ring */
+.list-view:focused .list-cell:selected {
+    -fx-background-color: #e8f0fe;
+}
+
+/* ===== SCROLLBAR ===== */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #c2c2c2;
+    -fx-background-radius: 6;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #9e9e9e;
+}
+.add-sale-btn {
+    -fx-background-color: #2d9cdb;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-padding: 12 20 12 20;
+    -fx-background-radius: 10;
+}
+
+.add-sale-btn:hover {
+    -fx-background-color: #1f7fb2;
+}
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #f7f7f7;
+}

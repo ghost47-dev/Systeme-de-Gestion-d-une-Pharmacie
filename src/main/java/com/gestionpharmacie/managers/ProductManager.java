@@ -6,7 +6,6 @@ import com.gestionpharmacie.model.Product;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.PropertyPermission;
 
 public class ProductManager {
     private Connection connection;

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.gestionpharmacie.Controllers.LoginController"
+            prefWidth="400"
+            prefHeight="300"
+            styleClass="login-root">
+
+    <VBox alignment="CENTER"
+          spacing="15"
+          styleClass="login-card"
+          AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0">
+
+        <!-- Title -->
+        <Label text="Login"
+               styleClass="login-title"/>
+
+        <!-- Username -->
+        <VBox spacing="5">
+            <Label text="Username"
+                   styleClass="login-label"/>
+            <TextField fx:id="usernameField"
+                       promptText="Enter username"
+                       prefWidth="250"
+                       styleClass="login-field"/>
+        </VBox>
+
+        <!-- Password -->
+        <VBox spacing="5">
+            <Label text="Password"
+                   styleClass="login-label"/>
+            <PasswordField fx:id="passwordField"
+                           promptText="Enter password"
+                           prefWidth="250"
+                           styleClass="login-field"/>
+        </VBox>
+        
+        
+        <!-- Error message -->
+        <Label fx:id="errorLabel"
+            visible="false"
+            styleClass="login-error"/>
+
+        
+        <!-- Login Button -->
+        <Button text="Login"
+                prefWidth="250"
+                styleClass="login-btn"
+                onAction="#handleLogin"/>
+
+    </VBox>
+</AnchorPane>
+

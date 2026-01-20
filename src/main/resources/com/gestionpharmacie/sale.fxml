@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestionpharmacie.Controllers.SaleEntryController"
+      alignment="CENTER"
+      spacing="20"
+      prefWidth="900" prefHeight="600"
+      style="-fx-background-color: #f6f6f6;">
+
+    <Label text="Add New Sale" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+
+    <!-- CLIENT INFO -->
+    <VBox spacing="10" alignment="CENTER" prefWidth="700">
+        <Label text="Client Information" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+        <GridPane hgap="20" vgap="15" alignment="CENTER">
+            <Label text="Name:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+            <TextField fx:id="clientName" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Surname:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="clientSurname" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Phone:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="clientPhone" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        </GridPane>
+        <Label fx:id="errorLabel"
+            visible="false"
+            styleClass="login-error"/>
+    </VBox>
+
+    <!-- SALE PRODUCTS -->
+    <VBox spacing="10" alignment="CENTER" prefWidth="700">
+        <Label text="Sale Products" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+        <!-- Container where product rows will be added -->
+        <ScrollPane fitToWidth="true" prefHeight="250" style="-fx-background-color: #f6f6f6;" >
+            <content>
+                <VBox fx:id="productsContainer" spacing="10" />
+            </content>
+        </ScrollPane>
+
+    </VBox>
+
+    <!-- BUTTONS -->
+    <HBox spacing="15" alignment="CENTER" prefWidth="700">
+        <Button text="+ Add another product" onAction="#addProductRow" style="-fx-background-color: #2d9cdb; -fx-text-fill: white;"/>
+        <Button text="Save Sale" onAction="#saveSale" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="Back" onAction="#goBack" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>
+
