@@ -209,7 +209,7 @@ public class ShipmentManager {
                 );
                 int total = supplier.getTotalNoShipments(connection);
                 if (total != 0) {
-                    double onTimeDeliveryRate = ((double) (total - supplier.getNoLateShipments()) / total);
+                    double onTimeDeliveryRate = ((double) (total - supplier.getNoLateShipments(connection)) / total);
                     output.add(supplier.getName() + " - On time delivery rate: " + onTimeDeliveryRate);
                 } else {
                     output.add(supplier.getName() + " - No interactions recorded!");
