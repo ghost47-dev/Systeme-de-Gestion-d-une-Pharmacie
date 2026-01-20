@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
 import com.gestionpharmacie.model.Product;
@@ -49,6 +50,8 @@ public class MainController {
     @FXML private VBox settingsPage;
     @FXML private VBox profilePage;
     
+    @FXML private HBox editingBtns;
+
     @FXML private ListView<String> saleHistoryList;
     @FXML private ListView<String> productsList;
 
@@ -175,6 +178,36 @@ public class MainController {
      * Show dashboard page
      */
     @FXML
+    private void editProductRedirection(){
+
+    }
+
+    @FXML
+    private void removeProduct(String product){
+        if (product == null) return;
+        String tmp = product.substring(13,product.indexOf("\n", 0)).strip();
+        int id = 0;
+        try {
+            id = Integer.parseInt(tmp);
+        }
+        catch(NumberFormatException e) {
+            System.out.println("error while parsing id ");
+        }
+        ProductManager pm = new ProductManager(DatabaseConnection.getConnection());
+        try {
+            pm.deleteProduct(id);   
+            System.out.println("product deleted !");
+            productsList.getItems().remove(product);
+            editingBtns.getChildren().remove(1);
+            editingBtns.getChildren().remove(1);
+            productsList.refresh();
+        }
+        catch (ProductNotFoundException e){
+            return ;
+        }
+
+    }
+    @FXML
     public void showProductsPage() {
         
         try (Connection connection = DatabaseConnection.getConnection()){ 
@@ -201,7 +234,33 @@ public class MainController {
             
             productsList.getItems().setAll(items);
             productsList.refresh();
-            
+
+            productsList.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    String selected = productsList.getSelectionModel().getSelectedItem();
+                        if (selected != null) {
+                            if (editingBtns.getChildren().size() == 1){
+                                
+                                Button editBtn = new Button();
+                                editBtn.getStyleClass().add("edit-btn");
+                                editBtn.setText("edit");
+                                editBtn.setOnAction(editEvent -> {
+                                   editProductRedirection(); 
+                                }); 
+
+                                Button removeBtn = new Button();
+                                removeBtn.getStyleClass().add("delete-btn");
+                                removeBtn.setText("delete");
+                                removeBtn.setOnAction(deleteEvent -> {
+                                    removeProduct(selected);
+                                });     
+
+                                editingBtns.getChildren().addAll(editBtn,removeBtn);
+                            }
+                        }
+                    }
+            });
+
 
             showPage(productsPage);
             setActiveButton(productsBtn);

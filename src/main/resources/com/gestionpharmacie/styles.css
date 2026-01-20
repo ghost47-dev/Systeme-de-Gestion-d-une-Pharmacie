@@ -208,6 +208,7 @@
     -fx-font-weight: bold;
     -fx-font-size: 16px;
     -fx-padding: 12 20 12 20;
+    -fx-cursor: hand;
     -fx-background-radius: 10;
 }
 
@@ -222,3 +223,39 @@
 .scroll-pane .viewport {
     -fx-background-color: #f7f7f7;
 }
+/* Base style for both buttons */
+
+
+/* Edit button */
+.edit-btn {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 12 20 12 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+    -fx-background-color: #2ecc71;  /* green */
+}
+
+.edit-btn:hover {
+
+    -fx-background-color: #27ae60;
+}
+
+/* Delete button */
+.delete-btn {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 12 20 12 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+    -fx-background-color: #e74c3c;  /* red */
+}
+
+.delete-btn:hover {
+    -fx-background-color: #c0392b;
+}
+

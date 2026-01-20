@@ -76,9 +76,11 @@
                     <ListView fx:id="productsList" prefHeight="420" styleClass="list-view"/>
 
                     <!-- ADD SALE BUTTON -->
-                    <Button fx:id="addProductBtn" text="+ Add Product"
-                            styleClass="add-btn"
-                            onAction="#addProduct"/>
+                    <HBox fx:id="editingBtns" spacing="10" alignment="CENTER">
+                        <Button fx:id="addProductBtn" text="+ Add Product" styleClass="add-btn" onAction="#addProduct"/>
+                        <!--<Button fx:id="editBtn" text="Edit" styleClass="edit-btn" />-->
+                        <!--<Button fx:id="deleteBtn" text="Delete" styleClass="delete-btn" />-->
+                    </HBox>
                 </VBox>
             </VBox>
             
