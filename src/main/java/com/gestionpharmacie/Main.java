@@ -18,7 +18,7 @@ public class Main {
 
         try {
             // Connect to database
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pharmacy", "root", "admin");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pharmacy", "malek", "password");
             System.out.println("✓ Database connected!\n");
 
             // Initialize managers
