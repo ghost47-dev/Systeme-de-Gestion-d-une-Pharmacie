@@ -21,7 +21,8 @@ public class DatabaseConnection {
                 System.out.println(DriverManager.getDrivers().hasMoreElements());
                 System.err.println("Error: " + e.getMessage());
             }
-        return connection;
+            return connection;
+
     }
 
 }
