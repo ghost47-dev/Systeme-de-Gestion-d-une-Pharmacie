@@ -3,15 +3,17 @@ create table client
     id      int auto_increment primary key,
     name    varchar(20) null,
     surname varchar(20) null,
-    phone   int         null
+    phone   int         null,
+    constraint client_pk
+        unique (phone)
 );
 
 create table product
 (
     id       int auto_increment primary key,
     name     varchar(100) null,
-    price    double      null,
-    quantity int         null
+    price    double       null,
+    quantity int          null
 );
 
 create table sale
@@ -42,7 +44,9 @@ create table supplier
     id                int auto_increment primary key,
     name              varchar(20)   null,
     phone             int           null,
-    no_late_shipments int default 0 null
+    no_late_shipments int default 0 null,
+    constraint supplier_pk
+        unique (phone)
 );
 
 create table shipment
