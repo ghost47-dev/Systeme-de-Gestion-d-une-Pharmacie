@@ -39,17 +39,18 @@ public class MainController {
     @FXML private VBox togglePanel;    
     // Navigation buttons
     @FXML private Button saleHistoryBtn;
-    @FXML private Button dashboardBtn;
+    @FXML private Button productsBtn;
     @FXML private Button settingsBtn;
     @FXML private Button profileBtn;
     
     // Pages
     @FXML private VBox saleHistoryPage;
-    @FXML private VBox dashboardPage;
+    @FXML private VBox productsPage;
     @FXML private VBox settingsPage;
     @FXML private VBox profilePage;
     
     @FXML private ListView<String> saleHistoryList;
+    @FXML private ListView<String> productsList;
 
     private boolean isPanelVisible = true;
     private static final double PANEL_WIDTH = 200.0;
@@ -139,9 +140,6 @@ public class MainController {
                     );
 
             }
-            // get All sales (each sale with all sale products)
-            // Assume we have an arrayList with sales 
-            // We will create a label 
              
 
             saleHistoryList.getItems().setAll(items);
@@ -177,9 +175,57 @@ public class MainController {
      * Show dashboard page
      */
     @FXML
-    private void showDashboardPage() {
-        showPage(dashboardPage);
-        setActiveButton(dashboardBtn);
+    public void showProductsPage() {
+        
+        try (Connection connection = DatabaseConnection.getConnection()){ 
+
+            ProductManager productManager = new ProductManager(connection);
+            
+            ArrayList<Product> products = productManager.viewStock();
+             
+            ObservableList<String> items = FXCollections.observableArrayList();
+            
+            for (Product p : products){
+                String name = p.getName();
+                int id = p.getId();
+                double price = p.getPrice();
+                int quantity = p.getQuantity();
+
+                items.add(
+                   "Product id : " + id + "\n" +
+                   "Product name : " + name + " | Product price : " + price + " | Product quantity " + quantity  
+                        );
+
+            } 
+             
+            
+            productsList.getItems().setAll(items);
+            productsList.refresh();
+            
+
+            showPage(productsPage);
+            setActiveButton(productsBtn);
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void addProduct(ActionEvent event){
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/gestionpharmacie/productAdd.fxml"));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
+            );
+            Stage stage = (Stage) ((Node) event.getSource())
+                .getScene().getWindow();
+            stage.setScene(scene);       
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -205,7 +251,7 @@ public class MainController {
      */
     private void showPage(VBox pageToShow) {
         saleHistoryPage.setVisible(false);
-        dashboardPage.setVisible(false);
+        productsPage.setVisible(false);
         settingsPage.setVisible(false);
         profilePage.setVisible(false);
         
@@ -218,7 +264,7 @@ public class MainController {
     private void setActiveButton(Button activeBtn) {
         // Remove active class from all buttons
         saleHistoryBtn.getStyleClass().remove("nav-btn-active");
-        dashboardBtn.getStyleClass().remove("nav-btn-active");
+        productsBtn.getStyleClass().remove("nav-btn-active");
         settingsBtn.getStyleClass().remove("nav-btn-active");
         profileBtn.getStyleClass().remove("nav-btn-active");
         

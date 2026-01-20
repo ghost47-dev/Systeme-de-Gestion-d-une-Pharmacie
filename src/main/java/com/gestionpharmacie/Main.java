@@ -22,7 +22,7 @@ public class Main extends Application {
             );
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 400, 300);
+            Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );

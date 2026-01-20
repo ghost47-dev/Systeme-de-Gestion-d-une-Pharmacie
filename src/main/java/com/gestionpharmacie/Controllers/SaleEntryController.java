@@ -2,6 +2,8 @@ package com.gestionpharmacie.Controllers;
 
 
 
+import java.sql.Connection;
+
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
 import com.gestionpharmacie.utilities.DatabaseConnection;
@@ -69,8 +71,9 @@ public class SaleEntryController {
                 int phoneNumber = Integer.parseInt(clientPhone.getText());
                 errorLabel.setVisible(false);
                 
-                ProductManager pm = new ProductManager(DatabaseConnection.getConnection());
-                SaleManager sm = new SaleManager(pm, DatabaseConnection.getConnection());
+                Connection connection = DatabaseConnection.getConnection();
+                ProductManager pm = new ProductManager(connection);
+                SaleManager sm = new SaleManager(pm, connection);
                 
                 int client_id = sm.addClient(clientName.getText(), clientSurname.getText(), phoneNumber);
                 

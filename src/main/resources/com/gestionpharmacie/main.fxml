@@ -21,11 +21,11 @@
                         <Insets left="15" right="15" top="15"/>
                     </padding>
                     
-                    <Button fx:id="saleHistoryBtn" text="Sale Histor" styleClass="nav-btn" 
+                    <Button fx:id="saleHistoryBtn" text="Sale History" styleClass="nav-btn" 
                             onAction="#showSaleHistory" maxWidth="Infinity"/>
                     
-                    <Button fx:id="dashboardBtn" text="📊 Dashboard" styleClass="nav-btn" 
-                            onAction="#showDashboardPage" maxWidth="Infinity"/>
+                    <Button fx:id="productsBtn" text="Stock" styleClass="nav-btn" 
+                            onAction="#showProductsPage" maxWidth="Infinity"/>
                     
                     <Button fx:id="settingsBtn" text="⚙️ Settings" styleClass="nav-btn" 
                             onAction="#showSettingsPage" maxWidth="Infinity"/>
@@ -53,15 +53,33 @@
             
             <!-- Default Home Page -->
             <VBox fx:id="saleHistoryPage" alignment="TOP_CENTER" spacing="20" visible="true">
-                <Label text="Sale History" styleClass="page-title"/>
-                <ListView fx:id="saleHistoryList" styleClass="list-view"/>
+                
+                <!-- List + Add Button Container -->
+                <VBox spacing="15" alignment="TOP_CENTER" prefWidth="700">
 
+                    <Label text="Sale History" styleClass="page-title"/>
+                    <ListView fx:id="saleHistoryList" prefHeight="420" styleClass="list-view"/>
+
+                    <!-- ADD SALE BUTTON -->
+                    <Button fx:id="addSaleBtn" text="+ Add Sale"
+                            styleClass="add-btn"
+                            onAction="#addSale"/>
+                </VBox>
             </VBox>
             
             <!-- Dashboard Page -->
-            <VBox fx:id="dashboardPage" alignment="CENTER" spacing="20" visible="false">
-                <Label text="Dashboard Page" styleClass="page-title"/>
-                <Label text="Your dashboard content goes here" styleClass="page-subtitle"/>
+            <VBox fx:id="productsPage" alignment="CENTER" spacing="20" visible="false">
+                <!-- List + Add Button Container -->
+                <VBox spacing="15" alignment="TOP_CENTER" prefWidth="700">
+
+                    <Label text="Stock" styleClass="page-title"/>
+                    <ListView fx:id="productsList" prefHeight="420" styleClass="list-view"/>
+
+                    <!-- ADD SALE BUTTON -->
+                    <Button fx:id="addProductBtn" text="+ Add Product"
+                            styleClass="add-btn"
+                            onAction="#addProduct"/>
+                </VBox>
             </VBox>
             
             <!-- Settings Page -->

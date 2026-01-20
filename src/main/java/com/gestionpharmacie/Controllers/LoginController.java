@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 
 import com.gestionpharmacie.managers.UserManager;
 import com.gestionpharmacie.model.User;
+import com.gestionpharmacie.utilities.DatabaseConnection;
 public class LoginController {
 
     @FXML private TextField usernameField;
@@ -29,7 +30,7 @@ public class LoginController {
                 String username = new String(usernameField.getText());
                 String password = new String(passwordField.getText());
                 
-                UserManager usermanager = new UserManager();
+                UserManager usermanager = new UserManager(DatabaseConnection.getConnection());
                 User user = usermanager.fetchUser(username);
                 
                 if (user == null){
