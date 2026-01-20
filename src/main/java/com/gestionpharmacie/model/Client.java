@@ -16,6 +16,6 @@ public class Client  {
         return id;
     }
     public String toString() {
-        return "Client " + name + " " + surname + " tel:" + phoneNumber;
+        return "Client: " + name + " " + surname + " tel:" + phoneNumber;
     }
 }

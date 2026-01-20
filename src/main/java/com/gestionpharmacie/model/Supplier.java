@@ -9,18 +9,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Supplier {
     private int id;
     private String name;
 	private int phoneNumber;
-
 	private int noLateShipments = 0;
 
-    public Supplier(int id, String name, int phoneNumber){
+    public Supplier(int id, String name, int phoneNumber, int noLateShipments){
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
+		this.noLateShipments = noLateShipments;
     }
 
 	public int getId() {

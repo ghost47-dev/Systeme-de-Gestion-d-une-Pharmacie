@@ -105,7 +105,7 @@ public class ProductManager {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 if (rs.getInt("quantity") < quant)
-                    throw new InsufficientStockException("Insufficient stock for " + p.getName() + "only " + rs.getInt("quantity") + " units left");
+                    throw new InsufficientStockException("Insufficient stock for " + p.getName() + ". Only " + rs.getInt("quantity") + " units left");
             }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());

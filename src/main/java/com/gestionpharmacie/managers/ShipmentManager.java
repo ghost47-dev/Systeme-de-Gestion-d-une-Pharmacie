@@ -4,22 +4,15 @@ import java.util.Date;
 import java.util.ArrayList;
 
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
-import com.gestionpharmacie.model.Product;
 import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.model.Shipment;
 import com.gestionpharmacie.model.ShipmentGood;
 
 public class ShipmentManager {
-    private ArrayList<Supplier> suppliers;
-    private ArrayList<Shipment> shipments;
-    private ArrayList<ShipmentGood> shipmentGoods;
     private Connection connection;
 
     public ShipmentManager(Connection connection) {
         this.connection = connection;
-        suppliers = new ArrayList<>();
-        shipments = new ArrayList<>();
-        shipmentGoods = new ArrayList<>();
     }
 
     public int addSupplier(String name, int phoneNumber) {
@@ -28,9 +21,10 @@ public class ShipmentManager {
             stmt.setString(1, name);
             stmt.setInt(2, phoneNumber);
 
-            ResultSet keys = stmt.executeQuery();
+            stmt.executeUpdate();
+            ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
-                return keys.getInt("id");
+                return keys.getInt(1);
             }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
@@ -40,16 +34,19 @@ public class ShipmentManager {
     }
 
     public int addShipment(int sid, Date requestDate, boolean recieved, Date recievalDate) {
+        java.sql.Date request_date = new java.sql.Date(requestDate.getTime());
+        java.sql.Date receive_date = new java.sql.Date(recievalDate.getTime());
         String sql = "INSERT INTO shipment(supplier_id, request_date, received, arrival_date) VALUES(?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, sid);
-            stmt.setDate(2, requestDate);
+            stmt.setDate(2, request_date);
             stmt.setBoolean(3, recieved);
-            stmt.setDate(4, recievalDate);
+            stmt.setDate(4, receive_date);
 
-            ResultSet keys = stmt.executeQuery();
+            stmt.executeUpdate();
+            ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
-                return keys.getInt("id");
+                return keys.getInt(1);
             }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
@@ -65,9 +62,10 @@ public class ShipmentManager {
             stmt.setDouble(3, p);
             stmt.setInt(4, q);
 
-            ResultSet keys = stmt.executeQuery();
+            stmt.executeUpdate();
+            ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
-                return keys.getInt("id");
+                return keys.getInt(1);
             }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
@@ -85,7 +83,8 @@ public class ShipmentManager {
                 return new Supplier(
                         rs.getInt("id"),
                         rs.getString("name"),
-                        rs.getInt("phone")
+                        rs.getInt("phone"),
+                        rs.getInt("no_late_shipments")
                 );
             }
         } catch (SQLException e) {
@@ -127,7 +126,7 @@ public class ShipmentManager {
     public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate) throws ShipmentNotFoundException {
         java.sql.Date request_date = new java.sql.Date(newReqDate.getTime());
         java.sql.Date receive_date = new java.sql.Date(newRecDate.getTime());
-        String sql = "UPDATE shipment SET supplier_id = ?, request_id = ?, received = ?, arrival_date = ? WHERE id = ?";
+        String sql = "UPDATE shipment SET supplier_id = ?, request_date = ?, received = ?, arrival_date = ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, newSId);
             stmt.setDate(2, request_date);
@@ -156,34 +155,69 @@ public class ShipmentManager {
     }
 
     public ArrayList<ShipmentGood> receiveShipment(int id, Date d) throws ShipmentNotFoundException {
+        String sql = "UPDATE shipment SET received = TRUE WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            int keys = stmt.executeUpdate();
+            if (keys == 0)
+                throw new ShipmentNotFoundException("This shipment doesn't exist!");
 
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
         Shipment ship = fetchShipment(id);
-        if (ship == null) {
-            throw new ShipmentNotFoundException("This shipment doesn't exist!");
-        }
-        fetchSupplier(ship.getSupplierId()).increaseTotalNoShipments();
         if (!d.equals(ship.getRecievalDate())) {
-            fetchSupplier(ship.getSupplierId()).increaseNoLateShipments();
-        }
-        ship.receive(d);
-        ArrayList<ShipmentGood> out = new ArrayList<>();
-        for(ShipmentGood sg : shipmentGoods){
-            if(sg.getShipmentId() == id){
-                out.add(sg);
+            sql = "UPDATE supplier SET no_late_shipments = no_late_shipments + 1 WHERE id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, ship.getSupplierId());
+                int keys = stmt.executeUpdate();
+            } catch (SQLException e) {
+                System.err.println("Error: " + e.getMessage());
             }
+        }
+        ArrayList<ShipmentGood> out = new ArrayList<>();
+        sql = "SELECT * FROM shipment_good WHERE shipment_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                out.add(new ShipmentGood(
+                        rs.getInt("id"),
+                        rs.getInt("shipment_id"),
+                        rs.getInt("product_id"),
+                        rs.getDouble("price"),
+                        rs.getInt("quantity")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
         }
         return out;
     }
 
-    public void viewSuppliersPerfermance() {
-        for (Supplier supplier : suppliers) {
-            int total = supplier.getTotalNoShipments();
-            if (total != 0) {
-                double onTimeDeliveryRate = ((double) (total - supplier.getNoLateShipments()) / total) * 100;
-                System.out.println(supplier + " - On time delivery rate: " + onTimeDeliveryRate);
-            } else {
-                System.out.println(supplier + " - No interactions recorded!");
+    public ArrayList<String> viewSuppliersPerfermance() {
+        ArrayList<String> output = new ArrayList<>();
+        String sql = "SELECT * FROM supplier";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Supplier supplier = new Supplier(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("phone"),
+                        rs.getInt("no_late_shipments")
+                );
+                int total = supplier.getTotalNoShipments(connection);
+                if (total != 0) {
+                    double onTimeDeliveryRate = ((double) (total - supplier.getNoLateShipments()) / total);
+                    output.add(supplier.getName() + " - On time delivery rate: " + onTimeDeliveryRate);
+                } else {
+                    output.add(supplier.getName() + " - No interactions recorded!");
+                }
             }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
         }
+        return output;
     }
 }
