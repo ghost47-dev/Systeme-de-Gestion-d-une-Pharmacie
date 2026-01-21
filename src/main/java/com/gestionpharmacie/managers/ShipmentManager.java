@@ -33,7 +33,7 @@ public class ShipmentManager {
         return -1;
     }
 
-    public int addShipment(int sid, Date requestDate, boolean recieved, Date recievalDate) {
+    public int addShipment(int sid, Date requestDate, boolean recieved, Date recievalDate)  {
         java.sql.Date request_date = new java.sql.Date(requestDate.getTime());
         java.sql.Date receive_date = new java.sql.Date(recievalDate.getTime());
         String sql = "INSERT INTO shipment(supplier_id, request_date, received, arrival_date) VALUES(?, ?, ?, ?)";
@@ -54,8 +54,11 @@ public class ShipmentManager {
         return -1;
     }
 
-    public int addShipmentGood(int sid, int pid, double p, int q) {
+    public int addShipmentGood(int sid, int pid, double p, int q) throws ShipmentNotFoundException{
         String sql = "INSERT INTO shipment_good(shipment_id, product_id, price, quantity) VALUES(?, ?, ?, ?)";
+        if (fetchShipment(sid) == null){
+            throw new ShipmentNotFoundException("Shipment Not Found");
+        }
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, sid);
             stmt.setInt(2, pid);
@@ -201,5 +204,31 @@ public class ShipmentManager {
             System.err.println("Error: " + e.getMessage());
         }
         return output;
+    }
+    public void fetchSuppliers() {
+        String query = "SELECT * FROM supplier";
+        try(Statement ps = connection.createStatement()) {
+            ResultSet rs = ps.executeQuery(query);
+            if (rs.next()) {
+                Supplier sup = new Supplier(rs);
+                sup.toString();
+            }
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public void fetchShipments(){
+        String query = "SELECT * FROM shipment";
+        try(Statement ps = connection.createStatement()) {
+            ResultSet rs = ps.executeQuery(query);
+            if (rs.next()) {
+                Shipment sup = new Shipment(rs);
+                sup.toString();
+            }
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
     }
 }
