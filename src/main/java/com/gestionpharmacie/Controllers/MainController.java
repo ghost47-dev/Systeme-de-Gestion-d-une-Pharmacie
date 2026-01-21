@@ -3,9 +3,16 @@ package com.gestionpharmacie.Controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
+import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
 import com.gestionpharmacie.managers.ShipmentManager;
@@ -13,6 +20,8 @@ import com.gestionpharmacie.model.Product;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
 import com.gestionpharmacie.model.Shipment;
+import com.gestionpharmacie.model.ShipmentGood;
+import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.utilities.DatabaseConnection;
 import com.gestionpharmacie.model.Client;
 
@@ -44,13 +53,13 @@ public class MainController {
     @FXML private Button saleHistoryBtn;
     @FXML private Button productsBtn;
     @FXML private Button shipmentsBtn;
-    @FXML private Button profileBtn;
+    @FXML private Button suppliersBtn;
     
     // Pages
     @FXML private VBox saleHistoryPage;
     @FXML private VBox productsPage;
     @FXML private VBox shipmentsPage;
-    @FXML private VBox profilePage;
+    @FXML private VBox suppliersPage;
     
     @FXML private HBox editingBtns_product;
     @FXML private HBox editingBtns_shipment; 
@@ -58,6 +67,9 @@ public class MainController {
     @FXML private ListView<String> saleHistoryList;
     @FXML private ListView<String> productsList;
     @FXML private ListView<String> shipmentsList;
+    @FXML private ListView<String> suppliersList;
+    @FXML private Button editSupplierBtn;
+
     private boolean isPanelVisible = true;
     private static final double PANEL_WIDTH = 200.0;
     
@@ -342,30 +354,67 @@ public class MainController {
 
     @FXML
     public void showShipmentsPage() {
-        //try (Connection connection = DatabaseConnection.getConnection()){ 
+        try (Connection connection = DatabaseConnection.getConnection()) { 
 //
-            //ShipmentManager sm = new ShipmentManager(connection);
-//
-            //ArrayList<Shipment> shipments = sm;
+            ShipmentManager sm = new ShipmentManager(connection);
+
+            ArrayList<Shipment> shipments = sm.fetchShipments();
              //
             ObservableList<String> items = FXCollections.observableArrayList();
             //
-            //for (Shipment s : shipments){
-                //String name = s.getName();
-                //int id = p.getId();
-                //double price = p.getPrice();
-                //int quantity = p.getQuantity();
-//
+            for (Shipment s : shipments){
+
+                int supplier_id = s.getSupplierId();
+                Date requestDate = s.getRequestDate();
+                Date receivalDate = s.getRecievalDate();
+                boolean isReceived = s.isReceived();
+
+                Supplier supplier = sm.fetchSupplier(supplier_id);
+                String supplierName = supplier.getName();
+                int supplierPhone = supplier.getNumerotel();
+
+                ArrayList<ShipmentGood> shipmentGood ; 
+                try {
+                    shipmentGood = sm.fetchShipmentGood(s.getId());
+                }
+                catch (ShipmentNotFoundException e){
+                    return;
+                }
+
+                String shipmentGoodInfo = "";
+                ProductManager pm = new ProductManager(DatabaseConnection.getConnection());
+                for (ShipmentGood sg : shipmentGood){
+                    double price = sg.getPrice();  
+                    int quantity = sg.getQuantity();
+                    
+                    Product product = pm.fetchProduct(sg.getProductId());
+                    String name = product.getName();
+                    shipmentGoodInfo = "Product id : " + product.getId() + "\n" +
+                    "Product name : " + name + " | Product price : " + price + "$" + " | Product quantity " + quantity + "\n" ; 
+                }
+                
+
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                if (isReceived)
                 items.add(
-                    "Shipment id : " + "4" + "\n" +
-                    "Supplier id : " + "7" + "\n" +
-                    "Supplier name : " + "Abslem" + " | Supplier phone : " + "12121212" + "\n" +
-                    "Product id : " + "5" + "\n" +
-                    "Product name : " + "hadroug" + " | Product price : " + "25000$" + " | Product quantity " + "12000" + "\n" + 
-                    "Date of request : " + "1/4/2008" + " | Date of arrival" + "2/4/2012" 
+                    "Shipment id : " + s.getId() + "\n" +
+                    "Supplier id : " + supplier_id + "\n" +
+                    "Supplier name : " + supplierName + " | Supplier phone : " + supplierPhone + "\n" +
+                    shipmentGoodInfo +
+                    "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" +
+                    "Shipment is received ✓"
                 );
-//
-            //} 
+                else 
+                items.add(
+                    "Shipment id : " + s.getId() + "\n" +
+                    "Supplier id : " + supplier_id + "\n" +
+                    "Supplier name : " + supplierName + " | Supplier phone : " + supplierPhone + "\n" +
+                    shipmentGoodInfo +
+                    "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" + 
+                    "Shipment is not received 𐄂"
+                );
+                 
+            } 
              //
             //
             shipmentsList.getItems().setAll(items);
@@ -424,14 +473,37 @@ public class MainController {
 //
             showPage(shipmentsPage);
             setActiveButton(shipmentsBtn);
-        //}
-        //catch (SQLException e){
-            //e.printStackTrace();
-        //}
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
     }
     
     @FXML 
-    private void removeShipment(String shipment){}
+    private void removeShipment(String shipment){
+        if (shipment == null) return ; 
+        Pattern p = Pattern.compile("Shipment id : (\\d+)\\n.+\\n.+\\n.+\\n.+\\n.+\\n.+"); 
+        Matcher matcher = p.matcher(shipment);
+
+        if (!matcher.find()){
+            throw new IllegalArgumentException();  
+        }
+
+        int shipment_id = Integer.parseInt(matcher.group(1));
+        
+        ShipmentManager sm = new ShipmentManager(DatabaseConnection.getConnection());
+        try {
+            sm.cancelShipment(shipment_id);
+            shipmentsList.getItems().remove(shipment);
+            editingBtns_shipment.getChildren().removeLast();
+            editingBtns_shipment.getChildren().removeLast();
+            editingBtns_shipment.getChildren().removeLast();
+            shipmentsList.refresh();
+        }
+        catch (ShipmentNotFoundException e){
+            return ;
+        }
+    }
     @FXML
     private void editShipmentRedirection(ActionEvent event , String shipment){
 
@@ -445,7 +517,7 @@ public class MainController {
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );
             
-            editShipmentController sc = loader.getController();
+            EditShipmentController sc = loader.getController();
             
             sc.showEdit(shipment);
 
@@ -458,14 +530,114 @@ public class MainController {
         }
     }
     @FXML 
-    private void markShipmentReceived(String shipment){}
+    private void markShipmentReceived(String shipment){
+        if (shipment == null) return ; 
+        Pattern p = Pattern.compile("Shipment id : (\\d+)\\n.+\\n.+\\n.+\\n.+\\n.+\\n.+"); 
+        Matcher matcher = p.matcher(shipment);
 
+        if (!matcher.find()){
+            throw new IllegalArgumentException();  
+        }
 
+        int shipment_id = Integer.parseInt(matcher.group(1));
+        
+        ShipmentManager sm = new ShipmentManager(DatabaseConnection.getConnection());
+        try {
+            sm.receiveShipment(
+                    shipment_id,
+                    Date.from(
+                        LocalDate.now()
+                        .atStartOfDay( ZoneId.systemDefault() )
+                        .toInstant()
+                    )
+            );
+            editingBtns_shipment.getChildren().removeLast();
+            editingBtns_shipment.getChildren().removeLast();
+            editingBtns_shipment.getChildren().removeLast();
+            shipmentsList.refresh();
+            showShipmentsPage();
+        }
+        catch (ShipmentNotFoundException e){
+            return ;
+        }
+        
+    }
 
     @FXML
-    private void showProfilePage() {
-        showPage(profilePage);
-        setActiveButton(profileBtn);
+    private void editSupplierRedirection(ActionEvent event , String supplier){
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gestionpharmacie/supplierEdit.fxml")
+            );
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
+            );
+            
+            EditSupplierController sc = loader.getController();
+            
+            sc.showEdit(supplier);
+
+            Stage stage = (Stage) ((Node) event.getSource())
+                .getScene().getWindow();
+            stage.setScene(scene);       
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @FXML
+    public void showSuppliersPage() {
+       try (Connection connection = DatabaseConnection.getConnection()){
+
+            suppliersList.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    String selected = suppliersList.getSelectionModel().getSelectedItem();
+                    
+                    if (selected != null){
+
+                        if (!editSupplierBtn.isVisible()){
+                            
+                            editSupplierBtn.setVisible(true);
+                            editSupplierBtn.setOnAction(editEvent -> {
+                                editSupplierRedirection(editEvent , selected);
+                            });
+                        }
+                        else {
+                             editSupplierBtn.setOnAction(editEvent -> {
+                                editSupplierRedirection(editEvent , selected);
+                            });
+                        }   
+                    }
+                }
+            }); 
+
+            ObservableList<String> items = FXCollections.observableArrayList();
+            
+            ShipmentManager sm = new ShipmentManager(connection);
+            ArrayList<Supplier> suppliers = sm.fetchSuppliers();
+            for (Supplier s : suppliers){
+                String name = s.getName();
+                int phone = s.getNumerotel();
+
+                String supplierInfo = "Supplier id : " + s.getId() + "\n" +
+                    "Supplier name : " + name + " | Supplier phone : " + phone + "\n";
+                items.add(supplierInfo);
+                 
+            }
+
+            suppliersList.getItems().setAll(items);
+            suppliersList.refresh();
+            showPage(suppliersPage);
+            setActiveButton(suppliersBtn);
+       }
+       catch (SQLException e){
+        return ;
+       }
+
     }
     
     /**
@@ -483,24 +655,21 @@ public class MainController {
             editingBtns_shipment.getChildren().removeLast();
             editingBtns_shipment.getChildren().removeLast();
         }
-
+        editSupplierBtn.setVisible(false);
         saleHistoryPage.setVisible(false);
         productsPage.setVisible(false);
         shipmentsPage.setVisible(false);
-        profilePage.setVisible(false);
+        suppliersPage.setVisible(false);
         
         pageToShow.setVisible(true);
     }
     
-    /**
-     * Set active state for navigation button
-     */
     private void setActiveButton(Button activeBtn) {
         // Remove active class from all buttons
         saleHistoryBtn.getStyleClass().remove("nav-btn-active");
         productsBtn.getStyleClass().remove("nav-btn-active");
         shipmentsBtn.getStyleClass().remove("nav-btn-active");
-        profileBtn.getStyleClass().remove("nav-btn-active");
+        suppliersPage.getStyleClass().remove("nav-btn-active");
         
         // Add active class to selected button
         if (!activeBtn.getStyleClass().contains("nav-btn-active")) {

@@ -11,7 +11,7 @@
 <?import javafx.scene.control.CheckBox?>
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.gestionpharmacie.Controllers.editShipmentController"
+      fx:controller="com.gestionpharmacie.Controllers.EditShipmentController"
       spacing="20"
       alignment="CENTER"
       prefWidth="800"
@@ -26,31 +26,28 @@
         <Label text="Shipment Information" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
         <GridPane hgap="20" vgap="15" alignment="CENTER">
-            <Label text="Supplier name:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-            <TextField fx:id="supplierName" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Supplier id:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+            <TextField fx:id="supplierId" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-            <Label text="Supplier phone:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="supplierPhone" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-            <Label text="Shipment request date:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <DatePicker fx:id="requestDate" promptText="request date" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="Shipment request date:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="requestDate" promptText="request date" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
             
 
-            <Label text="Shipment arrival Date:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <DatePicker fx:id="arrivalDate" promptText="arrival date" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <Label text="Shipment arrival Date:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="arrivalDate" promptText="arrival date" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
             
-            <Label text="Is the shipment received ?" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <CheckBox fx:id="isReceived" text="Yes" GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="check-box" />
-            <CheckBox fx:id="notReceived" text="No" GridPane.rowIndex="4" GridPane.columnIndex="2" styleClass="check-box" />
+            <Label text="Is the shipment received ?" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <CheckBox fx:id="isReceived" text="Yes" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="check-box" />
+            <CheckBox fx:id="notReceived" text="No" GridPane.rowIndex="3" GridPane.columnIndex="2" styleClass="check-box" />
             
-            <Label text="Product id:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-            <TextField fx:id="productId" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            <Label text="Product id:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="productId" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
             
-            <Label text="Product price:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-            <TextField fx:id="productPrice" GridPane.rowIndex="6" GridPane.columnIndex="1"/>   
+            <Label text="Product price:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="productPrice" GridPane.rowIndex="5" GridPane.columnIndex="1"/>   
             
-            <Label text="Product Quantity:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-            <TextField fx:id="productQuantity" GridPane.rowIndex="7" GridPane.columnIndex="1"/>       
+            <Label text="Product Quantity:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <TextField fx:id="productQuantity" GridPane.rowIndex="6" GridPane.columnIndex="1"/>       
         </GridPane>
         <Label fx:id="errorLabel"
             visible="false"

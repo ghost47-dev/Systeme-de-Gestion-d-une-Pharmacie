@@ -30,8 +30,8 @@
                     <Button fx:id="shipmentsBtn" text="Shipments" styleClass="nav-btn" 
                             onAction="#showShipmentsPage" maxWidth="Infinity"/>
                     
-                    <Button fx:id="profileBtn" text="👤 Profile" styleClass="nav-btn" 
-                            onAction="#showProfilePage" maxWidth="Infinity"/>
+                    <Button fx:id="suppliersBtn" text="Suppliers" styleClass="nav-btn" 
+                            onAction="#showSuppliersPage" maxWidth="Infinity"/>
                 </VBox>
             </VBox>
             
@@ -88,9 +88,10 @@
             </VBox>
             
             <!-- Profile Page -->
-            <VBox fx:id="profilePage" alignment="CENTER" spacing="20" visible="false">
-                <Label text="Profile Page" styleClass="page-title"/>
-                <Label text="Your profile information" styleClass="page-subtitle"/>
+            <VBox fx:id="suppliersPage" alignment="CENTER" spacing="20" visible="false">
+                <Label text="Suppliers" styleClass="page-title"/>
+                <ListView fx:id="suppliersList" prefHeight="420" styleClass="list-view"/>
+                <Button fx:id="editSupplierBtn" text="edit" styleClass="edit-btn" visible="false"/>
             </VBox>
             
         </StackPane>

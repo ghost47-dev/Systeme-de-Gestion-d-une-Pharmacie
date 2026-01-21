@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.managers.ShipmentManager;
 import com.gestionpharmacie.utilities.DatabaseConnection;
 
@@ -19,7 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class addShipmentController {
+public class AddShipmentController {
 
     @FXML
     private TextField supplierPhone , supplierName ;
@@ -117,18 +118,13 @@ public class addShipmentController {
 
             ShipmentManager shipmentManager = new ShipmentManager(DatabaseConnection.getConnection());
 
-            int supplier_id = shipmentManager.addSupplier(name,Phone);
             
-            int shipment_id = shipmentManager.addShipment(supplier_id
-                    , request
-                    , isReceived.isSelected() && !notReceived.isSelected() 
-                    , arrival
-                    );
            for (Node row : shipmentsGoodContainer.getChildren()){
 
                 HBox goodRow =(HBox) row;
                
-                int productId,productQuantity,productPrice;
+                int productId,productQuantity;
+                double productPrice;
 
                 try{
                     TextField id = (TextField)goodRow.getChildren().get(1);
@@ -154,7 +150,7 @@ public class addShipmentController {
                 } 
                 try {
                     TextField price = (TextField)goodRow.getChildren().get(4);
-                    productPrice = Integer.parseInt(price.getText());                   
+                    productPrice = Double.parseDouble(price.getText());                   
                     errorLabel.setVisible(false);
                 }
                 catch (NumberFormatException ex) {
@@ -162,9 +158,18 @@ public class addShipmentController {
                     errorLabel.setVisible(true);
                     return;
                 }       
-                
-                int shipment_manager = shipmentManager.addShipmentGood(shipment_id, productId, productPrice, productQuantity);
-                
+                try { 
+                    int supplier_id = shipmentManager.addSupplier(name,Phone);
+                    int shipment_id = shipmentManager.addShipment(supplier_id,
+                            request,
+                            isReceived.isSelected() && !notReceived.isSelected() ,
+                            arrival
+                    );
+                    int shipment_manager = shipmentManager.addShipmentGood(shipment_id, productId, productPrice, productQuantity);
+                }
+                catch (ShipmentNotFoundException e){
+                    return ;
+                }
            }   
 
 

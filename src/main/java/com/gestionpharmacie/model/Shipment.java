@@ -26,7 +26,7 @@ public class Shipment {
 			java.util.Date utilDate = new java.util.Date(sqlDate.getTime()); // casting sql date to java date
 			this.requestDate = utilDate; //
 
-			java.sql.Date sqlDate2 = rs.getDate("recieval_date"); //
+			java.sql.Date sqlDate2 = rs.getDate("arrival_date"); //
 			java.util.Date utilDate2 = new java.util.Date(sqlDate2.getTime()); // casting sql date to java date
 			this.recievalDate = utilDate2;
 
@@ -61,6 +61,10 @@ public class Shipment {
 	public Date getRequestDate() {
 		return requestDate;
 	}
+    
+    public boolean isReceived() {
+        return recieved;
+    }
 
 	public void setRequestDate(Date requestDate) {
 		this.requestDate = requestDate;
