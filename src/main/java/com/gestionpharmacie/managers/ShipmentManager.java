@@ -56,6 +56,9 @@ public class ShipmentManager {
 
     public int addShipmentGood(int sid, int pid, double p, int q) throws ShipmentNotFoundException{
         String sql = "INSERT INTO shipment_good(shipment_id, product_id, price, quantity) VALUES(?, ?, ?, ?)";
+        if (fetchShipment(sid) == null){
+            throw new ShipmentNotFoundException("Shipment Not Found");
+        }
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, sid);
             stmt.setInt(2, pid);
