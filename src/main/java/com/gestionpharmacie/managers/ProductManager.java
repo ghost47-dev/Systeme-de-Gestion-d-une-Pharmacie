@@ -40,12 +40,7 @@ public class ProductManager {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return new Product(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getInt("quantity")
-                );
+                return new Product(rs);
             }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
@@ -127,12 +122,7 @@ public class ProductManager {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                products.add(new Product(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getInt("quantity")
-                ));
+                products.add(new Product(rs));
             }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());;
@@ -146,12 +136,7 @@ public class ProductManager {
             stmt.setInt(1, quantityRiskThreshold);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                products.add(new Product(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getInt("quantity")
-                ));
+                products.add(new Product(rs));
             }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
