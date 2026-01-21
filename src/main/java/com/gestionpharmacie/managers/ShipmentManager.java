@@ -144,6 +144,16 @@ public class ShipmentManager {
             System.err.println("Error: " + e.getMessage());
         }
     }
+    public void updateShipmentGood(int id_ship_good,int new_quantity,double new_price){
+        String query = "UPDATE shipment_good SET quantity = new_quantity,price = new_price WHERE id = ?";
+        try(PreparedStatement ps = connection.prepareStatement(query)){
+            ps.setInt(1,id_ship_good);
+            ps.executeUpdate();
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
 
     public void cancelShipment(int id) throws ShipmentNotFoundException {
         String sql = "DELETE FROM shipment WHERE id = ?";
@@ -230,7 +240,7 @@ public class ShipmentManager {
         String query = "SELECT * FROM supplier";
         try(Statement ps = connection.createStatement()) {
             ResultSet rs = ps.executeQuery(query);
-            if (rs.next()) {
+            while (rs.next()) {
                 Supplier sup = new Supplier(rs);
                 sup.toString();
             }
