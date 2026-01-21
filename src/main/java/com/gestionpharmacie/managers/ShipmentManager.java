@@ -236,30 +236,33 @@ public class ShipmentManager {
         }
         return output;
     }
-    public void fetchSuppliers() {
+
+    public ArrayList<Supplier> fetchSuppliers() {
+	ArrayList<Supplier> out = new ArrayList<Supplier>();
         String query = "SELECT * FROM supplier";
         try(Statement ps = connection.createStatement()) {
             ResultSet rs = ps.executeQuery(query);
             while (rs.next()) {
-                Supplier sup = new Supplier(rs);
-                sup.toString();
+		out.add(new Supplier(rs));
             }
 
         } catch(SQLException e){
             e.printStackTrace();
         }
+	return out;
     }
-    public void fetchShipments(){
-        String query = "SELECT * FROM shipment";
+    public ArrayList<Shipment>fetchShipments(){
+	ArrayList<Shipment> out = new ArrayList<Shipment>();
+        String query = "SELECT * FROM supplier";
         try(Statement ps = connection.createStatement()) {
             ResultSet rs = ps.executeQuery(query);
-            if (rs.next()) {
-                Shipment sup = new Shipment(rs);
-                sup.toString();
+            while (rs.next()) {
+		out.add(new Shipment(rs));
             }
 
         } catch(SQLException e){
             e.printStackTrace();
         }
+	return out;
     }
 }
