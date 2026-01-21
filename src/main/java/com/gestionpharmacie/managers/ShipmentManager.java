@@ -158,7 +158,10 @@ public class ShipmentManager {
     }
 
     public ArrayList<ShipmentGood> receiveShipment(int id, Date d) throws ShipmentNotFoundException {
-        String sql = "UPDATE shipment SET received = TRUE WHERE id = ?";
+        String sql = "UPDATE shipment SET received = TRUE WHERE id = ?;"+
+                "UPDATE product P SET P.quantity = P.quantity + 10 WHERE P.id in "+
+                "(Select product_id FROM shipment_good G,shipment S WHERE G.shipment_id = S.id);";
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             int keys = stmt.executeUpdate();
