@@ -41,3 +41,5 @@ build/
 ### Awss OS ###
 run*.sh
 verify*.sh
+
+./src/main/java/com/gestionpharmacie/utilities/DatabaseConnection.java
