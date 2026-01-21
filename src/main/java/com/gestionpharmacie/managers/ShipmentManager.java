@@ -210,7 +210,18 @@ public class ShipmentManager {
         }
         return out;
     }
+    public void updateSupplier(int id ,String new_name,int new_phone){
+        String query = "UPDATE supplier SET name = ?,phone = ? WHERE id = ?";
+        try(PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1,new_name);
+            ps.setInt(2,new_phone);
+            ps.setInt(3,id);
+            ps.executeUpdate();
 
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public ArrayList<String> viewSuppliersPerfermance() {
         ArrayList<String> output = new ArrayList<>();
         String sql = "SELECT * FROM supplier";
