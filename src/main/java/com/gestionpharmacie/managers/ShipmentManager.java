@@ -123,7 +123,7 @@ public class ShipmentManager {
 //        return null;
 //    }
 
-    public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate) throws ShipmentNotFoundException {
+    public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate , int shipmentGoodId , int quantity , double price) throws ShipmentNotFoundException {
         java.sql.Date request_date = new java.sql.Date(newReqDate.getTime());
         java.sql.Date receive_date = new java.sql.Date(newRecDate.getTime());
         String sql = "UPDATE shipment SET supplier_id = ?, request_date = ?, received = ?, arrival_date = ? WHERE id = ?";
@@ -153,8 +153,7 @@ public class ShipmentManager {
             System.err.println("Error: " + e.getMessage());
         }
     }
-
-    public ArrayList<ShipmentGood> receiveShipment(int id, Date d) throws ShipmentNotFoundException {
+    public int receiveShipment(int id, Date d) throws ShipmentNotFoundException {
         String sql = "UPDATE shipment SET received = TRUE WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -170,29 +169,12 @@ public class ShipmentManager {
             sql = "UPDATE supplier SET no_late_shipments = no_late_shipments + 1 WHERE id = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, ship.getSupplierId());
-                int keys = stmt.executeUpdate();
+                return stmt.executeUpdate();
             } catch (SQLException e) {
                 System.err.println("Error: " + e.getMessage());
             }
         }
-        ArrayList<ShipmentGood> out = new ArrayList<>();
-        sql = "SELECT * FROM shipment_good WHERE shipment_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                out.add(new ShipmentGood(
-                        rs.getInt("id"),
-                        rs.getInt("shipment_id"),
-                        rs.getInt("product_id"),
-                        rs.getDouble("price"),
-                        rs.getInt("quantity")
-                ));
-            }
-        } catch (SQLException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-        return out;
+        return -1;
     }
 
     public ArrayList<String> viewSuppliersPerfermance() {

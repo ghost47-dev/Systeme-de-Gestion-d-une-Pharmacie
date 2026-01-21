@@ -27,8 +27,8 @@
                     <Button fx:id="productsBtn" text="Stock" styleClass="nav-btn" 
                             onAction="#showProductsPage" maxWidth="Infinity"/>
                     
-                    <Button fx:id="settingsBtn" text="⚙️ Settings" styleClass="nav-btn" 
-                            onAction="#showSettingsPage" maxWidth="Infinity"/>
+                    <Button fx:id="shipmentsBtn" text="Shipments" styleClass="nav-btn" 
+                            onAction="#showShipmentsPage" maxWidth="Infinity"/>
                     
                     <Button fx:id="profileBtn" text="👤 Profile" styleClass="nav-btn" 
                             onAction="#showProfilePage" maxWidth="Infinity"/>
@@ -51,7 +51,6 @@
         <StackPane fx:id="contentArea" styleClass="content-area">
             <!-- Pages will be loaded here -->
             
-            <!-- Default Home Page -->
             <VBox fx:id="saleHistoryPage" alignment="TOP_CENTER" spacing="20" visible="true">
                 
                 <!-- List + Add Button Container -->
@@ -60,14 +59,12 @@
                     <Label text="Sale History" styleClass="page-title"/>
                     <ListView fx:id="saleHistoryList" prefHeight="420" styleClass="list-view"/>
 
-                    <!-- ADD SALE BUTTON -->
                     <Button fx:id="addSaleBtn" text="+ Add Sale"
                             styleClass="add-btn"
                             onAction="#addSale"/>
                 </VBox>
             </VBox>
             
-            <!-- Dashboard Page -->
             <VBox fx:id="productsPage" alignment="CENTER" spacing="20" visible="false">
                 <!-- List + Add Button Container -->
                 <VBox spacing="15" alignment="TOP_CENTER" prefWidth="700">
@@ -75,19 +72,19 @@
                     <Label text="Stock" styleClass="page-title"/>
                     <ListView fx:id="productsList" prefHeight="420" styleClass="list-view"/>
 
-                    <!-- ADD SALE BUTTON -->
-                    <HBox fx:id="editingBtns" spacing="10" alignment="CENTER">
+                    <HBox fx:id="editingBtns_product" spacing="10" alignment="CENTER">
                         <Button fx:id="addProductBtn" text="+ Add Product" styleClass="add-btn" onAction="#addProduct"/>
-                        <!--<Button fx:id="editBtn" text="Edit" styleClass="edit-btn" />-->
-                        <!--<Button fx:id="deleteBtn" text="Delete" styleClass="delete-btn" />-->
                     </HBox>
                 </VBox>
             </VBox>
             
-            <!-- Settings Page -->
-            <VBox fx:id="settingsPage" alignment="CENTER" spacing="20" visible="false">
-                <Label text="Settings Page" styleClass="page-title"/>
-                <Label text="Configure your preferences" styleClass="page-subtitle"/>
+            <VBox fx:id="shipmentsPage" alignment="CENTER" spacing="20" visible="false">
+                <Label text="Shipments" styleClass="page-title"/>
+                <ListView fx:id="shipmentsList" prefHeight="420" styleClass="list-view"/>
+
+                <HBox fx:id="editingBtns_shipment" spacing="10" alignment="CENTER">
+                    <Button fx:id="addShipmentBtn" text="+ Add Shipment" styleClass="add-btn" onAction="#addShipment"/>
+                </HBox>           
             </VBox>
             
             <!-- Profile Page -->

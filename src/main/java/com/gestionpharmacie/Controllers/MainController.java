@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
+import com.gestionpharmacie.managers.ShipmentManager;
 import com.gestionpharmacie.model.Product;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
+import com.gestionpharmacie.model.Shipment;
 import com.gestionpharmacie.utilities.DatabaseConnection;
 import com.gestionpharmacie.model.Client;
 
@@ -41,20 +43,21 @@ public class MainController {
     // Navigation buttons
     @FXML private Button saleHistoryBtn;
     @FXML private Button productsBtn;
-    @FXML private Button settingsBtn;
+    @FXML private Button shipmentsBtn;
     @FXML private Button profileBtn;
     
     // Pages
     @FXML private VBox saleHistoryPage;
     @FXML private VBox productsPage;
-    @FXML private VBox settingsPage;
+    @FXML private VBox shipmentsPage;
     @FXML private VBox profilePage;
     
-    @FXML private HBox editingBtns;
-
+    @FXML private HBox editingBtns_product;
+    @FXML private HBox editingBtns_shipment; 
+    
     @FXML private ListView<String> saleHistoryList;
     @FXML private ListView<String> productsList;
-
+    @FXML private ListView<String> shipmentsList;
     private boolean isPanelVisible = true;
     private static final double PANEL_WIDTH = 200.0;
     
@@ -218,8 +221,8 @@ public class MainController {
             pm.deleteProduct(id);   
             System.out.println("product deleted !");
             productsList.getItems().remove(product);
-            editingBtns.getChildren().remove(1);
-            editingBtns.getChildren().remove(1);
+            editingBtns_product.getChildren().remove(1);
+            editingBtns_product.getChildren().remove(1);
             productsList.refresh();
         }
         catch (ProductNotFoundException e){
@@ -259,7 +262,7 @@ public class MainController {
                 if (event.getClickCount() == 2) {
                     String selected = productsList.getSelectionModel().getSelectedItem();
                         if (selected != null) { 
-                            if (editingBtns.getChildren().size() == 1){
+                            if (editingBtns_product.getChildren().size() == 1){
                                 Button editBtn = new Button();
                                 editBtn.getStyleClass().add("edit-btn");
                                 editBtn.setText("edit");
@@ -274,14 +277,14 @@ public class MainController {
                                     removeProduct(selected);
                                 });    
 
-                                editingBtns.getChildren().addAll(editBtn,removeBtn);
+                                editingBtns_product.getChildren().addAll(editBtn,removeBtn);
                             }
-                            if (editingBtns.getChildren().size() == 3){
-                                Button editBtn = (Button)editingBtns.getChildren().get(1);
+                            if (editingBtns_product.getChildren().size() == 3){
+                                Button editBtn = (Button)editingBtns_product.getChildren().get(1);
                                  editBtn.setOnAction(editEvent -> {
                                    editProductRedirection(editEvent,selected);
                                 });
-                                Button removeBtn = (Button)editingBtns.getChildren().getLast();
+                                Button removeBtn = (Button)editingBtns_product.getChildren().getLast();
                                 removeBtn.setOnAction(deleteEvent -> {
                                     removeProduct(selected);
                                 });
@@ -290,11 +293,6 @@ public class MainController {
                         }
                     }
             });
-            productsList.setOnMouseExited(event -> {
-                
-
-
-            }); 
 
 
             showPage(productsPage);
@@ -322,18 +320,148 @@ public class MainController {
         }
     }
     
-    /**
-     * Show settings page
-     */
+
     @FXML
-    private void showSettingsPage() {
-        showPage(settingsPage);
-        setActiveButton(settingsBtn);
+    private void addShipment(ActionEvent event){
+         try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/gestionpharmacie/shipmentAdd.fxml"));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
+            );
+            Stage stage = (Stage) ((Node) event.getSource())
+                .getScene().getWindow();
+            stage.setScene(scene);       
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }       
+
+
+    }
+
+    @FXML
+    public void showShipmentsPage() {
+        //try (Connection connection = DatabaseConnection.getConnection()){ 
+//
+            //ShipmentManager sm = new ShipmentManager(connection);
+//
+            //ArrayList<Shipment> shipments = sm;
+             //
+            ObservableList<String> items = FXCollections.observableArrayList();
+            //
+            //for (Shipment s : shipments){
+                //String name = s.getName();
+                //int id = p.getId();
+                //double price = p.getPrice();
+                //int quantity = p.getQuantity();
+//
+                items.add(
+                    "Shipment id : " + "4" + "\n" +
+                    "Supplier id : " + "7" + "\n" +
+                    "Supplier name : " + "Abslem" + " | Supplier phone : " + "12121212" + "\n" +
+                    "Product id : " + "5" + "\n" +
+                    "Product name : " + "hadroug" + " | Product price : " + "25000$" + " | Product quantity " + "12000" + "\n" + 
+                    "Date of request : " + "1/4/2008" + " | Date of arrival" + "2/4/2012" 
+                );
+//
+            //} 
+             //
+            //
+            shipmentsList.getItems().setAll(items);
+            shipmentsList.refresh();
+//
+            shipmentsList.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    String selected = shipmentsList.getSelectionModel().getSelectedItem();
+                        if (selected != null) { 
+                            if (editingBtns_shipment.getChildren().size() == 1){
+                                
+
+                                Button editBtn = new Button();
+                                editBtn.getStyleClass().add("edit-btn");
+                                editBtn.setText("edit");
+                                editBtn.setOnAction(editEvent -> {
+                                   editShipmentRedirection(editEvent,selected); 
+                                }); 
+
+
+                                Button cancelBtn = new Button();
+                                cancelBtn.getStyleClass().add("delete-btn");
+                                cancelBtn.setText("cancel");
+                                cancelBtn.setOnAction(deleteEvent -> {
+                                    removeShipment(selected);
+                                });
+
+                                Button receivedBtn = new Button();
+                                receivedBtn.getStyleClass().add("add-btn");
+                                receivedBtn.setText("mark received");
+                                receivedBtn.setOnAction(receivedEvent -> {
+                                    markShipmentReceived(selected);
+                                }); 
+
+                                editingBtns_shipment.getChildren().addAll(editBtn,cancelBtn,receivedBtn);
+                            }
+                            if (editingBtns_shipment.getChildren().size() == 3){
+                                Button editBtn = (Button)editingBtns_shipment.getChildren().get(1);
+                                 editBtn.setOnAction(editEvent -> {
+                                   editShipmentRedirection(editEvent,selected);
+                                });
+                                Button removeBtn = (Button)editingBtns_shipment.getChildren().getLast();
+                                removeBtn.setOnAction(deleteEvent -> {
+                                    removeShipment(selected);
+                                });
+                                Button receivedBtn = (Button)editingBtns_shipment.getChildren().getLast();
+                                receivedBtn.setOnAction(receivedEvent -> {
+                                    markShipmentReceived(selected);
+                                }); 
+                            }
+                            
+                        }
+                    }
+            });
+//
+//
+            showPage(shipmentsPage);
+            setActiveButton(shipmentsBtn);
+        //}
+        //catch (SQLException e){
+            //e.printStackTrace();
+        //}
     }
     
-    /**
-     * Show profile page
-     */
+    @FXML 
+    private void removeShipment(String shipment){}
+    @FXML
+    private void editShipmentRedirection(ActionEvent event , String shipment){
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gestionpharmacie/shipmentEdit.fxml")
+            );
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
+            );
+            
+            editShipmentController sc = loader.getController();
+            
+            sc.showEdit(shipment);
+
+            Stage stage = (Stage) ((Node) event.getSource())
+                .getScene().getWindow();
+            stage.setScene(scene);       
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML 
+    private void markShipmentReceived(String shipment){}
+
+
+
     @FXML
     private void showProfilePage() {
         showPage(profilePage);
@@ -344,13 +472,21 @@ public class MainController {
      * Hide all pages and show the selected one
      */
     private void showPage(VBox pageToShow) {
-        saleHistoryPage.setVisible(false);
-        if (editingBtns.getChildren().size() == 3 ){
-            editingBtns.getChildren().removeLast();
-             editingBtns.getChildren().removeLast();
+        
+        if (editingBtns_product.getChildren().size() == 3 ){
+            editingBtns_product.getChildren().removeLast();
+             editingBtns_product.getChildren().removeLast();
         }
+        
+        if (editingBtns_shipment.getChildren().size() == 4 ){
+            editingBtns_shipment.getChildren().removeLast();
+            editingBtns_shipment.getChildren().removeLast();
+            editingBtns_shipment.getChildren().removeLast();
+        }
+
+        saleHistoryPage.setVisible(false);
         productsPage.setVisible(false);
-        settingsPage.setVisible(false);
+        shipmentsPage.setVisible(false);
         profilePage.setVisible(false);
         
         pageToShow.setVisible(true);
@@ -363,7 +499,7 @@ public class MainController {
         // Remove active class from all buttons
         saleHistoryBtn.getStyleClass().remove("nav-btn-active");
         productsBtn.getStyleClass().remove("nav-btn-active");
-        settingsBtn.getStyleClass().remove("nav-btn-active");
+        shipmentsBtn.getStyleClass().remove("nav-btn-active");
         profileBtn.getStyleClass().remove("nav-btn-active");
         
         // Add active class to selected button

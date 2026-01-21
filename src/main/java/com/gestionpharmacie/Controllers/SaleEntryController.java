@@ -36,7 +36,7 @@ public class SaleEntryController {
 
     @FXML
     public void initialize() {
-        addProductRow(); // add first product row by default
+        addProductRow(); 
     }
 
     @FXML

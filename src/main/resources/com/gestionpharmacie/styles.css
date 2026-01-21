@@ -259,4 +259,44 @@
     -fx-background-color: #c0392b;
 }
 
+/* Base checkbox */
+.check-box {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Box */
+.check-box .box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #b0b7c3;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 4;
+}
+
+/* Hover */
+.check-box:hover .box {
+    -fx-border-color: #4a90e2;
+}
+
+/* Selected */
+.check-box:selected .box {
+    -fx-background-color: #4a90e2;
+    -fx-border-color: #4a90e2;
+}
+
+/* Check mark */
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+/* Focused */
+.check-box:focused .box {
+    -fx-effect: dropshadow(three-pass-box, rgba(74,144,226,0.4), 6, 0, 0, 0);
+}
+
+/* Disabled */
+.check-box:disabled {
+    -fx-opacity: 0.5;
+}
 
