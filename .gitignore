@@ -42,4 +42,4 @@ build/
 run*.sh
 verify*.sh
 
-./src/main/java/com/gestionpharmacie/utilities/DatabaseConnection.java
+DatabaseConnection.java
