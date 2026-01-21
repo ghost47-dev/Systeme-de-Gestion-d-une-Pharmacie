@@ -223,4 +223,30 @@ public class ShipmentManager {
         }
         return output;
     }
+    public void fetchSuppliers() {
+        String query = "SELECT * FROM supplier";
+        try(Statement ps = connection.createStatement()) {
+            ResultSet rs = ps.executeQuery(query);
+            if (rs.next()) {
+                Supplier sup = new Supplier(rs);
+                sup.toString();
+            }
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public void fetchShipments(){
+        String query = "SELECT * FROM shipment";
+        try(Statement ps = connection.createStatement()) {
+            ResultSet rs = ps.executeQuery(query);
+            if (rs.next()) {
+                Shipment sup = new Shipment(rs);
+                sup.toString();
+            }
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
 }

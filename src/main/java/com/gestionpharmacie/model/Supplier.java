@@ -17,7 +17,18 @@ public class Supplier {
         this.phoneNumber = phoneNumber;
 		this.noLateShipments = noLateShipments;
     }
+	public  Supplier(ResultSet rs){
+		try{
+			this.id = rs.getInt("id");
+			this.name = rs.getString("name");
+			this.phoneNumber = rs.getInt("phone");
+			this.noLateShipments = rs.getInt("no_late_shipments");
 
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+
+	}
 	public int getId() {
 		return id;
 	}
@@ -61,6 +72,6 @@ public class Supplier {
 	}
 
 	public String toString() {
-		return "Supplier's name: " + name;
+		return "Supplier's name: " + name + ",Supplier's id :" + id + ",Supplier's phone number" + phoneNumber;
 	}
 }

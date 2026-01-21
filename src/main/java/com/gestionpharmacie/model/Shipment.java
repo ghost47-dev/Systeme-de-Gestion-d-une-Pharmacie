@@ -1,4 +1,6 @@
 package com.gestionpharmacie.model;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 public class Shipment {
@@ -15,7 +17,26 @@ public class Shipment {
         recieved = rec;
         recievalDate = recDate;
     }
+	public  Shipment(ResultSet rs) {
+		try {
+			this.id = rs.getInt("id");
+			this.supplierId = rs.getInt("supplier_id");
 
+			java.sql.Date sqlDate = rs.getDate("request_date"); //
+			java.util.Date utilDate = new java.util.Date(sqlDate.getTime()); // casting sql date to java date
+			this.requestDate = utilDate; //
+
+			java.sql.Date sqlDate2 = rs.getDate("recieval_date"); //
+			java.util.Date utilDate2 = new java.util.Date(sqlDate2.getTime()); // casting sql date to java date
+			this.recievalDate = utilDate2;
+
+			this.recieved = rs.getBoolean("received");
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
     public void receive(Date d){
         recieved = true;
         recievalDate = d;
@@ -59,5 +80,8 @@ public class Shipment {
 
 	public void setRecievalDate(Date recievalDate) {
 		this.recievalDate = recievalDate;
+	}
+	public String toString(){
+		return "Shipment's id: " +id +" Supplier's id :" + supplierId + ",Shipment's request date" + requestDate + "Shipment State : "+recieved+ "Shipment reciept date: "+ recievalDate;
 	}
 }
