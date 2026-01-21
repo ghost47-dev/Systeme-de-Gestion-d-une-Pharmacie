@@ -97,7 +97,7 @@ public class ShipmentManager {
     }
     
     public ArrayList<ShipmentGood> fetchShipmentGood (int shipment_id) throws ShipmentNotFoundException {
-        String sql = "SELECT * FROM shipment_good where shipment_good.id = ?";
+        String sql = "SELECT * FROM shipment_good where shipment_good.shipment_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,shipment_id);
             ResultSet rs = stmt.executeQuery();
@@ -146,8 +146,6 @@ public class ShipmentManager {
 //        }
 //        return null;
 //    }
-    public void updateSupplier(int supplier_id , String name , int phone_number){}
-    public void updateShipmentGood (int shipmentGoodId , int newQuantity , double newPrice ) throws ShipmentNotFoundException{}
 
     public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate ) throws ShipmentNotFoundException {
         java.sql.Date request_date = new java.sql.Date(newReqDate.getTime());
@@ -167,6 +165,18 @@ public class ShipmentManager {
             System.err.println("Error: " + e.getMessage());
         }
     }
+    public void updateShipmentGood(int id_ship_good , int new_quantity , double new_price) {
+        String query = "UPDATE shipment_good SET quantity = ? , price = ? WHERE id = ?";
+        try(PreparedStatement ps = connection.prepareStatement(query)){
+            ps.setInt(1, new_quantity);
+            ps.setDouble(2, new_price);
+            ps.setInt(3,id_ship_good);
+            ps.executeUpdate();
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
 
     public void cancelShipment(int id) throws ShipmentNotFoundException {
         String sql = "DELETE FROM shipment WHERE id = ?";
@@ -179,8 +189,11 @@ public class ShipmentManager {
             System.err.println("Error: " + e.getMessage());
         }
     }
+
     public int receiveShipment(int id, Date d) throws ShipmentNotFoundException {
-        String sql = "UPDATE shipment SET received = TRUE WHERE id = ?";
+        String sql = "UPDATE shipment SET received = TRUE WHERE id = ?;"+
+                "UPDATE product P SET P.quantity = P.quantity + 10 WHERE P.id in "+
+                "(Select product_id FROM shipment_good G,shipment S WHERE G.shipment_id = S.id);";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             int keys = stmt.executeUpdate();
@@ -202,7 +215,18 @@ public class ShipmentManager {
         }
         return -1;
     }
+    public void updateSupplier(int id ,String new_name,int new_phone){
+        String query = "UPDATE supplier SET name = ?,phone = ? WHERE id = ?";
+        try(PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1,new_name);
+            ps.setInt(2,new_phone);
+            ps.setInt(3,id);
+            ps.executeUpdate();
 
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public ArrayList<String> viewSuppliersPerfermance() {
         ArrayList<String> output = new ArrayList<>();
         String sql = "SELECT * FROM supplier";

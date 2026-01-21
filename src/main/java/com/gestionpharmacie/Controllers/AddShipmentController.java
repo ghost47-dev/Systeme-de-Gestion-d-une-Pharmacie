@@ -168,6 +168,7 @@ public class AddShipmentController {
                     int shipment_manager = shipmentManager.addShipmentGood(shipment_id, productId, productPrice, productQuantity);
                 }
                 catch (ShipmentNotFoundException e){
+                    e.printStackTrace();
                     return ;
                 }
            }   

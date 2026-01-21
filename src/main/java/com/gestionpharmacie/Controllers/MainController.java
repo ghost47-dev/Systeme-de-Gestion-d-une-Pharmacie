@@ -378,9 +378,10 @@ public class MainController {
                     shipmentGood = sm.fetchShipmentGood(s.getId());
                 }
                 catch (ShipmentNotFoundException e){
+                    e.printStackTrace();
                     return;
                 }
-
+                if (shipmentGood.size() == 0) {System.out.println("shipmentGoodisEmpty"); return;}
                 String shipmentGoodInfo = "";
                 ProductManager pm = new ProductManager(DatabaseConnection.getConnection());
                 for (ShipmentGood sg : shipmentGood){
@@ -669,7 +670,7 @@ public class MainController {
         saleHistoryBtn.getStyleClass().remove("nav-btn-active");
         productsBtn.getStyleClass().remove("nav-btn-active");
         shipmentsBtn.getStyleClass().remove("nav-btn-active");
-        suppliersPage.getStyleClass().remove("nav-btn-active");
+        suppliersBtn.getStyleClass().remove("nav-btn-active");
         
         // Add active class to selected button
         if (!activeBtn.getStyleClass().contains("nav-btn-active")) {

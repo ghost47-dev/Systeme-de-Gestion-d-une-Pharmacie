@@ -32,10 +32,11 @@ public class EditShipmentController {
     @FXML 
     private CheckBox isReceived , notReceived; 
     @FXML 
-    private TextField productId, productQuantity, productPrice;
+    private TextField  productQuantity, productPrice;
     @FXML
     private Label errorLabel;
-
+    
+    private int product_Id;
     private int shipmentId ;
     @FXML
     private void goBack(ActionEvent event) {
@@ -86,7 +87,7 @@ public class EditShipmentController {
         this.shipmentId = Integer.parseInt(matcher.group(1));
         String supplier_id = matcher.group(2);
 
-        String productId = matcher.group(5);
+        product_Id = Integer.parseInt(matcher.group(5));
         String productPrice = matcher.group(7);
         String productQuantity = matcher.group(8);
 
@@ -101,7 +102,6 @@ public class EditShipmentController {
         this.arrivalDate.setValue(LocalDate.parse(arrivalDate,formatter));
         this.isReceived.setSelected(Received);
         this.notReceived.setSelected(!Received);
-        this.productId.setText(productId);
         this.productPrice.setText(productPrice);
         this.productQuantity.setText(productQuantity);
         
@@ -113,18 +113,16 @@ public class EditShipmentController {
         String supplier_id = supplierId.getText();
         String pQuantity = productQuantity.getText();
         String pPrice = productPrice.getText();
-        String pId = productId.getText();
         
         Date  arrival , request;
-        int supId , id , quantity;
+        int supId ,  quantity;
         double price;
         if (!supplier_id.isEmpty() &&
             arrivalDateTmp != null &&
             requestDateTmp != null &&
             (isReceived.isSelected() ^ notReceived.isSelected()) &&
             !pQuantity.isEmpty() &&
-            !pPrice.isEmpty() &&
-            !pId.isEmpty()
+            !pPrice.isEmpty() 
             ){
             ShipmentManager shipmentManager = new ShipmentManager(DatabaseConnection.getConnection());
             
@@ -159,14 +157,6 @@ public class EditShipmentController {
             arrival = Date.from(arrivalDateTmp.atStartOfDay(ZoneId.systemDefault()).toInstant());
             
             try {
-                 id = Integer.parseInt(pId);
-            }
-            catch (NumberFormatException e){
-               errorLabel.setText("Invalid id !");
-               errorLabel.setVisible(true); 
-               return;
-            }
-            try {
                  quantity = Integer.parseInt(pQuantity);
             }
             catch (NumberFormatException e){
@@ -191,7 +181,7 @@ public class EditShipmentController {
                         request,
                         isReceived.isSelected() && !notReceived.isSelected(),
                         arrival );
-                shipmentManager.updateShipmentGood(id , quantity , price);
+                shipmentManager.updateShipmentGood(product_Id , quantity , price);
             }
             catch (ShipmentNotFoundException e){
                 return;

@@ -40,14 +40,11 @@
             <CheckBox fx:id="isReceived" text="Yes" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="check-box" />
             <CheckBox fx:id="notReceived" text="No" GridPane.rowIndex="3" GridPane.columnIndex="2" styleClass="check-box" />
             
-            <Label text="Product id:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <TextField fx:id="productId" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            <Label text="Product price:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="productPrice" GridPane.rowIndex="4" GridPane.columnIndex="1"/>   
             
-            <Label text="Product price:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-            <TextField fx:id="productPrice" GridPane.rowIndex="5" GridPane.columnIndex="1"/>   
-            
-            <Label text="Product Quantity:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-            <TextField fx:id="productQuantity" GridPane.rowIndex="6" GridPane.columnIndex="1"/>       
+            <Label text="Product Quantity:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="productQuantity" GridPane.rowIndex="5" GridPane.columnIndex="1"/>       
         </GridPane>
         <Label fx:id="errorLabel"
             visible="false"
