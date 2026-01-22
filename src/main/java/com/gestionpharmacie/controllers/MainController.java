@@ -130,7 +130,6 @@ public class MainController {
     public MainController(String privilege){ 
         MainController.privilege = privilege;
     } 
-    public MainController(){}
 
     @FXML
     public void initialize() {
