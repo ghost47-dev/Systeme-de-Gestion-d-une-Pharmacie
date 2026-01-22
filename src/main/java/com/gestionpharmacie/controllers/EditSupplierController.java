@@ -20,7 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class EditSupplierController{
-    
+
     @FXML private TextField nameField , phoneField;
     @FXML private javafx.scene.control.Label errorLabel;
     @FXML private int supplier_id;
@@ -34,7 +34,7 @@ public class EditSupplierController{
         if (!matcher.find()){
             throw new IllegalArgumentException() ;
         }
-                
+
         supplier_id = Integer.parseInt(matcher.group(1));
         String name = matcher.group(2);
         ShipmentManager sm = new ShipmentManager(DatabaseConnection.getConnection());
@@ -62,7 +62,7 @@ public class EditSupplierController{
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );
-            
+
             Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
             stage.setScene(scene);
         }
@@ -75,7 +75,7 @@ public class EditSupplierController{
         String name = nameField.getText();
         String phone = phoneField.getText();
         int Phone;
-       
+
         try {
             Phone = Integer.parseInt(phone) ;
         }

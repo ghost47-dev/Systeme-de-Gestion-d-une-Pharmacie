@@ -58,17 +58,17 @@ import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 
 public class MainController {
-   
+
     @FXML private HBox sidePanelContainer;
     @FXML private VBox sidePanel;
     @FXML private Button toggleButton;
-    @FXML private VBox togglePanel;    
+    @FXML private VBox togglePanel;
     // Navigation buttons
     @FXML private Button saleHistoryBtn;
     @FXML private Button productsBtn;
     @FXML private Button shipmentsBtn;
     @FXML private Button suppliersBtn;
-    @FXML private Button adminDashboardBtn;    
+    @FXML private Button adminDashboardBtn;
     @FXML private Button totalRevenueBtn;
     @FXML private Button userCreationBtn;
     // Pages
@@ -79,8 +79,8 @@ public class MainController {
     @FXML private VBox totalRevenuePage;
     @FXML private VBox userCreationPage;
     @FXML private HBox editingBtns_product;
-    @FXML private HBox editingBtns_shipment; 
-    
+    @FXML private HBox editingBtns_shipment;
+
 
     @FXML private ListView<String> saleHistoryList;
     @FXML private ListView<String> productsList;
@@ -102,16 +102,16 @@ public class MainController {
     @FXML private Label confirmPasswordError;
     @FXML private Label privilegeError;
     @FXML private Button signUpButton;
-    
+
     public enum MessageType {
         SUCCESS("✓", "flash-success"),
         ERROR("✗", "flash-error"),
         WARNING("⚠", "flash-warning"),
         INFO("ℹ", "flash-info");
-        
+
         private final String icon;
         private final String styleClass;
-        
+
         MessageType(String icon, String styleClass) {
             this.icon = icon;
             this.styleClass = styleClass;
@@ -121,15 +121,15 @@ public class MainController {
     private boolean isPanelVisible = true;
     private static final double PANEL_WIDTH = 200.0;
     private Queue<String> messageQueue = new LinkedList<>();
-    private boolean isShowingMessage = false;   
+    private boolean isShowingMessage = false;
     static private String privilege ;
 
     public MainController(){
     }
 
-    public MainController(String privilege){ 
+    public MainController(String privilege){
         MainController.privilege = privilege;
-    } 
+    }
 
     @FXML
     public void initialize() {
@@ -145,7 +145,7 @@ public class MainController {
             suppliersBtn.setVisible(true);
         }
     }
-    
+
     @FXML
     private void toggleSidePanel() {
 
@@ -176,23 +176,23 @@ public class MainController {
     }
 
 
-    
+
     @FXML
     private void showSaleHistory() {
-        
+
         Connection conn = Database.getInstance().getConnection();
         try {
 
             ProductManager productManager = new ProductManager(conn);
             SaleManager saleManager = new SaleManager(productManager,conn);
-            
+
             ArrayList<Integer> sales = saleManager.getSaleIds();
-            
+
             ObservableList<String> items = FXCollections.observableArrayList();
-            
+
             for (int sale_id :sales ){
-                
-                Sale sale = saleManager.fetchSale(sale_id); 
+
+                Sale sale = saleManager.fetchSale(sale_id);
                 int client_id = sale.getClientId();
                 Client client = saleManager.fetchClient(client_id);
 
@@ -203,7 +203,7 @@ public class MainController {
                     int p_id = sp.getProductId();
                     Product p = null;
                     try {
-                        p = productManager.fetchProduct(p_id); 
+                        p = productManager.fetchProduct(p_id);
                     }
                     catch (ProductNotFoundException e){
                         e.printStackTrace();
@@ -212,12 +212,12 @@ public class MainController {
                     int p_quantity = sp.getQuantity();
                     double p_price = p.getPrice();
                     String p_name = p.getName();
-                    
+
                     Products_Info += "Product: " + p_name + " | Price: $"+ p_price +" | Quantity: "+p_quantity;
                     if (sp != saleproducts.getLast() )Products_Info += "\n";
 
                 }
-                
+
                 items.add(
                     "Sale ID: "+ sale_id +"\n" +
                     client.toString() + "\n" +
@@ -225,11 +225,11 @@ public class MainController {
                     );
 
             }
-             
+
 
             saleHistoryList.getItems().setAll(items);
             saleHistoryList.refresh();
-            
+
             showPage(saleHistoryPage);
             setActiveButton(saleHistoryBtn);
 
@@ -256,7 +256,7 @@ public class MainController {
             );
             Stage stage = (Stage) ((Node) event.getSource())
                 .getScene().getWindow();
-            stage.setScene(scene);       
+            stage.setScene(scene);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -274,15 +274,15 @@ public class MainController {
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );
-            
+
 
             ProductController pc = loader.getController();
             pc.setPrivilege(privilege);
             pc.showEdit(product);
-            
+
             Stage stage = (Stage) ((Node) event.getSource())
                 .getScene().getWindow();
-            stage.setScene(scene);       
+            stage.setScene(scene);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -303,7 +303,7 @@ public class MainController {
         Connection conn = Database.getInstance().getConnection();
         ProductManager pm = new ProductManager(conn);
         try {
-            pm.deleteProduct(id);   
+            pm.deleteProduct(id);
             System.out.println("product deleted !");
             productsList.getItems().remove(product);
             editingBtns_product.getChildren().remove(1);
@@ -318,30 +318,30 @@ public class MainController {
     public void showMessage(String message, MessageType type) {
         showMessage(message, type, 3000);
     }
-    
+
     public void showMessage(String message, MessageType type, int durationMs) {
         messageLabel.setText(message);
         iconLabel.setText(type.icon);
-        
+
         flashBox.getStyleClass().removeIf(s -> s.startsWith("flash-"));
         flashBox.getStyleClass().add("flash-message");
         flashBox.getStyleClass().add(type.styleClass);
-        
+
         flashBox.setOpacity(0);
         flashBox.setVisible(true);
-        
+
         FadeTransition fadeIn = new FadeTransition(Duration.millis(300), flashBox);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
         fadeIn.play();
-        
+
         if (durationMs > 0) {
             PauseTransition pause = new PauseTransition(Duration.millis(durationMs));
             pause.setOnFinished(e -> hide());
             pause.play();
         }
     }
-    
+
     private void hide() {
         FadeTransition fadeOut = new FadeTransition(Duration.millis(300), flashBox);
         fadeOut.setFromValue(1);
@@ -352,15 +352,15 @@ public class MainController {
     @FXML
     public void showProductsPage() {
         Connection conn = Database.getInstance().getConnection();
-        
+
         try {
 
             ProductManager productManager = new ProductManager(conn);
-            
+
             ArrayList<Product> products = productManager.viewStock();
-             
+
             ObservableList<String> items = FXCollections.observableArrayList();
-            
+
             for (Product p : products){
                 String name = p.getName();
                 int id = p.getId();
@@ -369,35 +369,35 @@ public class MainController {
 
                 items.add(
                    "Product id : " + id + "\n" +
-                   "Product name : " + name + " | Product price : " + price + " | Product quantity " + quantity  
+                   "Product name : " + name + " | Product price : " + price + " | Product quantity " + quantity
                         );
 
-            } 
-             
-            
+            }
+
+
             productsList.getItems().setAll(items);
             productsList.refresh();
-            
+
 
 
             productsList.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
                     String selected = productsList.getSelectionModel().getSelectedItem();
-                        if (selected != null) { 
+                        if (selected != null) {
                             if (editingBtns_product.getChildren().size() == 1){
                                 Button editBtn = new Button();
                                 editBtn.getStyleClass().add("edit-btn");
                                 editBtn.setText("edit");
                                 editBtn.setOnAction(editEvent -> {
-                                   editProductRedirection(editEvent,selected); 
-                                }); 
+                                   editProductRedirection(editEvent,selected);
+                                });
 
                                 Button removeBtn = new Button();
                                 removeBtn.getStyleClass().add("delete-btn");
                                 removeBtn.setText("delete");
                                 removeBtn.setOnAction(deleteEvent -> {
                                     removeProduct(selected);
-                                });    
+                                });
 
                                 editingBtns_product.getChildren().addAll(editBtn,removeBtn);
                             }
@@ -411,7 +411,7 @@ public class MainController {
                                     removeProduct(selected);
                                 });
                             }
-                            
+
                         }
                     }
             });
@@ -436,11 +436,11 @@ public class MainController {
         if (isShowingMessage || messageQueue.isEmpty()) {
             return;
         }
-        
+
         isShowingMessage = true;
         String message = messageQueue.poll();
         showMessage(message, MessageType.ERROR);
-        
+
         // Wait for message duration + fade time, then show next
         PauseTransition pause = new PauseTransition(Duration.millis(3500));
         pause.setOnFinished(e -> {
@@ -465,13 +465,13 @@ public class MainController {
 
             Stage stage = (Stage) ((Node) event.getSource())
                 .getScene().getWindow();
-            stage.setScene(scene);       
+            stage.setScene(scene);
         }
         catch(Exception e) {
             e.printStackTrace();
         }
     }
-    
+
 
     @FXML
     private void addShipment(ActionEvent event){
@@ -489,11 +489,11 @@ public class MainController {
             );
             Stage stage = (Stage) ((Node) event.getSource())
                 .getScene().getWindow();
-            stage.setScene(scene);       
+            stage.setScene(scene);
         }
         catch(Exception e) {
             e.printStackTrace();
-        }       
+        }
 
 
     }
@@ -520,7 +520,7 @@ public class MainController {
                 String supplierName = supplier.getName();
                 int supplierPhone = supplier.getNumerotel();
 
-                ArrayList<ShipmentGood> shipmentGood ; 
+                ArrayList<ShipmentGood> shipmentGood ;
 
                 try {
                     shipmentGood = sm.fetchShipmentGood(s.getId());
@@ -535,9 +535,9 @@ public class MainController {
                 String shipmentGoodInfo = "";
                 ProductManager pm = new ProductManager(conn);
                 for (ShipmentGood sg : shipmentGood){
-                    double price = sg.getPrice();  
+                    double price = sg.getPrice();
                     int quantity = sg.getQuantity();
-                    
+
                     Product product =null ;
                     try {
                         product = pm.fetchProduct(sg.getProductId());
@@ -548,9 +548,9 @@ public class MainController {
                     }
                     String name = product.getName();
                     shipmentGoodInfo = "Product id : " + product.getId() + "\n" +
-                    "Product name : " + name + " | Product price : " + price + "$" + " | Product quantity " + quantity + "\n" ; 
+                    "Product name : " + name + " | Product price : " + price + "$" + " | Product quantity " + quantity + "\n" ;
                 }
-                
+
 
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                 if (isReceived)
@@ -562,17 +562,17 @@ public class MainController {
                     "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" +
                     "Shipment is received ✓"
                 );
-                else 
+                else
                 items.add(
                     "Shipment id : " + s.getId() + "\n" +
                     "Supplier id : " + supplier_id + "\n" +
                     "Supplier name : " + supplierName + " | Supplier phone : " + supplierPhone + "\n" +
                     shipmentGoodInfo +
-                    "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" + 
+                    "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" +
                     "Shipment is not received 𐄂"
                 );
-                 
-            } 
+
+            }
              //
             //
             shipmentsList.getItems().setAll(items);
@@ -581,16 +581,16 @@ public class MainController {
             shipmentsList.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
                     String selected = shipmentsList.getSelectionModel().getSelectedItem();
-                        if (selected != null) { 
+                        if (selected != null) {
                             if (editingBtns_shipment.getChildren().size() == 1){
-                                
+
 
                                 Button editBtn = new Button();
                                 editBtn.getStyleClass().add("edit-btn");
                                 editBtn.setText("edit");
                                 editBtn.setOnAction(editEvent -> {
-                                   editShipmentRedirection(editEvent,selected); 
-                                }); 
+                                   editShipmentRedirection(editEvent,selected);
+                                });
 
 
                                 Button cancelBtn = new Button();
@@ -605,7 +605,7 @@ public class MainController {
                                 receivedBtn.setText("mark received");
                                 receivedBtn.setOnAction(receivedEvent -> {
                                     markShipmentReceived(selected);
-                                }); 
+                                });
 
                                 editingBtns_shipment.getChildren().addAll(editBtn,cancelBtn,receivedBtn);
                             }
@@ -621,9 +621,9 @@ public class MainController {
                                 Button receivedBtn = (Button)editingBtns_shipment.getChildren().getLast();
                                 receivedBtn.setOnAction(receivedEvent -> {
                                     markShipmentReceived(selected);
-                                }); 
+                                });
                             }
-                            
+
                         }
                     }
             });
@@ -636,15 +636,15 @@ public class MainController {
             e.printStackTrace();
         }
     }
-    
-    @FXML 
+
+    @FXML
     private void removeShipment(String shipment){
-        if (shipment == null) return ; 
-        Pattern p = Pattern.compile("Shipment id : (\\d+)\\n.+\\n.+\\n.+\\n.+\\n.+\\n.+"); 
+        if (shipment == null) return ;
+        Pattern p = Pattern.compile("Shipment id : (\\d+)\\n.+\\n.+\\n.+\\n.+\\n.+\\n.+");
         Matcher matcher = p.matcher(shipment);
 
         if (!matcher.find()){
-            throw new IllegalArgumentException();  
+            throw new IllegalArgumentException();
         }
 
         int shipment_id = Integer.parseInt(matcher.group(1));
@@ -674,31 +674,31 @@ public class MainController {
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );
-             
+
             EditShipmentController sc = loader.getController();
             sc.setPrivilege(privilege);
             sc.showEdit(shipment);
 
             Stage stage = (Stage) ((Node) event.getSource())
                 .getScene().getWindow();
-            stage.setScene(scene);       
+            stage.setScene(scene);
         }
         catch(Exception e) {
             e.printStackTrace();
         }
     }
-    @FXML 
+    @FXML
     private void markShipmentReceived(String shipment){
-        if (shipment == null) return ; 
-        Pattern p = Pattern.compile("Shipment id : (\\d+)\\n.+\\n.+\\n.+\\n.+\\n.+\\n.+"); 
+        if (shipment == null) return ;
+        Pattern p = Pattern.compile("Shipment id : (\\d+)\\n.+\\n.+\\n.+\\n.+\\n.+\\n.+");
         Matcher matcher = p.matcher(shipment);
 
         if (!matcher.find()){
-            throw new IllegalArgumentException();  
+            throw new IllegalArgumentException();
         }
 
         int shipment_id = Integer.parseInt(matcher.group(1));
-        
+
         ShipmentManager sm = new ShipmentManager(DatabaseConnection.getConnection());
         try {
             sm.receiveShipment(
@@ -733,15 +733,15 @@ public class MainController {
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );
-            
+
             EditSupplierController sc = loader.getController();
-            
+
             sc.showEdit(supplier);
             sc.setPrivilege(privilege);
 
             Stage stage = (Stage) ((Node) event.getSource())
                 .getScene().getWindow();
-            stage.setScene(scene);       
+            stage.setScene(scene);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -757,11 +757,11 @@ public class MainController {
             suppliersList.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
                     String selected = suppliersList.getSelectionModel().getSelectedItem();
-                    
+
                     if (selected != null){
 
                         if (!editSupplierBtn.isVisible()){
-                            
+
                             editSupplierBtn.setVisible(true);
                             editSupplierBtn.setOnAction(editEvent -> {
                                 editSupplierRedirection(editEvent , selected);
@@ -771,13 +771,13 @@ public class MainController {
                              editSupplierBtn.setOnAction(editEvent -> {
                                 editSupplierRedirection(editEvent , selected);
                             });
-                        }   
+                        }
                     }
                 }
-            }); 
+            });
 
             ObservableList<String> items = FXCollections.observableArrayList();
-            
+
             ShipmentManager sm = new ShipmentManager(conn);
             ArrayList<String> suppliers = sm.viewSuppliersPerfermance();
             for (String s : suppliers){
@@ -794,8 +794,8 @@ public class MainController {
        }
 
     }
-    
-    @FXML 
+
+    @FXML
     private void showTotalRevenuePage(){
         Connection conn = Database.getInstance().getConnection();
         try {
@@ -806,22 +806,22 @@ public class MainController {
             totalRevenue = sm.getTotalRevenue();
 
             NumberFormat nf = NumberFormat.getInstance(Locale.US);
-            revenueLabel.setText(nf.format(totalRevenue) + " TND");       
-            setActiveButton(totalRevenueBtn);   
+            revenueLabel.setText(nf.format(totalRevenue) + " TND");
+            setActiveButton(totalRevenueBtn);
             showPage(totalRevenuePage);
         }
         catch (Exception e){
             e.printStackTrace();
         }
     }
-    @FXML 
+    @FXML
     private void handleSignUp(){
-        
+
         clearAllErrors();
         Connection conn = Database.getInstance().getConnection();
         boolean isValid = true;
         UserManager userManager = new UserManager(conn);
-        
+
         if (usernameField.getText().trim().isEmpty()) {
             usernameField.getStyleClass().add("error");
             showError( usernameError, "Username is required");
@@ -836,7 +836,7 @@ public class MainController {
             isValid = false;
         }
 
-        
+
         if (passwordField.getText().isEmpty()) {
             passwordField.getStyleClass().add("error");
             showError(passwordError, "Password is required");
@@ -846,7 +846,7 @@ public class MainController {
             showError( passwordError, "Password must be at least 6 characters");
             isValid = false;
         }
-        
+
         if (confirmPasswordField.getText().isEmpty()) {
             confirmPasswordField.getStyleClass().add("error");
             showError( confirmPasswordError, "Please confirm your password");
@@ -856,23 +856,23 @@ public class MainController {
             showError( confirmPasswordError, "Passwords do not match");
             isValid = false;
         }
-        
+
         if (privilegeComboBox.getValue() == null) {
             privilegeComboBox.getStyleClass().add("error");
             showError( privilegeError, "Please select a privilege level");
             isValid = false;
         }
-        
+
         if (isValid) {
             String username = usernameField.getText().trim();
             String password = passwordField.getText();
             String privilege = privilegeComboBox.getValue();
-            
+
 
             userManager.addUser(new User(username, password, privilege));
 
             System.out.println("Sign Up Successful!");
-            
+
             clearFields();
         }
 
@@ -882,12 +882,12 @@ public class MainController {
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
     }
-    
+
     private void clearError( Label errorLabel) {
         errorLabel.setVisible(false);
         errorLabel.setManaged(false);
     }
-    
+
     private void clearAllErrors() {
         usernameField.getStyleClass().remove("error");
         clearError(usernameError);
@@ -898,14 +898,14 @@ public class MainController {
         privilegeComboBox.getStyleClass().remove("error");
         clearError( privilegeError);
     }
-    
+
     private void clearFields() {
         usernameField.clear();
         passwordField.clear();
         confirmPasswordField.clear();
         privilegeComboBox.setValue(null);
     }
-    @FXML 
+    @FXML
     private void showUserCreationPage(){
         ObservableList<String> items = FXCollections.observableArrayList(
             "admin",
@@ -917,12 +917,12 @@ public class MainController {
     }
 
     private void showPage(VBox pageToShow) {
-        
+
         if (editingBtns_product.getChildren().size() == 3 ){
             editingBtns_product.getChildren().removeLast();
              editingBtns_product.getChildren().removeLast();
         }
-        
+
         if (editingBtns_shipment.getChildren().size() == 4 ){
             editingBtns_shipment.getChildren().removeLast();
             editingBtns_shipment.getChildren().removeLast();
@@ -937,7 +937,7 @@ public class MainController {
         userCreationPage.setVisible(false);
         pageToShow.setVisible(true);
     }
-    
+
     private void setActiveButton(Button activeBtn) {
         // Remove active class from all buttons
         saleHistoryBtn.getStyleClass().remove("nav-btn-active");

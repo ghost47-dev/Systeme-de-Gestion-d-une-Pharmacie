@@ -61,7 +61,7 @@ public class Shipment {
 	public Date getRequestDate() {
 		return requestDate;
 	}
-    
+
     public boolean isReceived() {
         return recieved;
     }

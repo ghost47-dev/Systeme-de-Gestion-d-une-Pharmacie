@@ -36,16 +36,16 @@ public class ProductController {
         String quantity = productQuantity.getText();
         int Quantity;
         double Price;
-        if (!name.isEmpty() && 
+        if (!name.isEmpty() &&
             !price.isEmpty() &&
             !quantity.isEmpty()){
-            
+
             try {
                 Price = Double.parseDouble(price);
             }
             catch (NumberFormatException e){
                errorLabel.setText("Invalid price !");
-               errorLabel.setVisible(true); 
+               errorLabel.setVisible(true);
                return;
             }
 
@@ -54,14 +54,14 @@ public class ProductController {
                 Quantity = Integer.parseInt(quantity);
             }
             catch(NumberFormatException e){
-                errorLabel.setText("Invalid quantity !");   
+                errorLabel.setText("Invalid quantity !");
                 errorLabel.setVisible(true);
                 return;
             }
-            
+
             ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
             productManager.addProduct(name,Price,Quantity);
-            
+
             productQuantity.clear();
             productPrice.clear();
             productName.clear();
@@ -95,7 +95,7 @@ public class ProductController {
     }
     @FXML
     public void showEdit(String product){
-       
+
         this.product = product;
         Pattern pattern = Pattern.compile(
                 "Product id\\s*:\\s*(\\d+)\\s*\\n" +
@@ -113,34 +113,34 @@ public class ProductController {
         id = Integer.parseInt(matcher.group(1));
         String name = matcher.group(2);
         double price = Double.parseDouble(matcher.group(3));
-        int quantity = Integer.parseInt(matcher.group(4));       
-        
+        int quantity = Integer.parseInt(matcher.group(4));
+
 
         nameField.setText(name);
         priceField.setText(Double.toString(price));
         quantityField.setText(Integer.toString(quantity));
 
     }
-    @FXML 
+    @FXML
     private void editProduct(ActionEvent event ){
         if (product == null) return;
 
-        
+
         String name = nameField.getText();
         String price = priceField.getText();
         String quantity = quantityField.getText();
         int Quantity;
         double Price;
-        if (!name.isEmpty() && 
+        if (!name.isEmpty() &&
             !price.isEmpty() &&
             !quantity.isEmpty() ){
-            
+
             try {
                 Price = Double.parseDouble(price);
             }
             catch (NumberFormatException e){
                errorLabel.setText("Invalid price !");
-               errorLabel.setVisible(true); 
+               errorLabel.setVisible(true);
                return;
             }
 
@@ -149,11 +149,11 @@ public class ProductController {
                 Quantity = Integer.parseInt(quantity);
             }
             catch(NumberFormatException e){
-                errorLabel.setText("Invalid quantity !");   
+                errorLabel.setText("Invalid quantity !");
                 errorLabel.setVisible(true);
                 return;
             }
-            
+
             ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
 
             try {

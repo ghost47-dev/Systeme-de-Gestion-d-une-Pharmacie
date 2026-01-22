@@ -31,7 +31,7 @@ public class SaleEntryController {
 
     @FXML
     private TextField clientName, clientSurname, clientPhone;
-    
+
     @FXML
     private VBox productsContainer;
 
@@ -42,7 +42,7 @@ public class SaleEntryController {
 
     @FXML
     public void initialize() {
-        addProductRow(); 
+        addProductRow();
     }
 
     @FXML
@@ -71,10 +71,10 @@ public class SaleEntryController {
         if ( !clientName.getText().isEmpty() &&
                 !clientPhone.getText().isEmpty() &&
                 !clientSurname.getText().isEmpty()  ){
-            
+
             try {
                 int phoneNumber;
-                try{ 
+                try{
                     phoneNumber = Integer.parseInt(clientPhone.getText());
                     if (clientPhone.getText().length() != 8)
                         throw new NumberFormatException();
@@ -86,17 +86,17 @@ public class SaleEntryController {
                     return;
                 }
                 errorLabel.setVisible(false);
-                
+
                 Connection connection = DatabaseConnection.getConnection();
                 ProductManager pm = new ProductManager(connection);
                 SaleManager sm = new SaleManager(pm, connection);
-                
-                
+
+
                 ObservableList<Node> productLabels = productsContainer.getChildren();
-                
+
                 for (Node n : productLabels){
                     HBox productRow = (HBox)n;
-                    
+
                     int productId,productQuantity;
                     TextField id , quantity;
                     try{
@@ -112,7 +112,7 @@ public class SaleEntryController {
 
                     try {
                         quantity = (TextField)productRow.getChildren().get(2);
-                        productQuantity = Integer.parseInt(quantity.getText());                   
+                        productQuantity = Integer.parseInt(quantity.getText());
                         errorLabel.setVisible(false);
                     }
                     catch (NumberFormatException ex) {
@@ -125,7 +125,7 @@ public class SaleEntryController {
                         pm.fetchProduct(productId);
                         int client_id = sm.addClient(clientName.getText(), clientSurname.getText(), phoneNumber);
                         int sale_id = sm.addSale(client_id);
-                        sm.addSaleProduct(sale_id,productId,productQuantity); 
+                        sm.addSaleProduct(sale_id,productId,productQuantity);
                     }
                     catch (InsufficientStockException e ){
                         errorLabel.setVisible(true);
@@ -140,9 +140,9 @@ public class SaleEntryController {
                         return;
                     }
                 }
-                goBack(event);        
-                        
-                 
+                goBack(event);
+
+
             }
             catch (NumberFormatException e){
                  errorLabel.setText("Invalid phone number !");

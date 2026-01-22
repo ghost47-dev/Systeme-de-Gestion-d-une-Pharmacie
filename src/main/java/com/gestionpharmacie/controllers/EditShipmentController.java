@@ -29,13 +29,13 @@ public class EditShipmentController {
     private TextField supplierId ;
     @FXML
     private DatePicker requestDate , arrivalDate;
-    @FXML 
-    private CheckBox isReceived , notReceived; 
-    @FXML 
+    @FXML
+    private CheckBox isReceived , notReceived;
+    @FXML
     private TextField  productQuantity, productPrice;
     @FXML
     private Label errorLabel;
-    
+
     private int product_Id;
     private int shipmentId ;
     private String privilege;
@@ -67,8 +67,8 @@ public class EditShipmentController {
     }
     @FXML
     public void showEdit(String shipment){
-       
-        Pattern pattern = Pattern.compile(   
+
+        Pattern pattern = Pattern.compile(
                 "Shipment id : (\\d+)\\n" +
                 "Supplier id : (\\d+)\\n" +
                 "Supplier name : ([^|]+) \\| Supplier phone : (\\d+)\\n" +
@@ -86,7 +86,7 @@ public class EditShipmentController {
 
 
         Matcher matcher = pattern.matcher(shipment);
-        
+
         if (!matcher.find()) {
             System.out.println(shipment);
             throw new IllegalArgumentException("Invalid shipment format");
@@ -112,16 +112,16 @@ public class EditShipmentController {
         this.notReceived.setSelected(!Received);
         this.productPrice.setText(productPrice);
         this.productQuantity.setText(productQuantity);
-        
+
     }
-    @FXML 
+    @FXML
     private void editShipment(ActionEvent event ){
         LocalDate arrivalDateTmp = arrivalDate.getValue();
         LocalDate requestDateTmp = requestDate.getValue();
         String supplier_id = supplierId.getText();
         String pQuantity = productQuantity.getText();
         String pPrice = productPrice.getText();
-        
+
         Date  arrival , request;
         int supId ,  quantity;
         double price;
@@ -130,10 +130,10 @@ public class EditShipmentController {
             requestDateTmp != null &&
             (isReceived.isSelected() ^ notReceived.isSelected()) &&
             !pQuantity.isEmpty() &&
-            !pPrice.isEmpty() 
+            !pPrice.isEmpty()
             ){
             ShipmentManager shipmentManager = new ShipmentManager(DatabaseConnection.getConnection());
-            
+
             try {
                 supId = Integer.parseInt(supplier_id);
                 Supplier supplier = shipmentManager.fetchSupplier(supId);
@@ -145,7 +145,7 @@ public class EditShipmentController {
             }
             catch (NumberFormatException e){
                errorLabel.setText("Invalid price !");
-               errorLabel.setVisible(true); 
+               errorLabel.setVisible(true);
                return;
             }
 
@@ -160,16 +160,16 @@ public class EditShipmentController {
                 errorLabel.setVisible(true);
                 return;
             }
-            
+
             request = Date.from(requestDateTmp.atStartOfDay(ZoneId.systemDefault()).toInstant());
             arrival = Date.from(arrivalDateTmp.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            
+
             try {
                  quantity = Integer.parseInt(pQuantity);
             }
             catch (NumberFormatException e){
                errorLabel.setText("Invalid quantity !");
-               errorLabel.setVisible(true); 
+               errorLabel.setVisible(true);
                return;
             }
             try {
@@ -177,15 +177,15 @@ public class EditShipmentController {
             }
             catch (NumberFormatException e){
                errorLabel.setText("Invalid price!");
-               errorLabel.setVisible(true); 
+               errorLabel.setVisible(true);
                return;
-            }           
-            errorLabel.setVisible(false);  
+            }
+            errorLabel.setVisible(false);
 
-            
+
             try {
                 shipmentManager.updateShipment(shipmentId ,
-                        supId, 
+                        supId,
                         request,
                         isReceived.isSelected() && !notReceived.isSelected(),
                         arrival );

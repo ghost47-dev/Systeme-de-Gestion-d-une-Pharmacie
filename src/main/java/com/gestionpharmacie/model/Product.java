@@ -22,7 +22,7 @@ public class Product {
 	    this.price=rs.getDouble("price");
 	    this.quantity=rs.getInt("quantity");
 	}catch(SQLException e){
-	    System.out.println(e.getMessage()); 
+	    System.out.println(e.getMessage());
 	}
     }
     public int getId() {

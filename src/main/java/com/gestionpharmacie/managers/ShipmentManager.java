@@ -97,7 +97,7 @@ public class ShipmentManager {
         }
         return null;
     }
-    
+
     public ArrayList<ShipmentGood> fetchShipmentGood (int shipment_id) throws ShipmentNotFoundException {
         String sql = "SELECT * FROM shipment_good where shipment_good.shipment_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)){
@@ -109,7 +109,7 @@ public class ShipmentManager {
                         rs.getInt("shipment_id"),
                         rs.getInt("product_id"),
                         rs.getDouble("price"),
-                        rs.getInt("quantity")); 
+                        rs.getInt("quantity"));
                 out.add(sg);
             }
             return out;
@@ -186,15 +186,15 @@ public class ShipmentManager {
             ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
             try {
                 if (productManager.fetchProduct(sg.getProductId()).getQuantity() == 0){
-                    //Delete this product 
+                    //Delete this product
                 }
             }
             catch (ProductNotFoundException e){
                 e.printStackTrace();
                 return;
             }
-            // Delete this shipment_Good  
-        } 
+            // Delete this shipment_Good
+        }
         // Delete this shipment_supplier
         String sql = "DELETE FROM shipment WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

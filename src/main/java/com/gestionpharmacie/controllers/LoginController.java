@@ -27,17 +27,17 @@ public class LoginController {
 
             try {
                 // Login Logic
-                
+
                 String username = new String(usernameField.getText());
                 String password = new String(passwordField.getText());
-                
+
                 UserManager usermanager = new UserManager(DatabaseConnection.getConnection());
                 User user = usermanager.fetchUser(username);
-                
+
                 if (user == null){
                     errorLabel.setText("this username does not exist !");
                     errorLabel.setVisible(true);
-                    
+
                     usernameField.clear();
                     passwordField.clear();
                     return ;
@@ -45,12 +45,12 @@ public class LoginController {
                 else if (!user.getPassword().equals(password)){
                     errorLabel.setText("Password is wrong !");
                     errorLabel.setVisible(true);
-                    
+
                     passwordField.clear();
                     return ;
                 }
-                errorLabel.setVisible(false);   
-                 
+                errorLabel.setVisible(false);
+
                 FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/gestionpharmacie/main.fxml")
                 );
@@ -59,10 +59,10 @@ public class LoginController {
                         return new MainController(user.getPrivilege());
                     }
                     return null;
-                });  
+                });
                 Parent root = loader.load();
 
-                
+
 
                 Scene scene = new Scene(root, 900, 600);
                 scene.getStylesheets().add(
