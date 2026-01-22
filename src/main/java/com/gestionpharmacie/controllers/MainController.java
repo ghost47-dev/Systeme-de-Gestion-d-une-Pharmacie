@@ -180,11 +180,11 @@ public class MainController {
     @FXML
     private void showSaleHistory() {
         
-        
-        try (Connection connection = DatabaseConnection.getConnection()){ 
+        Connection conn = Database.getInstance().getConnection();
+        try {
 
-            ProductManager productManager = new ProductManager(connection);
-            SaleManager saleManager = new SaleManager(productManager,connection);
+            ProductManager productManager = new ProductManager(conn);
+            SaleManager saleManager = new SaleManager(productManager,conn);
             
             ArrayList<Integer> sales = saleManager.getSaleIds();
             
@@ -233,10 +233,10 @@ public class MainController {
             showPage(saleHistoryPage);
             setActiveButton(saleHistoryBtn);
 
-        }
-        catch (SQLException e){
+        } catch (Exception e){
             e.printStackTrace();
         }
+
 
 
     }
@@ -300,7 +300,8 @@ public class MainController {
         catch(NumberFormatException e) {
             System.out.println("error while parsing id ");
         }
-        ProductManager pm = new ProductManager(DatabaseConnection.getConnection());
+        Connection conn = Database.getInstance().getConnection();
+        ProductManager pm = new ProductManager(conn);
         try {
             pm.deleteProduct(id);   
             System.out.println("product deleted !");
@@ -350,10 +351,11 @@ public class MainController {
     }
     @FXML
     public void showProductsPage() {
+        Connection conn = Database.getInstance().getConnection();
         
-        try (Connection connection = DatabaseConnection.getConnection()){ 
+        try {
 
-            ProductManager productManager = new ProductManager(connection);
+            ProductManager productManager = new ProductManager(conn);
             
             ArrayList<Product> products = productManager.viewStock();
              
@@ -426,7 +428,7 @@ public class MainController {
             }
             showNextMessage();
         }
-        catch (SQLException e){
+        catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -498,9 +500,10 @@ public class MainController {
 
     @FXML
     public void showShipmentsPage() {
-        try (Connection connection = DatabaseConnection.getConnection()) { 
+        Connection conn = Database.getInstance().getConnection();
+        try  {
 //
-            ShipmentManager sm = new ShipmentManager(connection);
+            ShipmentManager sm = new ShipmentManager(conn);
 
             ArrayList<Shipment> shipments = sm.fetchShipments();
              //
@@ -530,7 +533,7 @@ public class MainController {
                 if (shipmentGood.size() == 0) {System.out.println("shipmentGoodisEmpty"); return;}
 
                 String shipmentGoodInfo = "";
-                ProductManager pm = new ProductManager(DatabaseConnection.getConnection());
+                ProductManager pm = new ProductManager(conn);
                 for (ShipmentGood sg : shipmentGood){
                     double price = sg.getPrice();  
                     int quantity = sg.getQuantity();
@@ -629,7 +632,7 @@ public class MainController {
             showPage(shipmentsPage);
             setActiveButton(shipmentsBtn);
         }
-        catch (SQLException e){
+        catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -645,8 +648,8 @@ public class MainController {
         }
 
         int shipment_id = Integer.parseInt(matcher.group(1));
-        
-        ShipmentManager sm = new ShipmentManager(DatabaseConnection.getConnection());
+        Connection conn = Database.getInstance().getConnection();
+        ShipmentManager sm = new ShipmentManager(conn);
         try {
             sm.cancelShipment(shipment_id);
             shipmentsList.getItems().remove(shipment);
@@ -748,7 +751,8 @@ public class MainController {
 
     @FXML
     public void showSuppliersPage() {
-       try (Connection connection = DatabaseConnection.getConnection()){
+        Connection conn = Database.getInstance().getConnection();
+       try {
 
             suppliersList.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
@@ -774,7 +778,7 @@ public class MainController {
 
             ObservableList<String> items = FXCollections.observableArrayList();
             
-            ShipmentManager sm = new ShipmentManager(connection);
+            ShipmentManager sm = new ShipmentManager(conn);
             ArrayList<String> suppliers = sm.viewSuppliersPerfermance();
             for (String s : suppliers){
                 items.add(s);
@@ -785,7 +789,7 @@ public class MainController {
             showPage(suppliersPage);
             setActiveButton(suppliersBtn);
        }
-       catch (SQLException e){
+       catch (Exception e){
         return ;
        }
 
@@ -793,11 +797,12 @@ public class MainController {
     
     @FXML 
     private void showTotalRevenuePage(){
-        try (Connection connection = DatabaseConnection.getConnection()){
+        Connection conn = Database.getInstance().getConnection();
+        try {
 
             double totalRevenue;
-            ProductManager pm = new ProductManager(connection);
-            SaleManager sm = new SaleManager(pm, connection);
+            ProductManager pm = new ProductManager(conn);
+            SaleManager sm = new SaleManager(pm, conn);
             totalRevenue = sm.getTotalRevenue();
 
             NumberFormat nf = NumberFormat.getInstance(Locale.US);
@@ -805,7 +810,7 @@ public class MainController {
             setActiveButton(totalRevenueBtn);   
             showPage(totalRevenuePage);
         }
-        catch (SQLException e){
+        catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -813,8 +818,9 @@ public class MainController {
     private void handleSignUp(){
         
         clearAllErrors();
+        Connection conn = Database.getInstance().getConnection();
         boolean isValid = true;
-        UserManager userManager = new UserManager(DatabaseConnection.getConnection());
+        UserManager userManager = new UserManager(conn);
         
         if (usernameField.getText().trim().isEmpty()) {
             usernameField.getStyleClass().add("error");
