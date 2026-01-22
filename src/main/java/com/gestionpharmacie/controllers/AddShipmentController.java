@@ -171,7 +171,7 @@ public class AddShipmentController {
                         shipmentManager.addShipmentGood(shipment_id, product.getId(), productPrice, productQuantity);
                     }
                     catch (ProductNotFoundException e){
-                        int product_id = productManager.addProduct(Name.getText(), productPrice, productQuantity);
+                        int product_id = productManager.addProduct(Name.getText(), productPrice, 0);
                         shipmentManager.addShipmentGood(shipment_id, product_id, productPrice, productQuantity);
                     }
 

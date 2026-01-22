@@ -72,6 +72,10 @@ public class ProductManager {
 
             int rows = stmt.executeUpdate();
             if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
+            else {
+                Product p = fetchProduct(id);
+                if (p.getQuantity() == 0 ) deleteProduct(id);
+            }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }
@@ -84,6 +88,7 @@ public class ProductManager {
 
             int rows = stmt.executeUpdate();
             if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
+
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }
@@ -117,6 +122,10 @@ public class ProductManager {
 
             int rows = stmt.executeUpdate();
             if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
+            else {
+                p = fetchProduct(id);
+                if (p.getQuantity() == 0 ) deleteProduct(id);
+            }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }

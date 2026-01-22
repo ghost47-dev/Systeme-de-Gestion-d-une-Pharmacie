@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.model.Supplier;
+import com.gestionpharmacie.utilities.DatabaseConnection;
 import com.gestionpharmacie.model.Shipment;
 import com.gestionpharmacie.model.ShipmentGood;
 
@@ -180,6 +181,21 @@ public class ShipmentManager {
 
 
     public void cancelShipment(int id) throws ShipmentNotFoundException {
+        ArrayList<ShipmentGood> shipmentGood = fetchShipmentGood(id);
+        for (ShipmentGood sg : shipmentGood){
+            ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
+            try {
+                if (productManager.fetchProduct(sg.getProductId()).getQuantity() == 0){
+                    //Delete this product 
+                }
+            }
+            catch (ProductNotFoundException e){
+                e.printStackTrace();
+                return;
+            }
+            // Delete this shipment_Good  
+        } 
+        // Delete this shipment_supplier
         String sql = "DELETE FROM shipment WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
