@@ -24,9 +24,15 @@ public class ProductController {
     @FXML
     private Label errorLabel;
     @FXML TextField nameField , priceField , quantityField;
-    
+
+    private String privilege;
     private int id;
     private String product ;
+    public void setPrivilege(String privilege){this.privilege = privilege;}
+    @FXML 
+    public void initialize(){
+        System.out.println(privilege);
+    }
     @FXML
     private void saveProduct() {
         String name = productName.getText();
@@ -68,13 +74,18 @@ public class ProductController {
 
     @FXML
     private void goBack(ActionEvent event) {
-        // load your other fxml (e.g., main page)
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gestionpharmacie/main.fxml"));
+            loader.setControllerFactory(type -> {
+                if (type == MainController.class) {
+                    return new MainController(privilege);
+                }
+                return null;
+            });
             Parent root = loader.load();
             MainController mainController = loader.getController();
-
             mainController.showProductsPage();
+
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()

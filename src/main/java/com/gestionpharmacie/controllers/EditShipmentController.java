@@ -38,10 +38,18 @@ public class EditShipmentController {
     
     private int product_Id;
     private int shipmentId ;
+    private String privilege;
+    public void setPrivilege(String privilege){this.privilege = privilege;}
     @FXML
     private void goBack(ActionEvent event) {
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gestionpharmacie/main.fxml"));
+            loader.setControllerFactory(type -> {
+                if (type == MainController.class) {
+                    return new MainController(privilege);
+                }
+                return null;
+            });
             Parent root = loader.load();
             MainController mainController = loader.getController();
 

@@ -34,6 +34,9 @@ public class SaleEntryController {
 
     private int productCount = 0;
 
+    private String privilege;
+    public void setPrivilege(String privilege){this.privilege = privilege;}
+
     @FXML
     public void initialize() {
         addProductRow(); 
@@ -126,7 +129,15 @@ public class SaleEntryController {
     @FXML
     private void goBack(ActionEvent event) {
         try{
-            Parent root = FXMLLoader.load(getClass().getResource("/com/gestionpharmacie/main.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gestionpharmacie/main.fxml"));
+            loader.setControllerFactory(type -> {
+                if (type == MainController.class) {
+                    System.out.println(privilege);
+                    return new MainController(privilege);
+                }
+                return null;
+            });
+            Parent root = loader.load();
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()

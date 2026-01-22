@@ -46,10 +46,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
@@ -104,7 +102,6 @@ public class MainController {
     @FXML private Label confirmPasswordError;
     @FXML private Label privilegeError;
     @FXML private Button signUpButton;
-    @FXML private Hyperlink loginLink;
     
     public enum MessageType {
         SUCCESS("✓", "flash-success"),
@@ -130,10 +127,10 @@ public class MainController {
     public MainController(String privilege){ 
         this.privilege = privilege;
     } 
+    public MainController(){}
 
     @FXML
     public void initialize() {
-        // Set initial active button
         showSaleHistory();
         if (privilege.equals("employee")){
             userCreationBtn.setVisible(false);
@@ -147,9 +144,6 @@ public class MainController {
         }
     }
     
-    /**
-     * Toggle side panel visibility with smooth animation
-     */
     @FXML
     private void toggleSidePanel() {
 
@@ -181,9 +175,6 @@ public class MainController {
 
 
     
-    /**
-     * Show home page
-     */
     @FXML
     private void showSaleHistory() {
         
@@ -243,7 +234,13 @@ public class MainController {
     @FXML
     private void addSale(ActionEvent event){
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/gestionpharmacie/saleAdd.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gestionpharmacie/saleAdd.fxml")
+            );
+            Parent root = loader.load();
+            SaleEntryController saleEntryController = loader.getController();
+            saleEntryController.setPrivilege(privilege);
+
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
@@ -269,10 +266,11 @@ public class MainController {
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );
             
-            ProductController pc = loader.getController();
-            
-            pc.showEdit(product);
 
+            ProductController pc = loader.getController();
+            pc.setPrivilege(privilege);
+            pc.showEdit(product);
+            
             Stage stage = (Stage) ((Node) event.getSource())
                 .getScene().getWindow();
             stage.setScene(scene);       
@@ -312,16 +310,13 @@ public class MainController {
     }
     
     public void showMessage(String message, MessageType type, int durationMs) {
-        // Set message content
         messageLabel.setText(message);
         iconLabel.setText(type.icon);
         
-        // Clear previous styles
         flashBox.getStyleClass().removeIf(s -> s.startsWith("flash-"));
         flashBox.getStyleClass().add("flash-message");
         flashBox.getStyleClass().add(type.styleClass);
         
-        // Show with fade in
         flashBox.setOpacity(0);
         flashBox.setVisible(true);
         
@@ -330,7 +325,6 @@ public class MainController {
         fadeIn.setToValue(1);
         fadeIn.play();
         
-        // Auto-hide after duration
         if (durationMs > 0) {
             PauseTransition pause = new PauseTransition(Duration.millis(durationMs));
             pause.setOnFinished(e -> hide());
@@ -447,11 +441,17 @@ public class MainController {
     @FXML
     private void addProduct(ActionEvent event){
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/gestionpharmacie/productAdd.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gestionpharmacie/productAdd.fxml")
+            );
+            Parent root = loader.load();
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );
+            ProductController productController = loader.getController();
+            productController.setPrivilege(privilege);
+
             Stage stage = (Stage) ((Node) event.getSource())
                 .getScene().getWindow();
             stage.setScene(scene);       
@@ -465,7 +465,13 @@ public class MainController {
     @FXML
     private void addShipment(ActionEvent event){
          try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/gestionpharmacie/shipmentAdd.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gestionpharmacie/shipmentAdd.fxml")
+            );
+            Parent root = loader.load();
+            AddShipmentController addShipmentController = loader.getController();
+            addShipmentController.setPrivilege(privilege);
+
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
@@ -646,9 +652,9 @@ public class MainController {
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );
-            
+             
             EditShipmentController sc = loader.getController();
-            
+            sc.setPrivilege(privilege);
             sc.showEdit(shipment);
 
             Stage stage = (Stage) ((Node) event.getSource())
@@ -709,6 +715,7 @@ public class MainController {
             EditSupplierController sc = loader.getController();
             
             sc.showEdit(supplier);
+            sc.setPrivilege(privilege);
 
             Stage stage = (Stage) ((Node) event.getSource())
                 .getScene().getWindow();

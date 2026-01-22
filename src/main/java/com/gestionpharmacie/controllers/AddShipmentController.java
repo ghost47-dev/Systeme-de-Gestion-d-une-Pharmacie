@@ -35,8 +35,8 @@ public class AddShipmentController {
     @FXML
     private VBox shipmentsGoodContainer;
     private int shipmentGoodCount = 0;
-    
-    
+    private String privilege;
+    public void setPrivilege(String privilege){this.privilege=privilege;} 
     @FXML
     public void initialize (){
         addGoodRow();
@@ -180,10 +180,16 @@ public class AddShipmentController {
     private void goBack(javafx.event.ActionEvent event) {
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gestionpharmacie/main.fxml"));
+            loader.setControllerFactory(type -> {
+                if (type == MainController.class) {
+                    return new MainController(privilege);
+                }
+                return null;
+            });
             Parent root = loader.load();
             MainController mainController = loader.getController();
-
             mainController.showShipmentsPage();
+
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()

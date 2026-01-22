@@ -24,6 +24,8 @@ public class EditSupplierController{
     @FXML private TextField nameField , phoneField;
     @FXML private javafx.scene.control.Label errorLabel;
     @FXML private int supplier_id;
+    private String privilege;
+    public void setPrivilege(String privilege){this.privilege = privilege;}
     @FXML
     public void showEdit(String supplierInfo){
         Pattern pattern = Pattern.compile("(\\d+): (\\S+).*");
@@ -46,6 +48,12 @@ public class EditSupplierController{
     private void goBack(ActionEvent event) {
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gestionpharmacie/main.fxml"));
+            loader.setControllerFactory(type -> {
+                if (type == MainController.class) {
+                    return new MainController(privilege);
+                }
+                return null;
+            });
             Parent root = loader.load();
             MainController mainController = loader.getController();
 
@@ -54,6 +62,7 @@ public class EditSupplierController{
             scene.getStylesheets().add(
                     getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
             );
+            
             Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
             stage.setScene(scene);
         }
