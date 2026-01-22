@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.gestionpharmacie.model.Client;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
+import com.gestionpharmacie.exceptions.InsufficientStockException;
+import com.gestionpharmacie.exceptions.ProductNotFoundException;
 
 public class SaleManager {
     ProductManager productManager;
@@ -51,7 +53,7 @@ public class SaleManager {
         return -1;
     }
 
-    public int addSaleProduct(int sid, int pid, int quant) {
+    public int addSaleProduct(int sid, int pid, int quant) throws InsufficientStockException ,ProductNotFoundException{
         String sql = "INSERT INTO sale_product(sale_id, product_id, quantity) VALUES(?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, sid);
@@ -63,6 +65,8 @@ public class SaleManager {
             if (keys.next()) {
                 return keys.getInt(1);
             }
+	    ProductManager p = new ProductManager(connection);
+	    p.removeFromProduct(pid,quant);
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }
