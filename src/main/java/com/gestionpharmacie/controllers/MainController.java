@@ -125,10 +125,13 @@ public class MainController {
     private static final double PANEL_WIDTH = 200.0;
     private Queue<String> messageQueue = new LinkedList<>();
     private boolean isShowingMessage = false;   
-    private String privilege ;
+    static private String privilege ;
+
+    public MainController(){
+    }
 
     public MainController(String privilege){ 
-        this.privilege = privilege;
+        MainController.privilege = privilege;
     } 
 
     @FXML
