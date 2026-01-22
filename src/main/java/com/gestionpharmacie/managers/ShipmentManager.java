@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.Date;
 import java.util.ArrayList;
 
+import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.model.Shipment;
@@ -190,15 +191,29 @@ public class ShipmentManager {
         }
     }
 
-    public int receiveShipment(int id, Date d) throws ShipmentNotFoundException {
-        String sql = "UPDATE shipment SET received = TRUE WHERE id = ?;"+
-                "UPDATE product P SET P.quantity = P.quantity + 10 WHERE P.id in "+
-                "(Select product_id FROM shipment_good G,shipment S WHERE G.shipment_id = S.id);";
+    public int receiveShipment(int id, Date d) throws ShipmentNotFoundException,ProductNotFoundException {
+        String sql = "UPDATE shipment SET received = TRUE, arrival_date = ? WHERE id = ? ";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
+            stmt.setInt(2, id);
+            java.sql.Date date = new java.sql.Date(d.getTime());
+            stmt.setDate(1, date);
             int keys = stmt.executeUpdate();
             if (keys == 0)
                 throw new ShipmentNotFoundException("This shipment doesn't exist!");
+            sql = "SELECT shipment_good.product_id, quantity FROM shipment_good JOIN shipment ON shipment_good.shipment_id = shipment.id WHERE shipment.id = ?;";
+            PreparedStatement stmt1 = connection.prepareStatement(sql);
+            stmt1.setInt(1, id);
+            ResultSet rs = stmt1.executeQuery();
+            while (rs.next()) {
+                sql = "UPDATE product SET quantity = quantity + ? WHERE id = ?";
+                PreparedStatement stmt3 = connection.prepareStatement(sql);
+                    stmt3.setInt(1, rs.getInt("quantity"));
+                    stmt3.setInt(2, rs.getInt("shipment_good.product_id"));
+
+                    int rows = stmt3.executeUpdate();
+                    if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
+
+            }
 
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());

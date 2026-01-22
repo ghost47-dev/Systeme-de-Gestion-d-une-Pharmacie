@@ -560,8 +560,10 @@ public class MainController {
         }
         catch (ShipmentNotFoundException e){
             return ;
+        } catch (ProductNotFoundException e) {
+            return ;
         }
-        
+
     }
 
     @FXML
