@@ -22,12 +22,14 @@ import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
 import com.gestionpharmacie.managers.ShipmentManager;
+import com.gestionpharmacie.managers.UserManager;
 import com.gestionpharmacie.model.Product;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
 import com.gestionpharmacie.model.Shipment;
 import com.gestionpharmacie.model.ShipmentGood;
 import com.gestionpharmacie.model.Supplier;
+import com.gestionpharmacie.model.User;
 import com.gestionpharmacie.utilities.DatabaseConnection;
 import com.gestionpharmacie.model.Client;
 
@@ -44,9 +46,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
@@ -65,12 +72,14 @@ public class MainController {
     @FXML private Button suppliersBtn;
     @FXML private Button adminDashboardBtn;    
     @FXML private Button totalRevenueBtn;
+    @FXML private Button userCreationBtn;
     // Pages
     @FXML private VBox saleHistoryPage;
     @FXML private VBox productsPage;
     @FXML private VBox shipmentsPage;
     @FXML private VBox suppliersPage;
     @FXML private VBox totalRevenuePage;
+    @FXML private VBox userCreationPage;
     @FXML private HBox editingBtns_product;
     @FXML private HBox editingBtns_shipment; 
     
@@ -82,16 +91,20 @@ public class MainController {
 
     @FXML private Button editSupplierBtn;
     @FXML private Label revenueLabel;
-    
-    @FXML
-    private VBox flashBox;
-    
-    @FXML
-    private Label iconLabel;
-    
-    @FXML
-    private Label messageLabel;
-    
+    @FXML private VBox flashBox;
+    @FXML private Label iconLabel;
+    @FXML private Label messageLabel;
+
+    @FXML private TextField usernameField;
+    @FXML private PasswordField passwordField;
+    @FXML private PasswordField confirmPasswordField;
+    @FXML private ComboBox<String> privilegeComboBox;
+    @FXML private Label usernameError;
+    @FXML private Label passwordError;
+    @FXML private Label confirmPasswordError;
+    @FXML private Label privilegeError;
+    @FXML private Button signUpButton;
+    @FXML private Hyperlink loginLink;
     
     public enum MessageType {
         SUCCESS("✓", "flash-success"),
@@ -112,10 +125,26 @@ public class MainController {
     private static final double PANEL_WIDTH = 200.0;
     private Queue<String> messageQueue = new LinkedList<>();
     private boolean isShowingMessage = false;   
+    private String privilege ;
+
+    public MainController(String privilege){ 
+        this.privilege = privilege;
+    } 
+
     @FXML
     public void initialize() {
         // Set initial active button
         showSaleHistory();
+        if (privilege.equals("employee")){
+            userCreationBtn.setVisible(false);
+            totalRevenueBtn.setVisible(false);
+            suppliersBtn.setVisible(false);
+        }
+        else if (privilege.equals("admin")){
+            userCreationBtn.setVisible(true);
+            totalRevenueBtn.setVisible(true);
+            suppliersBtn.setVisible(true);
+        }
     }
     
     /**
@@ -754,6 +783,106 @@ public class MainController {
             e.printStackTrace();
         }
     }
+    @FXML 
+    private void handleSignUp(){
+        
+        clearAllErrors();
+        boolean isValid = true;
+        UserManager userManager = new UserManager(DatabaseConnection.getConnection());
+        
+        if (usernameField.getText().trim().isEmpty()) {
+            usernameField.getStyleClass().add("error");
+            showError( usernameError, "Username is required");
+            isValid = false;
+        } else if (usernameField.getText().trim().length() < 3) {
+            usernameField.getStyleClass().add("error");
+            showError(usernameError, "Username must be at least 3 characters");
+            isValid = false;
+        } else if (userManager.fetchUser(usernameField.getText().trim()) != null){
+            usernameField.getStyleClass().add("error");
+            showError(usernameError, "Username already taken");
+            isValid = false;
+        }
+
+        
+        if (passwordField.getText().isEmpty()) {
+            passwordField.getStyleClass().add("error");
+            showError(passwordError, "Password is required");
+            isValid = false;
+        } else if (passwordField.getText().length() < 6) {
+            passwordField.getStyleClass().add("error");
+            showError( passwordError, "Password must be at least 6 characters");
+            isValid = false;
+        }
+        
+        if (confirmPasswordField.getText().isEmpty()) {
+            confirmPasswordField.getStyleClass().add("error");
+            showError( confirmPasswordError, "Please confirm your password");
+            isValid = false;
+        } else if (!passwordField.getText().equals(confirmPasswordField.getText())) {
+            confirmPasswordField.getStyleClass().add("error");
+            showError( confirmPasswordError, "Passwords do not match");
+            isValid = false;
+        }
+        
+        if (privilegeComboBox.getValue() == null) {
+            privilegeComboBox.getStyleClass().add("error");
+            showError( privilegeError, "Please select a privilege level");
+            isValid = false;
+        }
+        
+        if (isValid) {
+            String username = usernameField.getText().trim();
+            String password = passwordField.getText();
+            String privilege = privilegeComboBox.getValue();
+            
+
+            userManager.addUser(new User(username, password, privilege));
+
+            System.out.println("Sign Up Successful!");
+            
+            clearFields();
+        }
+
+    }
+    private void showError( Label errorLabel, String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+    
+    private void clearError( Label errorLabel) {
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
+    }
+    
+    private void clearAllErrors() {
+        usernameField.getStyleClass().remove("error");
+        clearError(usernameError);
+        passwordField.getStyleClass().remove("error");
+        clearError(passwordError);
+        confirmPasswordField.getStyleClass().remove("error");
+        clearError(confirmPasswordError);
+        privilegeComboBox.getStyleClass().remove("error");
+        clearError( privilegeError);
+    }
+    
+    private void clearFields() {
+        usernameField.clear();
+        passwordField.clear();
+        confirmPasswordField.clear();
+        privilegeComboBox.setValue(null);
+    }
+    @FXML 
+    private void showUserCreationPage(){
+        ObservableList<String> items = FXCollections.observableArrayList(
+            "admin",
+            "employee"
+            );
+        privilegeComboBox.setItems(items);
+        setActiveButton(userCreationBtn);
+        showPage(userCreationPage);
+    }
 
     private void showPage(VBox pageToShow) {
         
@@ -773,6 +902,7 @@ public class MainController {
         shipmentsPage.setVisible(false);
         suppliersPage.setVisible(false);
         totalRevenuePage.setVisible(false);
+        userCreationPage.setVisible(false);
         pageToShow.setVisible(true);
     }
     
@@ -783,7 +913,8 @@ public class MainController {
         shipmentsBtn.getStyleClass().remove("nav-btn-active");
         suppliersBtn.getStyleClass().remove("nav-btn-active");
         totalRevenueBtn.getStyleClass().remove("nav-btn-active");
-        
+        userCreationBtn.getStyleClass().remove("nav-btn-active");
+
         // Add active class to selected button
         if (!activeBtn.getStyleClass().contains("nav-btn-active")) {
             activeBtn.getStyleClass().add("nav-btn-active");

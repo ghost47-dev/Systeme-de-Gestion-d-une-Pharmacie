@@ -24,6 +24,8 @@
                             onAction="#showSuppliersPage" maxWidth="Infinity"/>
                     <Button fx:id="totalRevenueBtn" text="Total revenue" styleClass="nav-btn" 
                             onAction="#showTotalRevenuePage" maxWidth="Infinity"/>
+                    <Button fx:id="userCreationBtn" text="Create Account" styleClass="nav-btn" 
+                            onAction="#showUserCreationPage" maxWidth="Infinity"/>
                 </VBox>
             </VBox>
             <VBox fx:id="togglePanel" alignment="TOP_CENTER" style="-fx-background-color: #34495e;">
@@ -47,8 +49,6 @@
                 </VBox>
             </VBox>
             <VBox fx:id="productsPage" alignment="CENTER" spacing="5" visible="false">
-                <!-- List + Add Button Container -->
-
                     <Label text="Stock" styleClass="page-title"/>
                     <ListView fx:id="productsList" prefHeight="420" styleClass="list-view"/>
                     <VBox fx:id="flashBox" styleClass="flash-message" visible="false" maxWidth="400" AnchorPane.topAnchor="20" AnchorPane.rightAnchor="20" prefHeight="20">
@@ -82,8 +82,38 @@
                     <Label text="Total Revenue"
                        style="-fx-font-size: 20px; -fx-font-weight: bold;" />
                     <Label fx:id="revenueLabel"
-                       text="\$0.00"
                        style="-fx-font-size: 28px; -fx-text-fill: green;" />
+            </VBox>
+            <VBox fx:id="userCreationPage" styleClass="signup-container" visible="false" alignment="CENTER" spacing="25" maxWidth="400">
+                <Label text="Create Account" styleClass="title"/>
+                <VBox spacing="20" styleClass="form-container">
+                    <VBox spacing="8">
+                        <Label text="Username" styleClass="field-label"/>
+                        <TextField fx:id="usernameField" promptText="Enter your username" styleClass="input-field"/>
+                        <Label fx:id="usernameError" styleClass="error-label" visible="false" managed="false"/>
+                    </VBox>
+                    <VBox spacing="8">
+                        <Label text="Password" styleClass="field-label"/>
+                        <PasswordField fx:id="passwordField" promptText="Enter your password" styleClass="input-field"/>
+                        <Label fx:id="passwordError" styleClass="error-label" visible="false" managed="false"/>
+                    </VBox>
+                    <VBox spacing="8">
+                        <Label text="Confirm Password" styleClass="field-label"/>
+                        <PasswordField fx:id="confirmPasswordField" promptText="Re-enter your password" styleClass="input-field"/>
+                        <Label fx:id="confirmPasswordError" styleClass="error-label" visible="false" managed="false"/>
+                    </VBox>
+                    <VBox spacing="8">
+                        <Label text="Privilege Level" styleClass="field-label"/>
+                        <ComboBox fx:id="privilegeComboBox" promptText="Select privilege level" styleClass="combo-field" maxWidth="Infinity"/>
+                        <Label fx:id="privilegeError" styleClass="error-label" visible="false" managed="false"/>
+                    </VBox>
+                </VBox>
+                <VBox spacing="15">
+                    <Button fx:id="signUpButton" text="Create Account" styleClass="add-btn" maxWidth="Infinity" onAction="#handleSignUp"/>
+                </VBox>
+                <padding>
+                    <Insets top="40" right="40" bottom="40" left="40"/>
+                </padding>
             </VBox>
         </StackPane>
     </center>

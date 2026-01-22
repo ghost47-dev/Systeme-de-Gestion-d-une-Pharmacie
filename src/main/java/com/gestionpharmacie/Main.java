@@ -18,7 +18,7 @@ public class Main extends Application {
     private void loadLogin(Stage stage) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/gestionpharmacie/main.fxml")
+                    getClass().getResource("/com/gestionpharmacie/login.fxml")
             );
             Parent root = loader.load();
 

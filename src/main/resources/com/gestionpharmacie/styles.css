@@ -417,3 +417,56 @@
 .flash-info .flash-text {
     -fx-text-fill: #1565c0;
 }
+/* Root Background */
+
+/* Title */
+.title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+
+/* Field Labels */
+.field-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #444444;
+}
+
+/* Input Fields */
+.input-field, .combo-field  {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8px;
+    -fx-border-width: 2px;
+    -fx-padding: 12px 15px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.input-field:focused, .combo-field:focused {
+    -fx-border-color: #667eea;
+}
+
+.combo-field .list-cell {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #333333;
+}
+
+.combo-field .arrow-button {
+    -fx-background-color: transparent;
+}
+
+/* Error Labels */
+.error-label {
+    -fx-text-fill: #f44336;
+    -fx-font-size: 12px;
+}
+
+.input-field.error, .combo-field.error {
+    -fx-border-color: #f44336;
+}
+
+

@@ -10,6 +10,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
 
+import java.lang.ModuleLayer.Controller;
+
 import com.gestionpharmacie.managers.UserManager;
 import com.gestionpharmacie.model.User;
 import com.gestionpharmacie.utilities.DatabaseConnection;
@@ -50,10 +52,18 @@ public class LoginController {
                 }
                 errorLabel.setVisible(false);   
                  
-
-                Parent root = FXMLLoader.load(
-                        getClass().getResource("/com/gestionpharmacie/main.fxml")
+                FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gestionpharmacie/main.fxml")
                 );
+                loader.setControllerFactory(type -> {
+                    if (type == MainController.class) {
+                        return new MainController(user.getPrivilege());
+                    }
+                    return null;
+                });  
+                Parent root = loader.load();
+
+                
 
                 Scene scene = new Scene(root, 900, 600);
                 scene.getStylesheets().add(
@@ -63,7 +73,7 @@ public class LoginController {
                 Stage stage = (Stage) ((Node) event.getSource())
                         .getScene().getWindow();
 
-                stage.setTitle("Navigation Panel Application");
+                stage.setTitle("Pharmacy Stock Management");
                 stage.setScene(scene);
 
             } catch (Exception e) {
