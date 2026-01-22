@@ -7,4 +7,6 @@ module com.gestionpharmacie {
 
     opens com.gestionpharmacie to javafx.fxml;
     exports com.gestionpharmacie;
+    opens com.gestionpharmacie.controllers to javafx.fxml;
+    exports com.gestionpharmacie.controllers;
 }

@@ -3,14 +3,15 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import com.gestionpharmacie.model.Client;
+import com.gestionpharmacie.model.Product;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
-import com.gestionpharmacie.model.Supplier;
+import com.gestionpharmacie.exceptions.InsufficientStockException;
+import com.gestionpharmacie.exceptions.ProductNotFoundException;
 
 public class SaleManager {
     ProductManager productManager;
     Connection connection;
-    private double totalRevenue = 0;
 
     public SaleManager(ProductManager pm, Connection connection) {
         this.connection = connection;
@@ -24,7 +25,9 @@ public class SaleManager {
             stmt.setString(2, surname);
             stmt.setInt(3, phoneNumber);
 
-            ResultSet keys = stmt.executeQuery();
+            stmt.executeUpdate();
+
+            ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
                 return keys.getInt(1);
             }
@@ -39,7 +42,9 @@ public class SaleManager {
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, cid);
 
-            ResultSet keys = stmt.executeQuery();
+            stmt.executeUpdate();
+
+            ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
                 return keys.getInt(1);
             }
@@ -49,19 +54,25 @@ public class SaleManager {
         return -1;
     }
 
-    public int addSaleProduct(int sid, int pid, int quant) {
+    public int addSaleProduct(int sid, int pid, int quant) throws InsufficientStockException ,ProductNotFoundException{
+	    ProductManager p = new ProductManager(connection);
+        Product product = p.fetchProduct(pid);        
+        if (product.getQuantity() < quant )
+            throw new InsufficientStockException("Insufficient stock !");
+
         String sql = "INSERT INTO sale_product(sale_id, product_id, quantity) VALUES(?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, sid);
             stmt.setInt(2, pid);
             stmt.setInt(3, quant);
 
-            ResultSet keys = stmt.executeQuery();
+            stmt.executeUpdate();
+            ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
-                double price = productManager.fetchProduct(pid).getPrice() * quant;
-                totalRevenue += price;
-                return keys.getInt("id");
+                p.removeFromProduct(pid,quant);
+                return keys.getInt(1);
             }
+
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }
@@ -69,7 +80,18 @@ public class SaleManager {
     }
 
     public double getTotalRevenue() {
-        return totalRevenue;
+        String sql = "SELECT SUM(sp.quantity * price) as total " +
+                "FROM sale_product sp, product p " +
+                "WHERE sp.product_id = p.id";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("total");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return 0.0;
     }
 
     public Client fetchClient(int id) {

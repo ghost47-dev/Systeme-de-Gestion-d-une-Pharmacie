@@ -6,147 +6,155 @@ import com.gestionpharmacie.model.Product;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.PropertyPermission;
 
 public class ProductManager {
     private Connection connection;
     private final int quantityRiskThreshold = 10;
 
     public ProductManager (Connection connection) {
-	this.connection = connection;
+        this.connection = connection;
     }
 
-    public int addProduct(String name, double price, int quant) throws SQLException{
-	String sql = "INSERT INTO product(name, price, quantity) VALUES(?, ?, ?)";
-	PreparedStatement stmt = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-	stmt.setString(1, name);
-	stmt.setDouble(2, price);
-	stmt.setInt(3, quant);
-	stmt.executeUpdate();
+    public int addProduct(String name, double price, int quant) {
+        String sql = "INSERT INTO product(name, price, quantity) VALUES(?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, name);
+            stmt.setDouble(2, price);
+            stmt.setInt(3, quant);
+            stmt.executeUpdate();
 
-	ResultSet keys = stmt.getGeneratedKeys();
-	//if keys is empty then it trows an exception
-	return keys.getInt(1);
+            ResultSet keys = stmt.getGeneratedKeys();
+            if (keys.next()) {
+                return keys.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return -1;
     }
 
     public Product fetchProduct(int id) throws ProductNotFoundException{
-	try{
-	    String sql = "SELECT * FROM product WHERE id = ?";
-	    PreparedStatement stmt = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-	    stmt.setInt(1, id);
-	    ResultSet rs = stmt.executeQuery();
+        String sql = "SELECT * FROM product WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
 
-	    if (rs.next()) {
-		return new Product(
-			rs.getInt("id"),
-			rs.getString("name"),
-			rs.getDouble("price"),
-			rs.getInt("quantity")
-			);
-	    }else{
-		throw new ProductNotFoundException();
-	    }
-	}catch (SQLException e){
-	    System.err.println("Error: " + e.getMessage());
-	}
-	//so that the compiler doesn't screem at you
-	return null;
+            if (rs.next()) {
+                return new Product(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        throw new ProductNotFoundException("this product does not exist !");
+    }
+    public Product fetchProduct(String name) throws ProductNotFoundException {
+        String sql = "SELECT * FROM product WHERE name = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Product(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        throw new ProductNotFoundException("this product does not exist !");
     }
 
-    public void updateProduct(int id, String newName, double newPrice, int newQuantity) throws ProductNotFoundException,SQLException {
-	String sql = "UPDATE product SET name = ?, price = ?, quantity = ? WHERE id = ?";
-	PreparedStatement stmt = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-	stmt.setString(1, newName);
-	stmt.setDouble(2, newPrice);
-	stmt.setInt(3, newQuantity);
-	stmt.setInt(4, id);
+    public void updateProduct(int id, String newName, double newPrice, int newQuantity) throws ProductNotFoundException {
+        String sql = "UPDATE product SET name = ?, price = ?, quantity = ? WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, newName);
+            stmt.setDouble(2, newPrice);
+            stmt.setInt(3, newQuantity);
+            stmt.setInt(4, id);
 
-	int rows = stmt.executeUpdate();
-	if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
+            int rows = stmt.executeUpdate();
+            if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
+            else {
+                Product p = fetchProduct(id);
+                if (p.getQuantity() == 0 ) deleteProduct(id);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
     public void deleteProduct(int id) throws ProductNotFoundException {
-	String sql = "DELETE FROM product WHERE id = ?";
-	try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-	    stmt.setInt(1, id);
+        String sql = "DELETE FROM product WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
 
-	    int rows = stmt.executeUpdate();
-	    if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
-	} catch (SQLException e) {
-	    System.err.println("Error: " + e.getMessage());
-	}
+            int rows = stmt.executeUpdate();
+            if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
+
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
-    public void addToProduct(int id, int quant) throws ProductNotFoundException,InsufficientStockException{
-	try{
-	    removeFromProduct(id,-quant);
-	}catch(InsufficientStockException e){
-	    System.out.println("impossible");
-	}
+    public void addToProduct(int id, int quant) throws ProductNotFoundException {
+        String sql = "UPDATE product SET quantity = quantity + ? WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, quant);
+            stmt.setInt(2, id);
+
+            int rows = stmt.executeUpdate();
+            if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
-    //the multiple try catch are uneeded 
     public void removeFromProduct(int id, int quant) throws ProductNotFoundException, InsufficientStockException {
-	try{
-	    Product p = fetchProduct(id);
-	    String sql = "SELECT quantity FROM product WHERE id = ?";
-	    PreparedStatement stmt = connection.prepareStatement(sql);
-	    stmt.setInt(1, id);
+        Product p = fetchProduct(id);
+        if(p == null)
+            throw new ProductNotFoundException("This product doesn't exists!");
 
-	    ResultSet rs = stmt.executeQuery();
-	    if (!rs.next()) {
-		throw new ProductNotFoundException("This product doesn't exist!");
-	    }
-	    if (rs.getInt("quantity") < quant){
-		throw new InsufficientStockException("Insufficient stock for " + p.getName() + "only " + rs.getInt("quantity") + " units left");
-	    }
-	    sql = "UPDATE product SET quantity = quantity - ? WHERE id = ?";
-	    stmt = connection.prepareStatement(sql) ;
-	    stmt.setInt(1, quant);
-	    stmt.setInt(2, id);
+        if (p.getQuantity() < quant )
+            throw new InsufficientStockException("there is a shortage of this product !");
 
-	    //we have already check for the products existants
-	    stmt.executeUpdate();
-	} catch (SQLException e) {
-	    System.err.println("Error: " + e.getMessage());
-	}
+        String sql = "UPDATE product SET quantity = quantity - ? WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, quant);
+            stmt.setInt(2, id);
+
+            int rows = stmt.executeUpdate();
+            if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
+            else {
+                p = fetchProduct(id);
+                if (p.getQuantity() == 0 ) deleteProduct(id);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
     public ArrayList<Product> viewStock() {
-	ArrayList<Product> products = new ArrayList<>();
-	String sql = "SELECT * FROM product";
-	try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-	    ResultSet rs = stmt.executeQuery();
-	    while (rs.next()) {
-		products.add(new Product(
-			    rs.getInt("id"),
-			    rs.getString("name"),
-			    rs.getDouble("price"),
-			    rs.getInt("quantity")
-			    ));
-	    }
-	} catch (SQLException e) {
-	    System.err.println("Error: " + e.getMessage());;
-	}
-	return products;
+        ArrayList<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM product";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                products.add(new Product(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());;
+        }
+        return products;
     }
-
     public ArrayList<Product> lowStockAlert() {
-	ArrayList<Product> products = new ArrayList<>();
-	String sql = "SELECT * FROM product WHERE quantity < ?";
-	try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-	    stmt.setInt(1, quantityRiskThreshold);
-	    ResultSet rs = stmt.executeQuery();
-	    while (rs.next()) {
-		products.add(new Product(
-			    rs.getInt("id"),
-			    rs.getString("name"),
-			    rs.getDouble("price"),
-			    rs.getInt("quantity")
-			    ));
-	    }
-	} catch (SQLException e) {
-	    System.err.println("Error: " + e.getMessage());
-	}
-	return products;
+        ArrayList<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM product WHERE quantity < ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, quantityRiskThreshold);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                products.add(new Product(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return products;
     }
 }

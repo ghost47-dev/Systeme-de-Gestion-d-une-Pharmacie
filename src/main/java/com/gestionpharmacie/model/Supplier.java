@@ -1,28 +1,34 @@
 package com.gestionpharmacie.model;
 
-
-
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-
+import java.sql.SQLException;
 
 public class Supplier {
     private int id;
     private String name;
 	private int phoneNumber;
-
 	private int noLateShipments = 0;
 
-    public Supplier(int id, String name, int phoneNumber){
+    public Supplier(int id, String name, int phoneNumber, int noLateShipments){
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
+		this.noLateShipments = noLateShipments;
     }
+	public  Supplier(ResultSet rs){
+		try{
+			this.id = rs.getInt("id");
+			this.name = rs.getString("name");
+			this.phoneNumber = rs.getInt("phone");
+			this.noLateShipments = rs.getInt("no_late_shipments");
 
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+
+	}
 	public int getId() {
 		return id;
 	}
@@ -42,42 +48,30 @@ public class Supplier {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public int getNoLateShipments(Connection conn) {
-		String query = "SELECT no_late_shipments  FROM supplier WHERE id = ?";
-		try (PreparedStatement ps = conn.prepareStatement(query)) {
-				ps.setInt(1, id);
-				ResultSet res = ps.executeQuery();
-				int nb = 0;
-				if (res.next()) {
-					nb = res.getInt("NoLateShipments");
-				}
-			} catch(SQLException e){
-				e.printStackTrace();
-			}
+	public int getNoLateShipments() {
 		return noLateShipments;
 	}
 
-	
+	public void increaseNoLateShipments() {
+		this.noLateShipments++;
+	}
 
-	public int getTotalNoShipments(Connection conn) {
+	public int getTotalNoShipments(Connection con) {
 		String query = "SELECT COUNT(*) as nb FROM shipment WHERE supplier_id = ? GROUP BY supplier_id";
-		try (PreparedStatement ps = conn.prepareStatement(query)){
+		try (PreparedStatement stmt = con.prepareStatement(query)) {
+			stmt.setInt(1, id);
 
-				ps.setInt(1, id);
-				ResultSet res = ps.executeQuery();
-				int nb = 0;
-				if (res.next()) {
-					nb = res.getInt("nb");
-					return nb;
-				}
-
-			} catch(SQLException e){
-				e.printStackTrace();
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt("nb");
 			}
+		} catch (SQLException e) {
+			System.err.println("Error: " + e.getMessage());
+		}
 		return 0;
 	}
 
 	public String toString() {
-		return "Supplier's name: " + name;
+		return "Supplier's name: " + name + ",Supplier's id :" + id + ",Supplier's phone number" + phoneNumber;
 	}
 }
