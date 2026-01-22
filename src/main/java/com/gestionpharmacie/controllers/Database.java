@@ -14,8 +14,8 @@ public class Database { // Singleton
         try {
             connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/pharmacy",
-                    "user",
-                    "Strongpassword123"
+                    "pharma",
+                    "StrongPassword123"
             );
         } catch (SQLException e) {
             e.printStackTrace();

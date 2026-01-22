@@ -16,7 +16,7 @@ public class Main extends Application {
     }
 
     private void loadLogin(Stage stage) {
-        try {j
+        try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/gestionpharmacie/login.fxml")
             );

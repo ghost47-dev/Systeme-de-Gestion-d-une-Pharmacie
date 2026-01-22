@@ -29,10 +29,6 @@ public class ProductController {
     private int id;
     private String product ;
     public void setPrivilege(String privilege){this.privilege = privilege;}
-    @FXML 
-    public void initialize(){
-        System.out.println(privilege);
-    }
     @FXML
     private void saveProduct() {
         String name = productName.getText();
