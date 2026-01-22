@@ -660,8 +660,10 @@ public class MainController {
         }
         catch (ShipmentNotFoundException e){
             return ;
+        } catch (ProductNotFoundException e) {
+            return ;
         }
-        
+
     }
 
     private void editSupplierRedirection(ActionEvent event , String supplier){

@@ -11,7 +11,7 @@ create table client
 create table product
 (
     id       int auto_increment primary key,
-    name     varchar(100) null,
+    name     varchar(100) unique null,
     price    double       null,
     quantity int          null
 );
