@@ -4,6 +4,8 @@ package com.gestionpharmacie.controllers;
 
 import java.sql.Connection;
 
+
+import com.gestionpharmacie.exceptions.InsufficientStockException;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
 import com.gestionpharmacie.utilities.DatabaseConnection;
@@ -108,8 +110,15 @@ public class SaleEntryController {
                         errorLabel.setVisible(true);
                         return;
                     }
-                    
-                    int sp_id = sm.addSaleProduct(sale_id,productId,productQuantity); 
+
+                    try{
+                        int sp_id = sm.addSaleProduct(sale_id,productId,productQuantity); 
+                    }
+                    catch (InsufficientStockException e){
+                        errorLabel.setVisible(true);
+                        errorLabel.setText("Insufficient stock !");
+                        return;
+                    }
                 }
                         
                  

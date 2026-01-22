@@ -10,7 +10,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
 
-import java.lang.ModuleLayer.Controller;
 
 import com.gestionpharmacie.managers.UserManager;
 import com.gestionpharmacie.model.User;

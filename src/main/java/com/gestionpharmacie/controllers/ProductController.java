@@ -42,7 +42,7 @@ public class ProductController {
         double Price;
         if (!name.isEmpty() && 
             !price.isEmpty() &&
-            !quantity.isEmpty() ){
+            !quantity.isEmpty()){
             
             try {
                 Price = Double.parseDouble(price);

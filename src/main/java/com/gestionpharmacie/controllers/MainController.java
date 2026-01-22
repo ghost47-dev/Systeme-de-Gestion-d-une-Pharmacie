@@ -466,7 +466,7 @@ public class MainController {
 
     @FXML
     private void addShipment(ActionEvent event){
-         try {
+        try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/gestionpharmacie/shipmentAdd.fxml")
             );
