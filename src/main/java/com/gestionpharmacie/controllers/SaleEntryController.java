@@ -1,4 +1,4 @@
-package com.gestionpharmacie.Controllers;
+package com.gestionpharmacie.controllers;
 
 
 

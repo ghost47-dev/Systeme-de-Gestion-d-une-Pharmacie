@@ -1,14 +1,20 @@
-package com.gestionpharmacie.Controllers;
+package com.gestionpharmacie.controllers;
 
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+
 import java.util.ArrayList;
 
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
@@ -25,8 +31,10 @@ import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.utilities.DatabaseConnection;
 import com.gestionpharmacie.model.Client;
 
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +45,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -54,25 +63,55 @@ public class MainController {
     @FXML private Button productsBtn;
     @FXML private Button shipmentsBtn;
     @FXML private Button suppliersBtn;
-    
+    @FXML private Button adminDashboardBtn;    
+    @FXML private Button totalRevenueBtn;
     // Pages
     @FXML private VBox saleHistoryPage;
     @FXML private VBox productsPage;
     @FXML private VBox shipmentsPage;
     @FXML private VBox suppliersPage;
-    
+    @FXML private VBox totalRevenuePage;
     @FXML private HBox editingBtns_product;
     @FXML private HBox editingBtns_shipment; 
     
+
     @FXML private ListView<String> saleHistoryList;
     @FXML private ListView<String> productsList;
     @FXML private ListView<String> shipmentsList;
     @FXML private ListView<String> suppliersList;
+
     @FXML private Button editSupplierBtn;
+    @FXML private Label revenueLabel;
+    
+    @FXML
+    private VBox flashBox;
+    
+    @FXML
+    private Label iconLabel;
+    
+    @FXML
+    private Label messageLabel;
+    
+    
+    public enum MessageType {
+        SUCCESS("✓", "flash-success"),
+        ERROR("✗", "flash-error"),
+        WARNING("⚠", "flash-warning"),
+        INFO("ℹ", "flash-info");
+        
+        private final String icon;
+        private final String styleClass;
+        
+        MessageType(String icon, String styleClass) {
+            this.icon = icon;
+            this.styleClass = styleClass;
+        }
+    }
 
     private boolean isPanelVisible = true;
     private static final double PANEL_WIDTH = 200.0;
-    
+    private Queue<String> messageQueue = new LinkedList<>();
+    private boolean isShowingMessage = false;   
     @FXML
     public void initialize() {
         // Set initial active button
@@ -188,10 +227,7 @@ public class MainController {
             e.printStackTrace();
         }
     }
-    /**
-     * Show dashboard page
-     */
-    @FXML
+
     private void editProductRedirection(ActionEvent event , String product){
 
         try {
@@ -242,6 +278,44 @@ public class MainController {
         }
 
     }
+    public void showMessage(String message, MessageType type) {
+        showMessage(message, type, 3000);
+    }
+    
+    public void showMessage(String message, MessageType type, int durationMs) {
+        // Set message content
+        messageLabel.setText(message);
+        iconLabel.setText(type.icon);
+        
+        // Clear previous styles
+        flashBox.getStyleClass().removeIf(s -> s.startsWith("flash-"));
+        flashBox.getStyleClass().add("flash-message");
+        flashBox.getStyleClass().add(type.styleClass);
+        
+        // Show with fade in
+        flashBox.setOpacity(0);
+        flashBox.setVisible(true);
+        
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), flashBox);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.play();
+        
+        // Auto-hide after duration
+        if (durationMs > 0) {
+            PauseTransition pause = new PauseTransition(Duration.millis(durationMs));
+            pause.setOnFinished(e -> hide());
+            pause.play();
+        }
+    }
+    
+    private void hide() {
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(300), flashBox);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setOnFinished(e -> flashBox.setVisible(false));
+        fadeOut.play();
+    }
     @FXML
     public void showProductsPage() {
         
@@ -269,6 +343,8 @@ public class MainController {
             
             productsList.getItems().setAll(items);
             productsList.refresh();
+            
+
 
             productsList.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
@@ -309,12 +385,36 @@ public class MainController {
 
             showPage(productsPage);
             setActiveButton(productsBtn);
+
+            ArrayList<Product> lowStockProducts = productManager.lowStockAlert();
+            String errorMessage;
+            for (Product p : lowStockProducts){
+                errorMessage = p.getId() + ": " + p.getName() + " stock is low !";
+                messageQueue.add(errorMessage);
+            }
+            showNextMessage();
         }
         catch (SQLException e){
             e.printStackTrace();
         }
     }
-
+    private void showNextMessage() {
+        if (isShowingMessage || messageQueue.isEmpty()) {
+            return;
+        }
+        
+        isShowingMessage = true;
+        String message = messageQueue.poll();
+        showMessage(message, MessageType.ERROR);
+        
+        // Wait for message duration + fade time, then show next
+        PauseTransition pause = new PauseTransition(Duration.millis(3500));
+        pause.setOnFinished(e -> {
+            isShowingMessage = false;
+            showNextMessage(); // Show next message in queue
+        });
+        pause.play();
+    }
     @FXML
     private void addProduct(ActionEvent event){
         try {
@@ -505,7 +605,7 @@ public class MainController {
             return ;
         }
     }
-    @FXML
+
     private void editShipmentRedirection(ActionEvent event , String shipment){
 
         try {
@@ -564,7 +664,6 @@ public class MainController {
         
     }
 
-    @FXML
     private void editSupplierRedirection(ActionEvent event , String supplier){
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -619,15 +718,9 @@ public class MainController {
             ObservableList<String> items = FXCollections.observableArrayList();
             
             ShipmentManager sm = new ShipmentManager(connection);
-            ArrayList<Supplier> suppliers = sm.fetchSuppliers();
-            for (Supplier s : suppliers){
-                String name = s.getName();
-                int phone = s.getNumerotel();
-
-                String supplierInfo = "Supplier id : " + s.getId() + "\n" +
-                    "Supplier name : " + name + " | Supplier phone : " + phone + "\n";
-                items.add(supplierInfo);
-                 
+            ArrayList<String> suppliers = sm.viewSuppliersPerfermance();
+            for (String s : suppliers){
+                items.add(s);
             }
 
             suppliersList.getItems().setAll(items);
@@ -641,9 +734,25 @@ public class MainController {
 
     }
     
-    /**
-     * Hide all pages and show the selected one
-     */
+    @FXML 
+    private void showTotalRevenuePage(){
+        try (Connection connection = DatabaseConnection.getConnection()){
+
+            double totalRevenue;
+            ProductManager pm = new ProductManager(connection);
+            SaleManager sm = new SaleManager(pm, connection);
+            totalRevenue = sm.getTotalRevenue();
+
+            NumberFormat nf = NumberFormat.getInstance(Locale.US);
+            revenueLabel.setText(nf.format(totalRevenue) + " TND");       
+            setActiveButton(totalRevenueBtn);   
+            showPage(totalRevenuePage);
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     private void showPage(VBox pageToShow) {
         
         if (editingBtns_product.getChildren().size() == 3 ){
@@ -661,7 +770,7 @@ public class MainController {
         productsPage.setVisible(false);
         shipmentsPage.setVisible(false);
         suppliersPage.setVisible(false);
-        
+        totalRevenuePage.setVisible(false);
         pageToShow.setVisible(true);
     }
     
@@ -671,6 +780,7 @@ public class MainController {
         productsBtn.getStyleClass().remove("nav-btn-active");
         shipmentsBtn.getStyleClass().remove("nav-btn-active");
         suppliersBtn.getStyleClass().remove("nav-btn-active");
+        totalRevenueBtn.getStyleClass().remove("nav-btn-active");
         
         // Add active class to selected button
         if (!activeBtn.getStyleClass().contains("nav-btn-active")) {

@@ -1,4 +1,4 @@
-package com.gestionpharmacie.Controllers;
+package com.gestionpharmacie.controllers;
 
 
 import java.sql.Connection;
@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.gestionpharmacie.managers.ShipmentManager;
+import com.gestionpharmacie.model.Supplier;
 import com.gestionpharmacie.utilities.DatabaseConnection;
 
 import javafx.event.ActionEvent;
@@ -24,9 +25,9 @@ public class EditSupplierController{
     @FXML private javafx.scene.control.Label errorLabel;
     @FXML private int supplier_id;
     @FXML
-    public void showEdit(String supplier){
-        Pattern pattern = Pattern.compile("Supplier id : (\\d+)\\nSupplier name : (\\S+) \\| Supplier phone : (\\d+)");
-        Matcher matcher = pattern.matcher(supplier);
+    public void showEdit(String supplierInfo){
+        Pattern pattern = Pattern.compile("(\\d+): (\\S+).*");
+        Matcher matcher = pattern.matcher(supplierInfo);
 
         if (!matcher.find()){
             throw new IllegalArgumentException() ;
@@ -34,10 +35,11 @@ public class EditSupplierController{
                 
         supplier_id = Integer.parseInt(matcher.group(1));
         String name = matcher.group(2);
-        String phone = matcher.group(3);
-        System.out.println(phone);
+        ShipmentManager sm = new ShipmentManager(DatabaseConnection.getConnection());
+        Supplier supplier = sm.fetchSupplier(supplier_id);
+
         nameField.setText(name);
-        phoneField.setText(phone);
+        phoneField.setText(String.valueOf(supplier.getNumerotel()));
 
     }
     @FXML

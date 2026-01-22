@@ -299,4 +299,121 @@
 .check-box:disabled {
     -fx-opacity: 0.5;
 }
+/* Root */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #f5f7fa;
+}
 
+/* ===== Top Bar ===== */
+.top-bar {
+    -fx-background-color: #2c3e50;
+    -fx-padding: 15;
+}
+
+.top-panel-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ecf0f1;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+/* Active navigation button */
+.top-panel-btn-active {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+
+.top-panel-btn:hover {
+    -fx-background-color: #34495e;
+    -fx-cursor: hand;
+}
+.revenue-value {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #27ae60;
+}
+/* Flash Container */
+.flash-container {
+    -fx-background-color: transparent;
+}
+
+/* Base Flash Message */
+.flash-message {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+}
+
+/* Flash Text */
+.flash-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+/* Flash Icon */
+.flash-icon {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* Success Message */
+.flash-success {
+    -fx-border-color: #4caf50;
+    -fx-background-color: #e8f5e9;
+}
+
+.flash-success .flash-icon {
+    -fx-text-fill: #4caf50;
+}
+
+.flash-success .flash-text {
+    -fx-text-fill: #2e7d32;
+}
+
+/* Error Message */
+.flash-error {
+    -fx-border-color: #f44336;
+    -fx-background-color: #ffebee;
+}
+
+.flash-error .flash-icon {
+    -fx-text-fill: #f44336;
+}
+
+.flash-error .flash-text {
+    -fx-text-fill: #c62828;
+}
+
+/* Warning Message */
+.flash-warning {
+    -fx-border-color: #ff9800;
+    -fx-background-color: #fff3e0;
+}
+
+.flash-warning .flash-icon {
+    -fx-text-fill: #ff9800;
+}
+
+.flash-warning .flash-text {
+    -fx-text-fill: #e65100;
+}
+
+/* Info Message */
+.flash-info {
+    -fx-border-color: #2196f3;
+    -fx-background-color: #e3f2fd;
+}
+
+.flash-info .flash-icon {
+    -fx-text-fill: #2196f3;
+}
+
+.flash-info .flash-text {
+    -fx-text-fill: #1565c0;
+}

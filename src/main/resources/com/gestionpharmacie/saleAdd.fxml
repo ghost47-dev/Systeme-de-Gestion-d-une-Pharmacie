@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.gestionpharmacie.Controllers.SaleEntryController"
+      fx:controller="com.gestionpharmacie.controllers.SaleEntryController"
       alignment="CENTER"
       spacing="20"
       prefWidth="900" prefHeight="600"

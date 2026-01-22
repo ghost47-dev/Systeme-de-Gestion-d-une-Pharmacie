@@ -11,7 +11,7 @@
 <?import javafx.scene.control.CheckBox?>
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.gestionpharmacie.Controllers.EditShipmentController"
+      fx:controller="com.gestionpharmacie.controllers.EditShipmentController"
       spacing="20"
       alignment="CENTER"
       prefWidth="800"

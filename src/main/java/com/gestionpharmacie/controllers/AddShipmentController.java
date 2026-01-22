@@ -1,5 +1,4 @@
-package com.gestionpharmacie.Controllers;
-
+package com.gestionpharmacie.controllers;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
