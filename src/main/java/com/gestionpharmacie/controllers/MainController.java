@@ -201,7 +201,14 @@ public class MainController {
                 String Products_Info = "";
                 for (SaleProduct sp : saleproducts){
                     int p_id = sp.getProductId();
-                    Product p = productManager.fetchProduct(p_id); 
+                    Product p = null;
+                    try {
+                        p = productManager.fetchProduct(p_id); 
+                    }
+                    catch (ProductNotFoundException e){
+                        e.printStackTrace();
+                        return;
+                    }
                     int p_quantity = sp.getQuantity();
                     double p_price = p.getPrice();
                     String p_name = p.getName();
@@ -511,6 +518,7 @@ public class MainController {
                 int supplierPhone = supplier.getNumerotel();
 
                 ArrayList<ShipmentGood> shipmentGood ; 
+
                 try {
                     shipmentGood = sm.fetchShipmentGood(s.getId());
                 }
@@ -518,14 +526,23 @@ public class MainController {
                     e.printStackTrace();
                     return;
                 }
+
                 if (shipmentGood.size() == 0) {System.out.println("shipmentGoodisEmpty"); return;}
+
                 String shipmentGoodInfo = "";
                 ProductManager pm = new ProductManager(DatabaseConnection.getConnection());
                 for (ShipmentGood sg : shipmentGood){
                     double price = sg.getPrice();  
                     int quantity = sg.getQuantity();
                     
-                    Product product = pm.fetchProduct(sg.getProductId());
+                    Product product =null ;
+                    try {
+                        product = pm.fetchProduct(sg.getProductId());
+                    }
+                    catch (ProductNotFoundException e){
+                        e.printStackTrace();
+                        return;
+                    }
                     String name = product.getName();
                     shipmentGoodInfo = "Product id : " + product.getId() + "\n" +
                     "Product name : " + name + " | Product price : " + price + "$" + " | Product quantity " + quantity + "\n" ; 

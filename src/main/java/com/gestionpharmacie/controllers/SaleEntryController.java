@@ -6,6 +6,7 @@ import java.sql.Connection;
 
 
 import com.gestionpharmacie.exceptions.InsufficientStockException;
+import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
 import com.gestionpharmacie.utilities.DatabaseConnection;
@@ -66,31 +67,40 @@ public class SaleEntryController {
     }
 
     @FXML
-    private void saveSale() {
+    private void saveSale(ActionEvent event) {
         if ( !clientName.getText().isEmpty() &&
                 !clientPhone.getText().isEmpty() &&
                 !clientSurname.getText().isEmpty()  ){
             
             try {
-                
-                int phoneNumber = Integer.parseInt(clientPhone.getText());
+                int phoneNumber;
+                try{ 
+                    phoneNumber = Integer.parseInt(clientPhone.getText());
+                    if (clientPhone.getText().length() != 8)
+                        throw new NumberFormatException();
+                }
+                catch (NumberFormatException e){
+                    errorLabel.setVisible(true);
+                    errorLabel.setText("Invalid number !");
+                    clientPhone.clear();
+                    return;
+                }
                 errorLabel.setVisible(false);
                 
                 Connection connection = DatabaseConnection.getConnection();
                 ProductManager pm = new ProductManager(connection);
                 SaleManager sm = new SaleManager(pm, connection);
                 
-                int client_id = sm.addClient(clientName.getText(), clientSurname.getText(), phoneNumber);
                 
-                int sale_id = sm.addSale(client_id);
                 ObservableList<Node> productLabels = productsContainer.getChildren();
                 
                 for (Node n : productLabels){
                     HBox productRow = (HBox)n;
                     
                     int productId,productQuantity;
+                    TextField id , quantity;
                     try{
-                        TextField id = (TextField)productRow.getChildren().get(1);
+                        id = (TextField)productRow.getChildren().get(1);
                         productId = Integer.parseInt(id.getText());
                          errorLabel.setVisible(false);
                     }
@@ -101,7 +111,7 @@ public class SaleEntryController {
                     }
 
                     try {
-                        TextField quantity = (TextField)productRow.getChildren().get(2);
+                        quantity = (TextField)productRow.getChildren().get(2);
                         productQuantity = Integer.parseInt(quantity.getText());                   
                         errorLabel.setVisible(false);
                     }
@@ -112,14 +122,25 @@ public class SaleEntryController {
                     }
 
                     try{
-                        int sp_id = sm.addSaleProduct(sale_id,productId,productQuantity); 
+                        pm.fetchProduct(productId);
+                        int client_id = sm.addClient(clientName.getText(), clientSurname.getText(), phoneNumber);
+                        int sale_id = sm.addSale(client_id);
+                        sm.addSaleProduct(sale_id,productId,productQuantity); 
                     }
-                    catch (InsufficientStockException e){
+                    catch (InsufficientStockException e ){
                         errorLabel.setVisible(true);
                         errorLabel.setText("Insufficient stock !");
+                        quantity.clear();
+                        return;
+                    }
+                    catch (ProductNotFoundException e){
+                        errorLabel.setVisible(true);
+                        id.clear();
+                        errorLabel.setText("This product is not found !");
                         return;
                     }
                 }
+                goBack(event);        
                         
                  
             }
@@ -128,11 +149,6 @@ public class SaleEntryController {
                  errorLabel.setVisible(true);
             }
         }
-            
-            
-
-
-            
     }
 
     @FXML

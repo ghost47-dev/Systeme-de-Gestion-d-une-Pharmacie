@@ -33,7 +33,7 @@ public class ProductManager {
         return -1;
     }
 
-    public Product fetchProduct(int id) {
+    public Product fetchProduct(int id) throws ProductNotFoundException{
         String sql = "SELECT * FROM product WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -45,7 +45,21 @@ public class ProductManager {
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }
-        return null;
+        throw new ProductNotFoundException("this product does not exist !");
+    }
+    public Product fetchProduct(String name) throws ProductNotFoundException {
+        String sql = "SELECT * FROM product WHERE name = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Product(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        throw new ProductNotFoundException("this product does not exist !");
     }
 
     public void updateProduct(int id, String newName, double newPrice, int newQuantity) throws ProductNotFoundException {
@@ -90,22 +104,13 @@ public class ProductManager {
 
     public void removeFromProduct(int id, int quant) throws ProductNotFoundException, InsufficientStockException {
         Product p = fetchProduct(id);
-        if(p == null){
+        if(p == null)
             throw new ProductNotFoundException("This product doesn't exists!");
-        }
-        String sql = "SELECT quantity FROM product WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
 
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                if (rs.getInt("quantity") < quant)
-                    throw new InsufficientStockException("Insufficient stock for " + p.getName() + ". Only " + rs.getInt("quantity") + " units left");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-        sql = "UPDATE product SET quantity = quantity - ? WHERE id = ?";
+        if (p.getQuantity() < quant )
+            throw new InsufficientStockException("there is a shortage of this product !");
+
+        String sql = "UPDATE product SET quantity = quantity - ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, quant);
             stmt.setInt(2, id);

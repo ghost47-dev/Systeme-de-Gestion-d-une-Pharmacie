@@ -4,10 +4,14 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
+import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.ShipmentManager;
+import com.gestionpharmacie.model.Product;
 import com.gestionpharmacie.utilities.DatabaseConnection;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -49,9 +53,6 @@ public class AddShipmentController {
         HBox goodRow = new HBox(10);
         goodRow.setAlignment(Pos.CENTER);
 
-        TextField pId = new TextField();
-        pId.setPromptText("Product id");
-        
         TextField pName = new TextField();
         pName.setPromptText("Product name");
 
@@ -63,7 +64,7 @@ public class AddShipmentController {
 
         goodRow.getChildren().addAll(
                 new Label("Product " + shipmentGoodCount + ":"),
-                pId ,pName ,pQuantity ,pPrice
+                pName ,pQuantity ,pPrice
         );
 
         shipmentsGoodContainer.getChildren().add(goodRow);
@@ -71,7 +72,7 @@ public class AddShipmentController {
 
 
     @FXML
-    private void saveShipment() {
+    private void saveShipment(ActionEvent event) {
         String name = supplierName.getText();
         LocalDate arrivalDateTmp = arrivalDate.getValue();
         LocalDate requestDateTmp = requestDate.getValue();
@@ -89,9 +90,11 @@ public class AddShipmentController {
             
             try {
                 Phone = Integer.parseInt(phone);
+                if (phone.length() != 8)
+                    throw new NumberFormatException();
             }
             catch (NumberFormatException e){
-               errorLabel.setText("Invalid price !");
+               errorLabel.setText("Invalid phone number !");
                errorLabel.setVisible(true); 
                return;
             }
@@ -114,7 +117,7 @@ public class AddShipmentController {
             errorLabel.setVisible(false);  
 
             
-
+            ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
             ShipmentManager shipmentManager = new ShipmentManager(DatabaseConnection.getConnection());
 
             
@@ -122,38 +125,36 @@ public class AddShipmentController {
 
                 HBox goodRow =(HBox) row;
                
-                int productId,productQuantity;
+                int productQuantity;
                 double productPrice;
 
-                try{
-                    TextField id = (TextField)goodRow.getChildren().get(1);
-                    productId = Integer.parseInt(id.getText());
-                     errorLabel.setVisible(false);
-                }
-                catch (NumberFormatException e){
-                    errorLabel.setText("Invalid id !");
-                    errorLabel.setVisible(true);
-                    return;
-                }
-                TextField Name = (TextField)goodRow.getChildren().get(2);
+                TextField Name = (TextField)goodRow.getChildren().get(1);
+                if (Name.getText().isEmpty()){Name.clear();return;}
 
+                TextField quantity = null;
                 try {
-                    TextField quantity = (TextField)goodRow.getChildren().get(3);
+                    quantity = (TextField)goodRow.getChildren().get(2);
+                    if (quantity.getText().isEmpty()) {quantity.clear();return;}
                     productQuantity = Integer.parseInt(quantity.getText());                   
                     errorLabel.setVisible(false);
                 }
                 catch (NumberFormatException ex) {
                     errorLabel.setText("Invalid quantity !");
+                    quantity.clear();
                     errorLabel.setVisible(true);
                     return;
                 } 
+                TextField price = null;
                 try {
-                    TextField price = (TextField)goodRow.getChildren().get(4);
+                    price = (TextField)goodRow.getChildren().get(3);
+                    if (price.getText().isEmpty()) {price.clear();return;}
                     productPrice = Double.parseDouble(price.getText());                   
                     errorLabel.setVisible(false);
                 }
                 catch (NumberFormatException ex) {
+                    System.out.println(price.getText());
                     errorLabel.setText("Invalid price !");
+                    price.clear();
                     errorLabel.setVisible(true);
                     return;
                 }       
@@ -164,14 +165,23 @@ public class AddShipmentController {
                             isReceived.isSelected() && !notReceived.isSelected() ,
                             arrival
                     );
-                    int shipment_manager = shipmentManager.addShipmentGood(shipment_id, productId, productPrice, productQuantity);
+
+                    try {
+                        Product product = productManager.fetchProduct(Name.getText());
+                        shipmentManager.addShipmentGood(shipment_id, product.getId(), productPrice, productQuantity);
+                    }
+                    catch (ProductNotFoundException e){
+                        int product_id = productManager.addProduct(Name.getText(), productPrice, productQuantity);
+                        shipmentManager.addShipmentGood(shipment_id, product_id, productPrice, productQuantity);
+                    }
+
                 }
                 catch (ShipmentNotFoundException e){
                     e.printStackTrace();
                     return ;
                 }
            }   
-
+            goBack(event);
 
 
         }
