@@ -98,7 +98,7 @@ public class ShipmentManager {
         return null;
     }
 
-    public ArrayList<ShipmentGood> fetchShipmentGood (int shipment_id) throws ShipmentNotFoundException {
+    public ArrayList<ShipmentGood> fetchShipmentGood (int shipment_id) {
         String sql = "SELECT * FROM shipment_good where shipment_good.shipment_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,shipment_id);
@@ -167,12 +167,16 @@ public class ShipmentManager {
             System.err.println("Error: " + e.getMessage());
         }
     }
-    public void updateShipmentGood(int id_ship_good , int new_quantity , double new_price) {
-        String query = "UPDATE shipment_good SET quantity = ? , price = ? WHERE id = ?";
+    public void updateShipmentGood(int id_ship_good ,int product_it, int new_quantity , double new_price) throws ProductNotFoundException {
+        ProductManager pm = Globals.managers.product;
+        if (pm.fetchProduct(product_it) == null ) 
+            throw new ProductNotFoundException();
+        String query = "UPDATE shipment_good SET quantity = ? , price = ? WHERE id = ? AND product_id = ?" ;
         try(PreparedStatement ps = connection.prepareStatement(query)){
             ps.setInt(1, new_quantity);
             ps.setDouble(2, new_price);
             ps.setInt(3,id_ship_good);
+            ps.setInt(4,product_it);
             ps.executeUpdate();
         } catch(SQLException e){
             e.printStackTrace();
@@ -186,14 +190,13 @@ public class ShipmentManager {
             ProductManager productManager = Globals.managers.product;
             try {
                 if (productManager.fetchProduct(sg.getProductId()).getQuantity() == 0){
-                    //Delete this product
+                    productManager.deleteProduct(sg.getProductId()); 
                 }
             }
             catch (ProductNotFoundException e){
                 e.printStackTrace();
                 return;
             }
-            // Delete this shipment_Good
         }
         // Delete this shipment_supplier
         String sql = "DELETE FROM shipment WHERE id = ?";

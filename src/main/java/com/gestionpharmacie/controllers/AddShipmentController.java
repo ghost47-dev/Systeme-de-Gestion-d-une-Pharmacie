@@ -128,8 +128,15 @@ public class AddShipmentController {
             ProductManager productManager = Globals.managers.product;
             ShipmentManager shipmentManager = Globals.managers.shipment;
 
+            int supplier_id = shipmentManager.addSupplier(name,Phone);
+            int shipment_id = shipmentManager.addShipment(supplier_id,
+                    request,
+                    isReceived.isSelected() && !notReceived.isSelected() ,
+                    arrival
+            );
 
-           for (Node row : shipmentsGoodContainer.getChildren()){
+
+            for (Node row : shipmentsGoodContainer.getChildren()){
 
                 HBox goodRow =(HBox) row;
 
@@ -167,28 +174,24 @@ public class AddShipmentController {
                     return;
                 }
                 try {
-                    int supplier_id = shipmentManager.addSupplier(name,Phone);
-                    int shipment_id = shipmentManager.addShipment(supplier_id,
-                            request,
-                            isReceived.isSelected() && !notReceived.isSelected() ,
-                            arrival
-                    );
-
-                    try {
-                        Product product = productManager.fetchProduct(Name.getText());
-                        shipmentManager.addShipmentGood(shipment_id, product.getId(), productPrice, productQuantity);
-                    }
-                    catch (ProductNotFoundException e){
-                        int product_id = productManager.addProduct(Name.getText(), productPrice, 0);
+                    Product product = productManager.fetchProduct(Name.getText());
+                    shipmentManager.addShipmentGood(shipment_id, product.getId(), productPrice, productQuantity);
+                }
+                catch (ProductNotFoundException e){
+                    int product_id = productManager.addProduct(Name.getText(), productPrice, 0);
+                    try{
                         shipmentManager.addShipmentGood(shipment_id, product_id, productPrice, productQuantity);
                     }
-
+                    catch (ShipmentNotFoundException ex){
+                        ex.printStackTrace();
+                        return;
+                    }
                 }
                 catch (ShipmentNotFoundException e){
                     e.printStackTrace();
-                    return ;
+                    return;
                 }
-           }
+            }
             goBack(event);
         }
     }

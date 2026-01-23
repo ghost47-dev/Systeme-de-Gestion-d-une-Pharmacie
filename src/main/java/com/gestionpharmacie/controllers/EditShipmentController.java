@@ -2,24 +2,28 @@ package com.gestionpharmacie.controllers;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.gestionpharmacie.Globals;
+import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.managers.ShipmentManager;
 import com.gestionpharmacie.model.Supplier;
+import com.gestionpharmacie.model.Shipment;
+import com.gestionpharmacie.model.ShipmentGood;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 
 public class EditShipmentController {
     @FXML
@@ -29,14 +33,11 @@ public class EditShipmentController {
     @FXML
     private CheckBox isReceived , notReceived;
     @FXML
-    private TextField  productQuantity, productPrice;
-    @FXML
     private Label errorLabel;
 
-    private int product_Id;
+    private VBox shipmentsGoodContainer;
+
     private int shipmentId ;
-    private String privilege;
-    public void setPrivilege(String privilege){this.privilege = privilege;}
 
     private Scene scene;
 
@@ -56,19 +57,7 @@ public class EditShipmentController {
     public void showEdit(String shipment){
 
         Pattern pattern = Pattern.compile(
-                "Shipment id : (\\d+)\\n" +
-                "Supplier id : (\\d+)\\n" +
-                "Supplier name : ([^|]+) \\| Supplier phone : (\\d+)\\n" +
-
-                // Product block
-                "Product id : (\\d+)\\n" +
-                "Product name : ([^|]+) \\| Product price : ([0-9]+(?:\\.[0-9]+)?)\\$ \\| Product quantity (\\d+)\\n" +
-
-                // Dates
-                "Date of request : ([0-9/\\-]+) \\| Date of arrival : ([0-9/\\-]+)\\n" +
-
-                // Status
-                "Shipment is (received ✓|not received 𐄂)"
+                "(?s)Shipment id : (\\d+)\\n.*" 
         );
 
 
@@ -79,47 +68,51 @@ public class EditShipmentController {
             throw new IllegalArgumentException("Invalid shipment format");
         }
 
-        this.shipmentId = Integer.parseInt(matcher.group(1));
-        String supplier_id = matcher.group(2);
+        ShipmentManager shipmentManager = Globals.managers.shipment;
+        Shipment sh = shipmentManager.fetchShipment(shipmentId);
+        ArrayList<ShipmentGood> shipmentGood = shipmentManager.fetchShipmentGood(shipmentId);
+        
+        int supplier_id = sh.getSupplierId();
+        Date request = sh.getRequestDate();
+        Date arrival = sh.getRecievalDate();
+        boolean Received = sh.isReceived();
+        
+        supplierId.setText(String.valueOf(supplier_id));
 
-        product_Id = Integer.parseInt(matcher.group(5));
-        String productPrice = matcher.group(7);
-        String productQuantity = matcher.group(8);
+        this.requestDate.setValue(
+                 ((java.sql.Date) request).toLocalDate()
+        );
 
-        String requestDate = matcher.group(9);
-        String arrivalDate = matcher.group(10);
-        boolean Received = matcher.group(11).equals("received ✓") ? true : false ;
-        System.out.println(isReceived);
-        DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("d/M/yyyy");
-        this.supplierId.setText(supplier_id);
-        this.requestDate.setValue(LocalDate.parse(requestDate,formatter));
-        this.arrivalDate.setValue(LocalDate.parse(arrivalDate,formatter));
+        this.arrivalDate.setValue(
+                ((java.sql.Date) arrival).toLocalDate()
+        );
         this.isReceived.setSelected(Received);
         this.notReceived.setSelected(!Received);
-        this.productPrice.setText(productPrice);
-        this.productQuantity.setText(productQuantity);
 
+        for (ShipmentGood sg : shipmentGood){
+            
+            int product_Id = sg.getProductId();
+            double productPrice = sg.getPrice();
+            int productQuantity = sg.getQuantity();
+
+            addGoodRow(product_Id, productQuantity, productPrice);
+        }
     }
     @FXML
     private void editShipment(ActionEvent event ){
         LocalDate arrivalDateTmp = arrivalDate.getValue();
         LocalDate requestDateTmp = requestDate.getValue();
         String supplier_id = supplierId.getText();
-        String pQuantity = productQuantity.getText();
-        String pPrice = productPrice.getText();
+        ObservableList<Node> productRows = shipmentsGoodContainer.getChildren();
 
         Date  arrival , request;
-        int supId ,  quantity;
-        double price;
+        int supId;
+        ShipmentManager shipmentManager = Globals.managers.shipment;
         if (!supplier_id.isEmpty() &&
             arrivalDateTmp != null &&
             requestDateTmp != null &&
-            (isReceived.isSelected() ^ notReceived.isSelected()) &&
-            !pQuantity.isEmpty() &&
-            !pPrice.isEmpty()
+            (isReceived.isSelected() ^ notReceived.isSelected()) 
             ){
-            ShipmentManager shipmentManager = Globals.managers.shipment;
 
             try {
                 supId = Integer.parseInt(supplier_id);
@@ -132,6 +125,7 @@ public class EditShipmentController {
             }
             catch (NumberFormatException e){
                errorLabel.setText("Invalid price !");
+               supplierId.clear();
                errorLabel.setVisible(true);
                return;
             }
@@ -151,24 +145,6 @@ public class EditShipmentController {
             request = Date.from(requestDateTmp.atStartOfDay(ZoneId.systemDefault()).toInstant());
             arrival = Date.from(arrivalDateTmp.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-            try {
-                 quantity = Integer.parseInt(pQuantity);
-            }
-            catch (NumberFormatException e){
-               errorLabel.setText("Invalid quantity !");
-               errorLabel.setVisible(true);
-               return;
-            }
-            try {
-                 price = Double.parseDouble(pPrice);
-            }
-            catch (NumberFormatException e){
-               errorLabel.setText("Invalid price!");
-               errorLabel.setVisible(true);
-               return;
-            }
-            errorLabel.setVisible(false);
-
 
             try {
                 shipmentManager.updateShipment(shipmentId ,
@@ -176,13 +152,86 @@ public class EditShipmentController {
                         request,
                         isReceived.isSelected() && !notReceived.isSelected(),
                         arrival );
-                shipmentManager.updateShipmentGood(product_Id , quantity , price);
             }
             catch (ShipmentNotFoundException e){
                 return;
             }
-
+        }else{
+            errorLabel.setVisible(true);
+            errorLabel.setText("Please fill all fields !");
+            return;
         }
-    }
+        ArrayList<ShipmentGood> sgs = shipmentManager.fetchShipmentGood(shipmentId);
+        int i = 0;
+        for (Node n : productRows){
+            HBox current_row = (HBox)n;
 
+            TextField priceField = (TextField)current_row.getChildren().get(2);
+            TextField quantityField = (TextField)current_row.getChildren().get(1);
+            String price = priceField.getText();
+            String quantity = quantityField.getText();
+            int productQuantity;
+            double productPrice;
+            try {
+                if (price.isEmpty())
+                    throw new NumberFormatException();
+                productQuantity = Integer.parseInt(quantity);                   
+                errorLabel.setVisible(false);
+            }
+            catch (NumberFormatException ex) {
+                errorLabel.setText("Invalid quantity !");
+                quantityField.clear();
+                errorLabel.setVisible(true);
+                return;
+            } 
+
+            try {
+                if (price.isEmpty()) 
+                    throw new NumberFormatException();
+                productPrice = Double.parseDouble(price);                   
+                errorLabel.setVisible(false);
+            }
+            catch (NumberFormatException ex) {
+                System.out.println(price);
+                errorLabel.setText("Invalid price !");
+                priceField.clear();
+                errorLabel.setVisible(true);
+                return;
+            }
+            ShipmentGood sg = sgs.get(i++);
+            try {
+                shipmentManager.updateShipmentGood(sg.getId() , sg.getProductId() , productQuantity , productPrice);
+            }
+            catch (ProductNotFoundException e){
+                e.printStackTrace();
+                return;
+            } 
+        }
+        errorLabel.setVisible(false);  
+        goBack(event);
+    }
+    @FXML
+    private void addGoodRow(int id , int quantity , double price) {
+
+        HBox goodRow = new HBox(10);
+        goodRow.setAlignment(Pos.CENTER);
+
+        Label idLabel = new Label("Product " + String.valueOf(id) + " : ");
+        idLabel.getStyleClass().add("text");
+
+        TextField pQuantity = new TextField();
+        pQuantity.setText(String.valueOf(quantity));
+
+        TextField pPrice = new TextField();
+        pPrice.setText(String.valueOf(price));
+
+        Button closeBtn = new Button("✕");
+        closeBtn.getStyleClass().add("close-button");
+
+        goodRow.getChildren().addAll(
+                idLabel ,pQuantity ,pPrice , closeBtn
+        );
+
+        shipmentsGoodContainer.getChildren().add(goodRow);
+    }
 }

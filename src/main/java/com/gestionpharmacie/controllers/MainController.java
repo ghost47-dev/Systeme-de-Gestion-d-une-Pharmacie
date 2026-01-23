@@ -1,6 +1,5 @@
 package com.gestionpharmacie.controllers;
 
-import java.sql.Connection;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -443,13 +442,7 @@ public class MainController {
 
                 ArrayList<ShipmentGood> shipmentGood ;
 
-                try {
-                    shipmentGood = sm.fetchShipmentGood(s.getId());
-                }
-                catch (ShipmentNotFoundException e){
-                    e.printStackTrace();
-                    return;
-                }
+                shipmentGood = sm.fetchShipmentGood(s.getId());
 
                 if (shipmentGood.size() == 0) {System.out.println("shipmentGoodisEmpty"); return;}
 
@@ -468,7 +461,7 @@ public class MainController {
                         return;
                     }
                     String name = product.getName();
-                    shipmentGoodInfo = "Product id : " + product.getId() + "\n" +
+                    shipmentGoodInfo += "Product id : " + product.getId() + "\n" +
                         "Product name : " + name + " | Product price : " + price + "$" + " | Product quantity " + quantity + "\n" ;
                 }
 
@@ -482,16 +475,15 @@ public class MainController {
                             "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" +
                             "Shipment is received ✓"
                             );
-                else
+                else 
                     items.add(
                             "Shipment id : " + s.getId() + "\n" +
                             "Supplier id : " + supplier_id + "\n" +
                             "Supplier name : " + supplierName + " | Supplier phone : " + supplierPhone + "\n" +
                             shipmentGoodInfo +
-                            "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" +
+                            "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" + 
                             "Shipment is not received 𐄂"
                             );
-
             }
 
             shipmentsList.getItems().setAll(items);

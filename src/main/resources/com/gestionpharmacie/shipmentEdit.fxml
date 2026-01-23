@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.CheckBox?>
+
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       spacing="20"
@@ -36,15 +31,16 @@
             <DatePicker fx:id="arrivalDate" promptText="arrival date" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
             
             <Label text="Is the shipment received ?" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <CheckBox fx:id="isReceived" text="Yes" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="check-box" />
-            <CheckBox fx:id="notReceived" text="No" GridPane.rowIndex="3" GridPane.columnIndex="2" styleClass="check-box" />
-            
-            <Label text="Product price:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <TextField fx:id="productPrice" GridPane.rowIndex="4" GridPane.columnIndex="1"/>   
-            
-            <Label text="Product Quantity:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-            <TextField fx:id="productQuantity" GridPane.rowIndex="5" GridPane.columnIndex="1"/>       
+            <HBox GridPane.rowIndex="3" GridPane.columnIndex="1" spacing="15">
+                <CheckBox fx:id="isReceived" text="Yes"  styleClass="check-box" />
+                <CheckBox fx:id="notReceived" text="No"  styleClass="check-box" />
+            </HBox>
         </GridPane>
+        <ScrollPane fitToWidth="true" prefHeight="150" style="-fx-background-color: #f6f6f6;" GridPane.rowIndex="4" GridPane.columnIndex="0" >
+            <content>
+                <VBox fx:id="shipmentsGoodContainer" spacing="10" />
+            </content>
+        </ScrollPane>
         <Label fx:id="errorLabel"
             visible="false"
             styleClass="login-error"/>

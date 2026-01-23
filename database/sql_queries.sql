@@ -1,5 +1,7 @@
 create database if not exists pharmacy;
 
+use phamacy;
+
 create table client
 (
     id      int auto_increment primary key,
