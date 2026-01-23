@@ -1,8 +1,9 @@
 module com.gestionpharmacie {
+    requires transitive javafx.graphics;
     requires javafx.controls;
     requires javafx.fxml;
     requires java.xml;
-    requires java.sql;
+    requires transitive java.sql;
 
 
     opens com.gestionpharmacie to javafx.fxml;
