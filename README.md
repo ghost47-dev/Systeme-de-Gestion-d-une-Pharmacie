@@ -2,9 +2,9 @@
 
 ## Todo (anyone is welcome to add/remove items from this list, this is all speculative):
   - [x] A lot of stuff.
-  - [ ] Fully seperate AddProduct and EditProduct (right now they are semi-seperated, ie the addproductcontroller and editproductcontroller have insane amounts of unused code).
-  - [ ] while(1) Fix(bugs);
-  - [ ] profit.
+  - [x] Fully seperate AddProduct and EditProduct (right now they are semi-seperated, ie the addproductcontroller and editproductcontroller have insane amounts of unused code).
+  - [x] while(1) Fix(bugs);
+  - [x] profit.
 
 I have an idea. what if, let's say ProductManager, had a boolean called "upToDate"
 which is true whenever it is in sync with the db, so when we fetch the products

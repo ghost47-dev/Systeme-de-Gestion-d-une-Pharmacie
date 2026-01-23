@@ -129,11 +129,9 @@ public class EditProductController {
                return;
             }
 
-            try{
-
+            try {
                 Quantity = Integer.parseInt(quantity);
-            }
-            catch(NumberFormatException e){
+            } catch(NumberFormatException e) {
                 errorLabel.setText("Invalid quantity !");
                 errorLabel.setVisible(true);
                 return;
