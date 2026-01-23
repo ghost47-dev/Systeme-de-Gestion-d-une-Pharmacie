@@ -141,6 +141,7 @@ public class MainController {
     }
 
     void show(){
+        updatePrivilege();
         switch(Globals.currentTab) {
             case Tab.SALE:
                 showSaleHistory();
