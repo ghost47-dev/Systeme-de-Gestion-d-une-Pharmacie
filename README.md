@@ -31,8 +31,13 @@ db query.
 I think this is a good idea bc it will introduce a lot of new out-of-sync bugs
 that'll be very hard to debug.
 
+
 ## BUGS:
   * ShipmentManager line 183 this function is missing a lot of the implementation (wtf it just has comments)
   * ShipmentManager line 170 what if the supplier already exists, this shit will fail miserably.
-  * Lots of stuff all around the place is unnecessarily public.
   * What if some client buys a product and then we delete it?
+
+## NOTES:
+  * Lots of stuff all around the place is unnecessarily public.
+  * Are we really gonna leave some regex all over the place... really?...
+  * mafhimtich.
