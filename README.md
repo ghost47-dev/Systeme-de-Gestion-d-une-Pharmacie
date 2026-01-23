@@ -24,3 +24,10 @@
   - [ ] The graphics (hopefully won't be hard, we need to finish other stuff asap to make sure we have ample time for this).
     - [ ] We need more steps here.
   - [ ] profit.
+
+I have an idea. what if, let's say ProductManager, had a boolean called "upToDate"
+which is true whenever it is in sync with the db, so when we fetch the products
+to view them, it first checks if it is up to date so it can omit the unnecessary
+db query.
+I think this is a good idea bc it will introduce a lot of new out-of-sync bugs
+that'll be very hard to debug.
