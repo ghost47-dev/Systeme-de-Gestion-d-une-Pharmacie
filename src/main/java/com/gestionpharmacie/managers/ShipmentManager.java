@@ -226,40 +226,44 @@ public class ShipmentManager {
     }
 
     public int receiveShipment(int id, Date d) throws ShipmentNotFoundException,ProductNotFoundException {
+        Shipment ship = fetchShipment(id);
+        if (ship == null)
+            throw new ShipmentNotFoundException("This shipment doesn't exist!");
+        Date expectedArrival = ship.getRecievalDate();
+
         String sql = "UPDATE shipment SET received = TRUE, arrival_date = ? WHERE id = ? ";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(2, id);
             java.sql.Date date = new java.sql.Date(d.getTime());
             stmt.setDate(1, date);
-            int keys = stmt.executeUpdate();
-            if (keys == 0)
-                throw new ShipmentNotFoundException("This shipment doesn't exist!");
-            sql = "SELECT shipment_good.product_id, quantity FROM shipment_good JOIN shipment ON shipment_good.shipment_id = shipment.id WHERE shipment.id = ?;";
-            PreparedStatement stmt1 = connection.prepareStatement(sql);
-            stmt1.setInt(1, id);
-            ResultSet rs = stmt1.executeQuery();
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.err.println("Error: " + ex.getMessage());
+        }
+        sql = """
+            SELECT shipment_good.product_id, quantity 
+            FROM shipment_good JOIN shipment ON shipment_good.shipment_id = shipment.id 
+            WHERE shipment.id = ?;
+        """;
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                sql = "UPDATE product SET quantity = quantity + ? WHERE id = ?";
-                PreparedStatement stmt3 = connection.prepareStatement(sql);
-                    stmt3.setInt(1, rs.getInt("quantity"));
-                    stmt3.setInt(2, rs.getInt("shipment_good.product_id"));
-
-                    int rows = stmt3.executeUpdate();
-                    if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
-
+                String sql2 = "UPDATE product SET quantity = quantity + ? WHERE id = ?";
+                try (PreparedStatement stmt2 = connection.prepareStatement(sql2)) {
+                    stmt2.setInt(1, rs.getInt("quantity"));
+                    stmt2.setInt(2, rs.getInt("shipment_good.product_id"));
+                    stmt2.executeUpdate();
+                }
             }
-
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }
-        Shipment ship = fetchShipment(id);
-        if (d.before(ship.getRecievalDate())) {
-            System.out.println(d);
-            System.out.println(ship.getRecievalDate());
+        if (d.after(expectedArrival)) {
             sql = "UPDATE supplier SET no_late_shipments = no_late_shipments + 1 WHERE id = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, ship.getSupplierId());
-                return stmt.executeUpdate();
+                stmt.executeUpdate();
             } catch (SQLException e) {
                 System.err.println("Error: " + e.getMessage());
             }
