@@ -23,7 +23,7 @@ create table product
 create table sale
 (
     id        int auto_increment primary key,
-    total_price int,
+    total_price double,
     client_id int null,
     constraint sale_client_id_fk
         foreign key (client_id) references client (id)
