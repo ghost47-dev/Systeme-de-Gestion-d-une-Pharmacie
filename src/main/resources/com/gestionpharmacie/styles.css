@@ -1,22 +1,18 @@
-/* Side Panel Background */
 .side-panel-bg {
     -fx-background-color: #2c3e50;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 3, 0);
 }
 
-/* Content Area */
 .content-area {
     -fx-background-color: #ecf0f1;
 }
 
-/* Page Titles */
 .page-title {
     -fx-font-size: 32px;
     -fx-font-weight: bold;
     -fx-text-fill: #2c3e50;
 }
 
-/* Navigation Button Styles */
 .nav-btn {
     -fx-background-color: #34495e;
     -fx-text-fill: white;
@@ -65,13 +61,11 @@
     -fx-border-radius: 8px;
 }
 
-/* Active button state */
 .nav-btn-active {
     -fx-background-color: #3498db;
     -fx-font-weight: bold;
 }
 
-/* Toggle Button Styles */
 .toggle-btn {
     -fx-background-color: #34495e;
     -fx-text-fill: white;
@@ -88,16 +82,11 @@
 .toggle-btn:pressed {
     -fx-background-color: #2980b9;
 }
-/* ===================== */
-/* Login Page Styles     */
-/* ===================== */
 
-/* Login background */
 .login-root {
     -fx-background-color: linear-gradient(to bottom right, #2c3e50, #34495e);
 }
 
-/* Login card */
 .login-card {
     -fx-background-color: white;
     -fx-background-radius: 12px;
@@ -105,20 +94,17 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 20, 0, 0, 5);
 }
 
-/* Login title */
 .login-title {
     -fx-font-size: 26px;
     -fx-font-weight: bold;
     -fx-text-fill: #2c3e50;
 }
 
-/* Input labels */
 .login-label {
     -fx-font-size: 13px;
     -fx-text-fill: #7f8c8d;
 }
 
-/* Text fields */
 .login-field {
     -fx-pref-height: 40px;
     -fx-background-radius: 8px;
@@ -133,7 +119,6 @@
     -fx-border-width: 2px;
 }
 
-/* Login button */
 .login-btn {
     -fx-background-color: #3498db;
     -fx-text-fill: white;
@@ -152,7 +137,6 @@
     -fx-background-color: #2471a3;
 }
 
-/* Error message (optional) */
 .login-error {
     -fx-text-fill: #e74c3c;
     -fx-font-size: 14px;
@@ -161,19 +145,17 @@
     -fx-font-size: 14px;
     -fx-padding: 5px;
 }
-/* ===== LIST VIEW CONTAINER ===== */
+
 .list-view {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-padding: 8;
 }
 
-/* Remove default gray background */
 .list-view .virtual-flow {
     -fx-background-color: transparent;
 }
 
-/* ===== LIST CELLS ===== */
 .list-view.list-cell {
     -fx-background-color: white;
     -fx-border-color: #e0e0e0;
@@ -184,30 +166,25 @@
     -fx-text-fill: #333;
 }
 
-/* Space between cells */
 .list-view .list-cell:filled {
     -fx-margin: 6 0 6 0;
 }
 
-/* Hover effect */
 .list-view .list-cell:hover {
     -fx-background-color: #8b9097;
     -fx-cursor: hand;
 }
 
-/* Selected cell */
 .list-view .list-cell:selected {
     -fx-background-color: #e8f0fe;
     -fx-border-color: #4a90e2;
     -fx-text-fill: #1a1a1a;
 }
 
-/* Remove blue focus ring */
 .list-view:focused .list-cell:selected {
     -fx-background-color: #e8f0fe;
 }
 
-/* ===== SCROLLBAR ===== */
 .scroll-bar:vertical {
     -fx-background-color: transparent;
 }
@@ -241,10 +218,7 @@
 .scroll-pane .viewport {
     -fx-background-color: #f7f7f7;
 }
-/* Base style for both buttons */
 
-
-/* Edit button */
 .edit-btn {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
@@ -253,7 +227,7 @@
     -fx-padding: 12 20 12 20;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
-    -fx-background-color: #2ecc71;  /* green */
+    -fx-background-color: #2ecc71;
 }
 
 .edit-btn:hover {
@@ -261,7 +235,6 @@
     -fx-background-color: #27ae60;
 }
 
-/* Delete button */
 .delete-btn {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
@@ -270,20 +243,18 @@
     -fx-padding: 12 20 12 20;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
-    -fx-background-color: #e74c3c;  /* red */
+    -fx-background-color: #e74c3c;
 }
 
 .delete-btn:hover {
     -fx-background-color: #c0392b;
 }
 
-/* Base checkbox */
 .check-box {
     -fx-font-size: 14px;
     -fx-text-fill: #2c3e50;
 }
 
-/* Box */
 .check-box .box {
     -fx-background-color: #ffffff;
     -fx-border-color: #b0b7c3;
@@ -292,38 +263,32 @@
     -fx-padding: 4;
 }
 
-/* Hover */
 .check-box:hover .box {
     -fx-border-color: #4a90e2;
 }
 
-/* Selected */
 .check-box:selected .box {
     -fx-background-color: #4a90e2;
     -fx-border-color: #4a90e2;
 }
 
-/* Check mark */
 .check-box:selected .mark {
     -fx-background-color: white;
 }
 
-/* Focused */
 .check-box:focused .box {
     -fx-effect: dropshadow(three-pass-box, rgba(74,144,226,0.4), 6, 0, 0, 0);
 }
 
-/* Disabled */
 .check-box:disabled {
     -fx-opacity: 0.5;
 }
-/* Root */
+
 .root {
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-background-color: #f5f7fa;
 }
 
-/* ===== Top Bar ===== */
 .top-bar {
     -fx-background-color: #2c3e50;
     -fx-padding: 15;
@@ -337,7 +302,6 @@
     -fx-border-radius: 6;
     -fx-background-radius: 6;
 }
-/* Active navigation button */
 .top-panel-btn-active {
     -fx-background-color: #3498db;
     -fx-text-fill: white;
@@ -354,12 +318,11 @@
     -fx-font-weight: bold;
     -fx-text-fill: #27ae60;
 }
-/* Flash Container */
+
 .flash-container {
     -fx-background-color: transparent;
 }
 
-/* Base Flash Message */
 .flash-message {
     -fx-background-color: white;
     -fx-background-radius: 8px;
@@ -368,19 +331,18 @@
     -fx-border-width: 1px;
 }
 
-/* Flash Text */
+
 .flash-text {
     -fx-font-size: 14px;
     -fx-text-fill: #333333;
 }
 
-/* Flash Icon */
+
 .flash-icon {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
 
-/* Success Message */
 .flash-success {
     -fx-border-color: #4caf50;
     -fx-background-color: #e8f5e9;
@@ -394,7 +356,6 @@
     -fx-text-fill: #2e7d32;
 }
 
-/* Error Message */
 .flash-error {
     -fx-border-color: #f44336;
     -fx-background-color: #ffebee;
@@ -408,7 +369,6 @@
     -fx-text-fill: #c62828;
 }
 
-/* Warning Message */
 .flash-warning {
     -fx-border-color: #ff9800;
     -fx-background-color: #fff3e0;
@@ -422,7 +382,6 @@
     -fx-text-fill: #e65100;
 }
 
-/* Info Message */
 .flash-info {
     -fx-border-color: #2196f3;
     -fx-background-color: #e3f2fd;
@@ -435,9 +394,7 @@
 .flash-info .flash-text {
     -fx-text-fill: #1565c0;
 }
-/* Root Background */
 
-/* Title */
 .title {
     -fx-font-size: 32px;
     -fx-font-weight: bold;
@@ -445,14 +402,12 @@
 }
 
 
-/* Field Labels */
 .field-label {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-text-fill: #444444;
 }
 
-/* Input Fields */
 .input-field, .combo-field  {
     -fx-background-color: #f5f5f5;
     -fx-background-radius: 8px;
@@ -477,7 +432,6 @@
     -fx-background-color: transparent;
 }
 
-/* Error Labels */
 .error-label {
     -fx-text-fill: #f44336;
     -fx-font-size: 12px;

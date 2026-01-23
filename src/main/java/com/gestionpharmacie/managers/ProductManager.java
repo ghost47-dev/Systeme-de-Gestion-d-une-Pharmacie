@@ -95,19 +95,6 @@ public class ProductManager {
         }
     }
 
-    public void addToProduct(int id, int quant) throws ProductNotFoundException {
-        String sql = "UPDATE product SET quantity = quantity + ? WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, quant);
-            stmt.setInt(2, id);
-
-            int rows = stmt.executeUpdate();
-            if (rows == 0) throw new ProductNotFoundException("This product doesn't exist!");
-        } catch (SQLException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-    }
-
     public void removeFromProduct(int id, int quant) throws ProductNotFoundException, InsufficientStockException {
         Product p = fetchProduct(id);
         if(p == null)

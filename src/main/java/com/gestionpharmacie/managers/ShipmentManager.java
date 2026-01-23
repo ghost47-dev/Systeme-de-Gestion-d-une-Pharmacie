@@ -155,10 +155,6 @@ public class ShipmentManager {
         return null;
     }
 
-
-
-
-
     public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate ) throws ShipmentNotFoundException {
         java.sql.Date request_date = new java.sql.Date(newReqDate.getTime());
         java.sql.Date receive_date = new java.sql.Date(newRecDate.getTime());
@@ -301,21 +297,7 @@ public class ShipmentManager {
         }
         return output;
     }
-    public ArrayList<Supplier> fetchSuppliers() {
-        String query = "SELECT * FROM supplier";
-        try(Statement ps = connection.createStatement()) {
-            ResultSet rs = ps.executeQuery(query);
-            ArrayList<Supplier> out = new ArrayList<>();
-            while(rs.next()) {
-                Supplier sup = new Supplier(rs);
-                out.add(sup);
-            }
-            return out ;
-        } catch(SQLException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
+
     public ArrayList<Shipment> fetchShipments(){
         String query = "SELECT * FROM shipment";
         try(Statement ps = connection.createStatement()) {

@@ -23,16 +23,9 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getPrivilege() {
         return privilege;
-    }
-
-    public void setPrivilege(String privilege) {
-        this.privilege = privilege;
     }
 }
 

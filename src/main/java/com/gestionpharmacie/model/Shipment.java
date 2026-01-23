@@ -36,10 +36,6 @@ public class Shipment {
 			e.printStackTrace();
 		}
 	}
-    public void receive(Date d){
-        recieved = true;
-        recievalDate = d;
-    }
 
     public int getId() {
 		return id;
@@ -53,10 +49,6 @@ public class Shipment {
 		return supplierId;
 	}
 
-	public void setSupplierId(int supplierId) {
-		this.supplierId = supplierId;
-	}
-
 	public Date getRequestDate() {
 		return requestDate;
 	}
@@ -65,25 +57,10 @@ public class Shipment {
         return recieved;
     }
 
-	public void setRequestDate(Date requestDate) {
-		this.requestDate = requestDate;
-	}
-
-	public boolean isRecieved() {
-		return recieved;
-	}
-
-	public void setRecieved(boolean recieved) {
-		this.recieved = recieved;
-	}
-
 	public Date getRecievalDate() {
 		return recievalDate;
 	}
 
-	public void setRecievalDate(Date recievalDate) {
-		this.recievalDate = recievalDate;
-	}
 	public String toString(){
 		return "Shipment's id: " +id +" Supplier's id :" + supplierId + ",Shipment's request date" + requestDate + "Shipment State : "+recieved+ "Shipment reciept date: "+ recievalDate;
 	}

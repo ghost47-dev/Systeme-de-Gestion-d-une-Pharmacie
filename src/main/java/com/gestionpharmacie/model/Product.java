@@ -46,12 +46,6 @@ public class Product {
     public double getPrice() {
 	return price;
     }
-    public void addQuantity(int q){
-	quantity += q;
-    }
-    public void removeQuantity(int q){
-	quantity -= q;
-    }
 
     public String toString() {
 	return "id: " + id + " - name: " + name + " - quantity: " + quantity;

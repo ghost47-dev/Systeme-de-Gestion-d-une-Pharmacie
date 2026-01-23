@@ -21,10 +21,6 @@ public class SaleProduct {
         return productId;
     }
 
-    public int getSaleId(){
-        return saleId;
-    }
-
     public int getQuantity(){
         return quantity;
     }

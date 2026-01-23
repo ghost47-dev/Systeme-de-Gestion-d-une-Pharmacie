@@ -44,16 +44,9 @@ public class Supplier {
 	public int getNumerotel() {
 		return phoneNumber;
 	}
-	public void setNumerotel(int phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
 
 	public int getNoLateShipments() {
 		return noLateShipments;
-	}
-
-	public void increaseNoLateShipments() {
-		this.noLateShipments++;
 	}
 
 	public int getTotalNoShipments(Connection con) {

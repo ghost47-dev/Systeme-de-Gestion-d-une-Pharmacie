@@ -27,9 +27,6 @@ public class ShipmentGood {
 		return quantity;
 	}
 
-    public int getShipmentId() {
-		return shipmentId;
-	}
     public double getPrice(){
         return price;
     }
