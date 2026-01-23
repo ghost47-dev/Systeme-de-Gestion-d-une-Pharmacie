@@ -39,9 +39,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -50,7 +47,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 
@@ -60,7 +56,7 @@ public class MainController {
     @FXML private VBox sidePanel;
     @FXML private Button toggleButton;
     @FXML private VBox togglePanel;
-    // Navigation buttons
+
     @FXML private Button saleHistoryBtn;
     @FXML private Button productsBtn;
     @FXML private Button shipmentsBtn;
@@ -68,7 +64,7 @@ public class MainController {
     @FXML private Button adminDashboardBtn;
     @FXML private Button totalRevenueBtn;
     @FXML private Button userCreationBtn;
-    // Pages
+
     @FXML private VBox saleHistoryPage;
     @FXML private VBox productsPage;
     @FXML private VBox shipmentsPage;
@@ -77,7 +73,6 @@ public class MainController {
     @FXML private VBox userCreationPage;
     @FXML private HBox editingBtns_product;
     @FXML private HBox editingBtns_shipment;
-
 
     @FXML private ListView<String> saleHistoryList;
     @FXML private ListView<String> productsList;
@@ -404,11 +399,10 @@ public class MainController {
         String message = messageQueue.poll();
         showMessage(message, MessageType.ERROR);
 
-        // Wait for message duration + fade time, then show next
         PauseTransition pause = new PauseTransition(Duration.millis(3500));
         pause.setOnFinished(e -> {
             isShowingMessage = false;
-            showNextMessage(); // Show next message in queue
+            showNextMessage();
         });
         pause.play();
     }
@@ -473,13 +467,13 @@ public class MainController {
                             "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" +
                             "Shipment is received ✓"
                             );
-                else 
+                else
                     items.add(
                             "Shipment id : " + s.getId() + "\n" +
                             "Supplier id : " + supplier_id + "\n" +
                             "Supplier name : " + supplierName + " | Supplier phone : " + supplierPhone + "\n" +
                             shipmentGoodInfo +
-                            "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" + 
+                            "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" +
                             "Shipment is not received 𐄂"
                             );
             }
@@ -693,7 +687,6 @@ public class MainController {
             isValid = false;
         }
 
-
         if (passwordField.getText().isEmpty()) {
             passwordField.getStyleClass().add("error");
             showError(passwordError, "Password is required");
@@ -724,7 +717,6 @@ public class MainController {
             String username = usernameField.getText().trim();
             String password = passwordField.getText();
             String privilege = privilegeComboBox.getValue();
-
 
             userManager.addUser(new User(username, password, privilege));
 
@@ -796,7 +788,6 @@ public class MainController {
     }
 
     private void setActiveButton(Button activeBtn) {
-        // Remove active class from all buttons
         saleHistoryBtn.getStyleClass().remove("nav-btn-active");
         productsBtn.getStyleClass().remove("nav-btn-active");
         shipmentsBtn.getStyleClass().remove("nav-btn-active");
@@ -804,7 +795,6 @@ public class MainController {
         totalRevenueBtn.getStyleClass().remove("nav-btn-active");
         userCreationBtn.getStyleClass().remove("nav-btn-active");
 
-        // Add active class to selected button
         if (!activeBtn.getStyleClass().contains("nav-btn-active")) {
             activeBtn.getStyleClass().add("nav-btn-active");
         }

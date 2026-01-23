@@ -34,3 +34,4 @@ public class ShipmentGood {
         return price;
     }
 }
+

@@ -5,7 +5,6 @@ module com.gestionpharmacie {
     requires java.xml;
     requires transitive java.sql;
 
-
     opens com.gestionpharmacie to javafx.fxml;
     exports com.gestionpharmacie;
     opens com.gestionpharmacie.controllers to javafx.fxml;
@@ -13,3 +12,4 @@ module com.gestionpharmacie {
     exports com.gestionpharmacie.managers;
     exports com.gestionpharmacie.model;
 }
+

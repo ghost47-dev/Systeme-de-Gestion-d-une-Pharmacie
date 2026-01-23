@@ -79,7 +79,6 @@ public class AddShipmentController {
         shipmentsGoodContainer.getChildren().add(goodRow);
     }
 
-
     @FXML
     private void saveShipment(ActionEvent event) {
         String name = supplierName.getText();
@@ -124,7 +123,6 @@ public class AddShipmentController {
 
             errorLabel.setVisible(false);
 
-
             ProductManager productManager = Globals.managers.product;
             ShipmentManager shipmentManager = Globals.managers.shipment;
             int supplier_id = shipmentManager.fetchSupplierbyPhone(Phone);
@@ -138,7 +136,6 @@ public class AddShipmentController {
                     arrival
 
             );
-
 
             for (Node row : shipmentsGoodContainer.getChildren()){
 

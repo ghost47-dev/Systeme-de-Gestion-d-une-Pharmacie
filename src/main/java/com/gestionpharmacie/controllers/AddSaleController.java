@@ -1,7 +1,5 @@
 package com.gestionpharmacie.controllers;
 
-import java.sql.Connection;
-
 import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.exceptions.InsufficientStockException;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
@@ -11,15 +9,12 @@ import com.gestionpharmacie.managers.SaleManager;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class AddSaleController {
     @FXML
@@ -143,7 +138,6 @@ public class AddSaleController {
                 }
                 goBack(event);
 
-
             }
             catch (NumberFormatException e){
                  errorLabel.setText("Invalid phone number !");
@@ -157,4 +151,3 @@ public class AddSaleController {
         Globals.controllers.main.show();
     }
 }
-

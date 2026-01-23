@@ -102,7 +102,6 @@ public class EditProductController {
         double price = Double.parseDouble(matcher.group(3));
         int quantity = Integer.parseInt(matcher.group(4));
 
-
         nameField.setText(name);
         priceField.setText(Double.toString(price));
         quantityField.setText(Integer.toString(quantity));
@@ -111,7 +110,6 @@ public class EditProductController {
     @FXML
     private void editProduct(ActionEvent event ){
         if (product == null) return;
-
 
         String name = nameField.getText();
         String price = priceField.getText();
@@ -154,10 +152,6 @@ public class EditProductController {
             quantityField.clear();
             priceField.clear();
             nameField.clear();
-
         }
     }
-
-
 }
-

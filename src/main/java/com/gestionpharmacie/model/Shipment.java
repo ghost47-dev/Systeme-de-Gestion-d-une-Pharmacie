@@ -22,16 +22,15 @@ public class Shipment {
 			this.id = rs.getInt("id");
 			this.supplierId = rs.getInt("supplier_id");
 
-			java.sql.Date sqlDate = rs.getDate("request_date"); //
-			java.util.Date utilDate = new java.util.Date(sqlDate.getTime()); // casting sql date to java date
-			this.requestDate = utilDate; //
+			java.sql.Date sqlDate = rs.getDate("request_date");
+			java.util.Date utilDate = new java.util.Date(sqlDate.getTime());
+			this.requestDate = utilDate;
 
-			java.sql.Date sqlDate2 = rs.getDate("arrival_date"); //
-			java.util.Date utilDate2 = new java.util.Date(sqlDate2.getTime()); // casting sql date to java date
+			java.sql.Date sqlDate2 = rs.getDate("arrival_date");
+			java.util.Date utilDate2 = new java.util.Date(sqlDate2.getTime());
 			this.recievalDate = utilDate2;
 
 			this.recieved = rs.getBoolean("received");
-
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -89,3 +88,4 @@ public class Shipment {
 		return "Shipment's id: " +id +" Supplier's id :" + supplierId + ",Shipment's request date" + requestDate + "Shipment State : "+recieved+ "Shipment reciept date: "+ recievalDate;
 	}
 }
+

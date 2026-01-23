@@ -5,3 +5,4 @@ public class ShipmentNotFoundException extends Exception {
         super(message);
     }
 }
+

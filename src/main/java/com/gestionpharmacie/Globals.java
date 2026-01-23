@@ -1,13 +1,10 @@
 package com.gestionpharmacie;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
-
 import com.gestionpharmacie.controllers.*;
 import com.gestionpharmacie.managers.*;
 
@@ -139,3 +136,4 @@ public class Globals {
         ACCOUNT,
     }
 }
+

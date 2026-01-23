@@ -56,7 +56,7 @@ public class EditShipmentController {
     @FXML
     public void showEdit(String shipment){
         Pattern pattern = Pattern.compile(
-                "(?s)Shipment id : (\\d+)\\n.*" 
+                "(?s)Shipment id : (\\d+)\\n.*"
         );
         this.shipment = shipment;
         Matcher matcher = pattern.matcher(shipment);
@@ -71,12 +71,12 @@ public class EditShipmentController {
         Shipment sh = shipmentManager.fetchShipment(shipmentId);
 
         ArrayList<ShipmentGood> shipmentGood = shipmentManager.fetchShipmentGood(shipmentId);
-        
+
         int supplier_id = sh.getSupplierId();
         Date request = sh.getRequestDate();
         Date arrival = sh.getRecievalDate();
         boolean Received = sh.isReceived();
-        
+
         supplierId.setText(String.valueOf(supplier_id));
 
         this.requestDate.setValue(
@@ -113,7 +113,7 @@ public class EditShipmentController {
         if (!supplier_id.isEmpty() &&
             arrivalDateTmp != null &&
             requestDateTmp != null &&
-            (isReceived.isSelected() ^ notReceived.isSelected()) 
+            (isReceived.isSelected() ^ notReceived.isSelected())
             ){
             try {
                 supId = Integer.parseInt(supplier_id);
@@ -168,7 +168,6 @@ public class EditShipmentController {
 
             TextField priceField = (TextField)current_row.getChildren().get(2);
             TextField quantityField = (TextField)current_row.getChildren().get(1);
-            
 
             String price = priceField.getText();
             String quantity = quantityField.getText();
@@ -177,7 +176,7 @@ public class EditShipmentController {
             try {
                 if (price.isEmpty())
                     throw new NumberFormatException();
-                productQuantity = Integer.parseInt(quantity);                   
+                productQuantity = Integer.parseInt(quantity);
                 errorLabel.setVisible(false);
             }
             catch (NumberFormatException ex) {
@@ -185,12 +184,12 @@ public class EditShipmentController {
                 quantityField.clear();
                 errorLabel.setVisible(true);
                 return;
-            } 
+            }
 
             try {
-                if (price.isEmpty()) 
+                if (price.isEmpty())
                     throw new NumberFormatException();
-                productPrice = Double.parseDouble(price);                   
+                productPrice = Double.parseDouble(price);
                 errorLabel.setVisible(false);
             }
             catch (NumberFormatException ex) {
@@ -208,9 +207,9 @@ public class EditShipmentController {
             catch (ProductNotFoundException e){
                 e.printStackTrace();
                 return;
-            } 
+            }
         }
-        errorLabel.setVisible(false);  
+        errorLabel.setVisible(false);
         goBack(event);
     }
     @FXML
@@ -248,9 +247,9 @@ public class EditShipmentController {
 
         shipmentsGoodContainer.getChildren().add(goodRow);
     }
-    
+
     private void removeShipmentGood(int shipmentGoodId){
         ShipmentManager shipmentManager = Globals.managers.shipment;
         shipmentManager.deleteShipmentGood(shipmentGoodId);
-    } 
+    }
 }

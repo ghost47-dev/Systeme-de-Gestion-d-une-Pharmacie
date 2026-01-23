@@ -131,14 +131,9 @@ public class SaleManager {
         return null;
     }
 
-//    public SaleProduct fetchSaleProduct(int id){
-//        for(SaleProduct s : saleProducts){
-//            if(s.getId() == id){
-//                return s;
-//            }
-//        }
-//        return null;
-//    }
+
+
+
 
     public ArrayList<Integer> getSaleIds() {
         ArrayList<Integer> ids = new ArrayList<>();
@@ -175,3 +170,4 @@ public class SaleManager {
     }
 
 }
+

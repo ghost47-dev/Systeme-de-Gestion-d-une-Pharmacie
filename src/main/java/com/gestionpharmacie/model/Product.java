@@ -49,7 +49,7 @@ public class Product {
     public void addQuantity(int q){
 	quantity += q;
     }
-    public void removeQuantity(int q){ // this should throw something probably
+    public void removeQuantity(int q){
 	quantity -= q;
     }
 
@@ -57,3 +57,4 @@ public class Product {
 	return "id: " + id + " - name: " + name + " - quantity: " + quantity;
     }
 }
+

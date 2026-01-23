@@ -9,12 +9,8 @@ import com.gestionpharmacie.managers.ProductManager;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 
 public class AddProductController {
 
@@ -101,8 +97,6 @@ public class AddProductController {
         String name = matcher.group(2);
         double price = Double.parseDouble(matcher.group(3));
         int quantity = Integer.parseInt(matcher.group(4));
-
-
         nameField.setText(name);
         priceField.setText(Double.toString(price));
         quantityField.setText(Integer.toString(quantity));
@@ -111,7 +105,6 @@ public class AddProductController {
     @FXML
     private void editProduct(ActionEvent event ){
         if (product == null) return;
-
 
         String name = nameField.getText();
         String price = priceField.getText();
@@ -157,7 +150,4 @@ public class AddProductController {
 
         }
     }
-
-
 }
-

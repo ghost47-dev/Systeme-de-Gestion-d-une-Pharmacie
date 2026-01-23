@@ -155,14 +155,9 @@ public class ShipmentManager {
         return null;
     }
 
-//    public ShipmentGood fetchShipmentGood(int id){
-//        for(ShipmentGood s : shipmentGoods){
-//            if(s.getId() == id){
-//                return s;
-//            }
-//        }
-//        return null;
-//    }
+
+
+
 
     public void updateShipment(int id, int newSId, Date newReqDate, boolean newRec, Date newRecDate ) throws ShipmentNotFoundException {
         java.sql.Date request_date = new java.sql.Date(newReqDate.getTime());
@@ -184,7 +179,7 @@ public class ShipmentManager {
     }
     public void updateShipmentGood(int id_ship_good ,int product_it, int new_quantity , double new_price) throws ProductNotFoundException {
         ProductManager pm = Globals.managers.product;
-        if (pm.fetchProduct(product_it) == null ) 
+        if (pm.fetchProduct(product_it) == null )
             throw new ProductNotFoundException();
         String query = "UPDATE shipment_good SET quantity = ? , price = ? WHERE id = ? AND product_id = ?" ;
         try(PreparedStatement ps = connection.prepareStatement(query)){
@@ -198,14 +193,13 @@ public class ShipmentManager {
         }
     }
 
-
     public void cancelShipment(int id) throws ShipmentNotFoundException {
         ArrayList<ShipmentGood> shipmentGood = fetchShipmentGood(id);
         for (ShipmentGood sg : shipmentGood){
             ProductManager productManager = Globals.managers.product;
             try {
                 if (productManager.fetchProduct(sg.getProductId()).getQuantity() == 0){
-                    productManager.deleteProduct(sg.getProductId()); 
+                    productManager.deleteProduct(sg.getProductId());
                 }
             }
             catch (ProductNotFoundException e){
@@ -213,7 +207,7 @@ public class ShipmentManager {
                 return;
             }
         }
-        // Delete this shipment_supplier
+
         String sql = "DELETE FROM shipment WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -241,8 +235,8 @@ public class ShipmentManager {
             System.err.println("Error: " + ex.getMessage());
         }
         sql = """
-            SELECT shipment_good.product_id, quantity 
-            FROM shipment_good JOIN shipment ON shipment_good.shipment_id = shipment.id 
+            SELECT shipment_good.product_id, quantity
+            FROM shipment_good JOIN shipment ON shipment_good.shipment_id = shipment.id
             WHERE shipment.id = ?;
         """;
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -346,7 +340,7 @@ public class ShipmentManager {
             ResultSet rs  = stmt.executeQuery();
             if (!rs.next()) return -1 ;
             else if (rs.getInt("sg") == 1){
-                String sql2 = "DELETE FROM shipment WHERE id = (SELECT shipment_id FROM shipment_good WHERE shipment_good.id = ?)"; 
+                String sql2 = "DELETE FROM shipment WHERE id = (SELECT shipment_id FROM shipment_good WHERE shipment_good.id = ?)";
                 try (PreparedStatement stmt1 = connection.prepareStatement(sql2)) {
                     stmt1.setInt(1, shipment_good_id);
 
@@ -356,10 +350,10 @@ public class ShipmentManager {
                 } catch (SQLException e) {
                     System.err.println("Error: " + e.getMessage());
                 }
-            
+
             }
             else {
-                String sql2 = "DELETE FROM shipment_good WHERE id = ?"; 
+                String sql2 = "DELETE FROM shipment_good WHERE id = ?";
                 try (PreparedStatement stmt3 = connection.prepareStatement(sql2)) {
                     stmt3.setInt(1, shipment_good_id);
 

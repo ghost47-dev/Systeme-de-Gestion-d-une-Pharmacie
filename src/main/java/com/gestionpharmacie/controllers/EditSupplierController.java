@@ -1,6 +1,5 @@
 package com.gestionpharmacie.controllers;
 
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
@@ -75,5 +74,4 @@ public class EditSupplierController{
         ShipmentManager sm = Globals.managers.shipment;
         sm.updateSupplier(supplier_id,name,Phone);
     }
-
 }

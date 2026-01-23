@@ -5,3 +5,4 @@ public class InsufficientStockException extends Exception {
         super(message);
     }
 }
+
