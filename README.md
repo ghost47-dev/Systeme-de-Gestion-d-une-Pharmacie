@@ -31,3 +31,7 @@ to view them, it first checks if it is up to date so it can omit the unnecessary
 db query.
 I think this is a good idea bc it will introduce a lot of new out-of-sync bugs
 that'll be very hard to debug.
+
+## BUGS:
+  * ShipmentManager line 183 this function is missing a lot of the implementation (wtf it just has comments)
+  * Adding a shipment doesn't update the shipment page fsr.
