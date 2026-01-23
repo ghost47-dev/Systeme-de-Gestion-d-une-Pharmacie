@@ -36,7 +36,7 @@ public class EditShipmentController {
     private Label errorLabel;
     @FXML
     private VBox shipmentsGoodContainer;
-
+    private int numberOfProducts ;
     private int shipmentId ;
     private String shipment;
     private Scene scene;
@@ -69,6 +69,7 @@ public class EditShipmentController {
         shipmentId = Integer.parseInt(matcher.group(1));
         ShipmentManager shipmentManager = Globals.managers.shipment;
         Shipment sh = shipmentManager.fetchShipment(shipmentId);
+
         ArrayList<ShipmentGood> shipmentGood = shipmentManager.fetchShipmentGood(shipmentId);
         
         int supplier_id = sh.getSupplierId();
@@ -89,6 +90,7 @@ public class EditShipmentController {
         this.notReceived.setSelected(!Received);
 
         shipmentsGoodContainer.getChildren().clear();
+        numberOfProducts = shipmentGood.size();
         for (ShipmentGood sg : shipmentGood){
             int product_Id = sg.getProductId();
             double productPrice = sg.getPrice();
@@ -230,8 +232,14 @@ public class EditShipmentController {
         closeBtn.getStyleClass().add("close-button");
         closeBtn.setOnAction(eventRm ->{
             removeShipmentGood(shipmentGoodId);
-            showEdit(shipment);
-            this.show(); 
+            if (numberOfProducts == 1){
+                Globals.controllers.main.show();
+                Globals.controllers.main.showShipmentsPage();
+            }
+            else {
+                showEdit(shipment);
+                this.show();
+            }
         });
 
         goodRow.getChildren().addAll(
