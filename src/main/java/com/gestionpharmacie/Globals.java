@@ -38,6 +38,7 @@ public class Globals {
 
     public class Config {
         public String resourcePath;
+        public String databaseUrl;
         public String databaseUser;
         public String databasePassword;
     }
@@ -71,7 +72,7 @@ public class Globals {
         public void connect(){
             try {
                 connection = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/pharmacy",
+                        Globals.config.databaseUrl,
                         Globals.config.databaseUser,
                         Globals.config.databasePassword
                 );

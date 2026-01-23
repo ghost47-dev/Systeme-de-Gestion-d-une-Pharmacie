@@ -87,3 +87,5 @@ create table user
     privilege varchar(10) null
 );
 
+INSERT INTO user VALUES ("admin", "admin", "admin");
+
