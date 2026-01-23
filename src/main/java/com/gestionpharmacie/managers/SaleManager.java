@@ -81,7 +81,7 @@ public class SaleManager {
 	    sql="UPDATE sale SET total_price = total_price + ?";
 	    PreparedStatement s1= (connection.prepareStatement(sql));
 	    s1.setFloat(1,price*quant);
-	    s.executeUpdate();
+	    s1.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }
