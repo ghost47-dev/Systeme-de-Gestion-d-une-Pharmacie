@@ -88,8 +88,8 @@ public class EditShipmentController {
         this.isReceived.setSelected(Received);
         this.notReceived.setSelected(!Received);
 
+        shipmentsGoodContainer.getChildren().clear();
         for (ShipmentGood sg : shipmentGood){
-            
             int product_Id = sg.getProductId();
             double productPrice = sg.getPrice();
             int productQuantity = sg.getQuantity();
@@ -97,6 +97,7 @@ public class EditShipmentController {
             addGoodRow(product_Id, productQuantity, productPrice);
         }
     }
+
     @FXML
     private void editShipment(ActionEvent event){
         LocalDate arrivalDateTmp = arrivalDate.getValue();
@@ -199,6 +200,7 @@ public class EditShipmentController {
             ShipmentGood sg = sgs.get(i++);
             try {
                 shipmentManager.updateShipmentGood(sg.getId() , sg.getProductId() , productQuantity , productPrice);
+                System.out.println("updating shipment good " + sg.getId() + " " + sg.getProductId() + " " + productPrice + " " + productQuantity);
             }
             catch (ProductNotFoundException e){
                 e.printStackTrace();
