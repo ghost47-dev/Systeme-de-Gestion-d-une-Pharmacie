@@ -39,7 +39,7 @@ public class SaleManager {
     }
 
     public int addSale(int cid) {
-        String sql = "INSERT INTO sale(client_id) VALUES(?)";
+        String sql = "INSERT INTO sale(client_id, total_price) VALUES(?, 0)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, cid);
 
@@ -70,18 +70,20 @@ public class SaleManager {
             stmt.executeUpdate();
             ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
-                p.removeFromProduct(pid,quant);
+                sql="SELECT price from product where id = ?";
+                PreparedStatement s = (connection.prepareStatement(sql));
+                s.setInt(1,pid);
+                ResultSet r= s.executeQuery();
+                r.next();
+                double price = r.getDouble("price");
+                sql="UPDATE sale SET total_price = total_price + ? where id = ?";
+                PreparedStatement s1= (connection.prepareStatement(sql));
+                s1.setDouble(1,price*quant);
+                s1.setInt(2, sid);
+                s1.executeUpdate();
+                p.removeFromProduct(pid, quant);
                 return keys.getInt(1);
             }
-	    sql="SELECT price from  Product where id = ?";
-	    PreparedStatement s= (connection.prepareStatement(sql));
-	    s.setInt(1,pid);
-	    ResultSet r= s.executeQuery();
-	    float price = r.getFloat("price");
-	    sql="UPDATE sale SET total_price = total_price + ?";
-	    PreparedStatement s1= (connection.prepareStatement(sql));
-	    s1.setFloat(1,price*quant);
-	    s1.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }
@@ -89,9 +91,7 @@ public class SaleManager {
     }
 
     public double getTotalRevenue() {
-        String sql = "SELECT SUM(sp.quantity * price) as total " +
-                "FROM sale_product sp, product p " +
-                "WHERE sp.product_id = p.id";
+        String sql = "SELECT SUM(total_price) as total FROM sale";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -138,10 +138,6 @@ public class SaleManager {
         }
         return null;
     }
-
-
-
-
 
     public ArrayList<Integer> getSaleIds() {
         ArrayList<Integer> ids = new ArrayList<>();

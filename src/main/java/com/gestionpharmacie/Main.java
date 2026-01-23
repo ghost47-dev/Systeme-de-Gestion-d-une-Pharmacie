@@ -14,8 +14,8 @@ public class Main extends Application {
     public static void main(String[] args) {
         Globals.init();
         Globals.config.databaseUrl = "jdbc:mysql://localhost:3306/pharmacy";
-        Globals.config.databaseUser = "root";
-        Globals.config.databasePassword = "admin";
+        Globals.config.databaseUser = "pharma";
+        Globals.config.databasePassword = "StrongPassword123";
         Globals.database.connect();
 
         Globals.config.resourcePath = "/com/gestionpharmacie/";
