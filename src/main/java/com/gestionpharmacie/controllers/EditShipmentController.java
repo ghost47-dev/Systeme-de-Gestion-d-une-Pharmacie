@@ -36,9 +36,9 @@ public class EditShipmentController {
     private Label errorLabel;
     @FXML
     private VBox shipmentsGoodContainer;
-
+    private int numberOfProducts ;
     private int shipmentId ;
-
+    private String shipment;
     private Scene scene;
 
     public EditShipmentController(){
@@ -58,7 +58,7 @@ public class EditShipmentController {
         Pattern pattern = Pattern.compile(
                 "(?s)Shipment id : (\\d+)\\n.*" 
         );
-
+        this.shipment = shipment;
         Matcher matcher = pattern.matcher(shipment);
 
         if (!matcher.find()) {
@@ -69,6 +69,7 @@ public class EditShipmentController {
         shipmentId = Integer.parseInt(matcher.group(1));
         ShipmentManager shipmentManager = Globals.managers.shipment;
         Shipment sh = shipmentManager.fetchShipment(shipmentId);
+
         ArrayList<ShipmentGood> shipmentGood = shipmentManager.fetchShipmentGood(shipmentId);
         
         int supplier_id = sh.getSupplierId();
@@ -89,12 +90,13 @@ public class EditShipmentController {
         this.notReceived.setSelected(!Received);
 
         shipmentsGoodContainer.getChildren().clear();
+        numberOfProducts = shipmentGood.size();
         for (ShipmentGood sg : shipmentGood){
             int product_Id = sg.getProductId();
             double productPrice = sg.getPrice();
             int productQuantity = sg.getQuantity();
 
-            addGoodRow(product_Id, productQuantity, productPrice);
+            addGoodRow(sg.getId() , product_Id, productQuantity, productPrice);
         }
     }
 
@@ -166,6 +168,8 @@ public class EditShipmentController {
 
             TextField priceField = (TextField)current_row.getChildren().get(2);
             TextField quantityField = (TextField)current_row.getChildren().get(1);
+            
+
             String price = priceField.getText();
             String quantity = quantityField.getText();
             int productQuantity;
@@ -196,7 +200,6 @@ public class EditShipmentController {
                 errorLabel.setVisible(true);
                 return;
             }
-
             ShipmentGood sg = sgs.get(i++);
             try {
                 shipmentManager.updateShipmentGood(sg.getId() , sg.getProductId() , productQuantity , productPrice);
@@ -211,7 +214,7 @@ public class EditShipmentController {
         goBack(event);
     }
     @FXML
-    private void addGoodRow(int id , int quantity , double price) {
+    private void addGoodRow(int shipmentGoodId , int id , int quantity , double price) {
 
         HBox goodRow = new HBox(10);
         goodRow.setAlignment(Pos.CENTER);
@@ -227,6 +230,17 @@ public class EditShipmentController {
 
         Button closeBtn = new Button("✕");
         closeBtn.getStyleClass().add("close-button");
+        closeBtn.setOnAction(eventRm ->{
+            removeShipmentGood(shipmentGoodId);
+            if (numberOfProducts == 1){
+                Globals.controllers.main.show();
+                Globals.controllers.main.showShipmentsPage();
+            }
+            else {
+                showEdit(shipment);
+                this.show();
+            }
+        });
 
         goodRow.getChildren().addAll(
                 idLabel ,pQuantity ,pPrice , closeBtn
@@ -234,4 +248,9 @@ public class EditShipmentController {
 
         shipmentsGoodContainer.getChildren().add(goodRow);
     }
+    
+    private void removeShipmentGood(int shipmentGoodId){
+        ShipmentManager shipmentManager = Globals.managers.shipment;
+        shipmentManager.deleteShipmentGood(shipmentGoodId);
+    } 
 }

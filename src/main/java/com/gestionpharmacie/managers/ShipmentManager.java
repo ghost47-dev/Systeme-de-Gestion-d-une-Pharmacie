@@ -334,4 +334,44 @@ public class ShipmentManager {
         }
         return null;
     }
+    public int deleteShipmentGood(int shipment_good_id){
+        String sql1 = "SELECT COUNT(*) sg FROM shipment_good WHERE shipment_id = (SELECT shipment_id FROM shipment_good WHERE shipment_good.id = ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql1)) {
+            stmt.setInt(1, shipment_good_id);
+
+            ResultSet rs  = stmt.executeQuery();
+            if (!rs.next()) return -1 ;
+            else if (rs.getInt("sg") == 1){
+                String sql2 = "DELETE FROM shipment WHERE id = (SELECT shipment_id FROM shipment_good WHERE shipment_good.id = ?)"; 
+                try (PreparedStatement stmt1 = connection.prepareStatement(sql2)) {
+                    stmt1.setInt(1, shipment_good_id);
+
+                    int rows = stmt1.executeUpdate();
+                    if (rows == 0) return -1 ;
+
+                } catch (SQLException e) {
+                    System.err.println("Error: " + e.getMessage());
+                }
+            
+            }
+            else {
+                String sql2 = "DELETE FROM shipment_good WHERE id = ?"; 
+                try (PreparedStatement stmt3 = connection.prepareStatement(sql2)) {
+                    stmt3.setInt(1, shipment_good_id);
+
+                    int rows = stmt3.executeUpdate();
+                    if (rows == 0) return -1 ;
+
+                } catch (SQLException e) {
+                    System.err.println("Error: " + e.getMessage());
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return 1;
+    }
 }
+
+

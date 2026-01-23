@@ -2,6 +2,7 @@ package com.gestionpharmacie.controllers;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.gestionpharmacie.Globals;
@@ -11,6 +12,7 @@ import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.ShipmentManager;
 import com.gestionpharmacie.model.Product;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -200,6 +202,22 @@ public class AddShipmentController {
 
     @FXML
     private void goBack(javafx.event.ActionEvent event) {
+        this.isReceived.setSelected(false);
+        this.notReceived.setSelected(false);
+        this.supplierName.clear();
+        this.supplierPhone.clear();
+        this.arrivalDate.setValue(null);
+        this.requestDate.setValue(null);
+        ObservableList<Node> sgs =  shipmentsGoodContainer.getChildren();
+        for (Node n : sgs){
+            HBox sg = (HBox)n;
+            TextField priceField = (TextField)sg.getChildren().get(1);
+            TextField quantityField = (TextField)sg.getChildren().get(2);
+            TextField idField = (TextField)sg.getChildren().get(3);
+            priceField.clear();
+            quantityField.clear();
+            idField.clear();
+        }
         Globals.controllers.main.show();
     }
 }
