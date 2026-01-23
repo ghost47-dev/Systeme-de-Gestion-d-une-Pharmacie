@@ -521,17 +521,9 @@ public class MainController {
                 int supplierPhone = supplier.getNumerotel();
 
                 ArrayList<ShipmentGood> shipmentGood ; 
-
-                try {
                     shipmentGood = sm.fetchShipmentGood(s.getId());
-                }
-                catch (ShipmentNotFoundException e){
-                    e.printStackTrace();
-                    return;
-                }
 
                 if (shipmentGood.size() == 0) {System.out.println("shipmentGoodisEmpty"); return;}
-
                 String shipmentGoodInfo = "";
                 ProductManager pm = new ProductManager(conn);
                 for (ShipmentGood sg : shipmentGood){
@@ -547,30 +539,31 @@ public class MainController {
                         return;
                     }
                     String name = product.getName();
-                    shipmentGoodInfo = "Product id : " + product.getId() + "\n" +
+                    shipmentGoodInfo += "Product id : " + product.getId() + "\n" +
                     "Product name : " + name + " | Product price : " + price + "$" + " | Product quantity " + quantity + "\n" ; 
                 }
                 
 
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                if (isReceived)
-                items.add(
-                    "Shipment id : " + s.getId() + "\n" +
-                    "Supplier id : " + supplier_id + "\n" +
-                    "Supplier name : " + supplierName + " | Supplier phone : " + supplierPhone + "\n" +
-                    shipmentGoodInfo +
-                    "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" +
-                    "Shipment is received ✓"
-                );
-                else 
-                items.add(
-                    "Shipment id : " + s.getId() + "\n" +
-                    "Supplier id : " + supplier_id + "\n" +
-                    "Supplier name : " + supplierName + " | Supplier phone : " + supplierPhone + "\n" +
-                    shipmentGoodInfo +
-                    "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" + 
-                    "Shipment is not received 𐄂"
-                );
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                    if (isReceived)
+                    items.add(
+                        "Shipment id : " + s.getId() + "\n" +
+                        "Supplier id : " + supplier_id + "\n" +
+                        "Supplier name : " + supplierName + " | Supplier phone : " + supplierPhone + "\n" +
+                        shipmentGoodInfo +
+                        "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" +
+                        "Shipment is received ✓"
+                    );
+                    else 
+                    items.add(
+                        "Shipment id : " + s.getId() + "\n" +
+                        "Supplier id : " + supplier_id + "\n" +
+                        "Supplier name : " + supplierName + " | Supplier phone : " + supplierPhone + "\n" +
+                        shipmentGoodInfo +
+                        "Date of request : " + formatter.format(requestDate) + " | Date of arrival : " + formatter.format(receivalDate) + "\n" + 
+                        "Shipment is not received 𐄂"
+                    );
+                
                  
             } 
              //

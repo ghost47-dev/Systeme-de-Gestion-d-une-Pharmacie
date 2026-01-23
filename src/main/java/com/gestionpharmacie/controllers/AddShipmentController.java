@@ -119,7 +119,12 @@ public class AddShipmentController {
             
             ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
             ShipmentManager shipmentManager = new ShipmentManager(DatabaseConnection.getConnection());
-
+            int supplier_id = shipmentManager.addSupplier(name,Phone);
+            int shipment_id = shipmentManager.addShipment(supplier_id,
+                    request,
+                    isReceived.isSelected() && !notReceived.isSelected() ,
+                    arrival
+            );
             
            for (Node row : shipmentsGoodContainer.getChildren()){
 
@@ -158,28 +163,26 @@ public class AddShipmentController {
                     errorLabel.setVisible(true);
                     return;
                 }       
-                try { 
-                    int supplier_id = shipmentManager.addSupplier(name,Phone);
-                    int shipment_id = shipmentManager.addShipment(supplier_id,
-                            request,
-                            isReceived.isSelected() && !notReceived.isSelected() ,
-                            arrival
-                    );
 
-                    try {
-                        Product product = productManager.fetchProduct(Name.getText());
-                        shipmentManager.addShipmentGood(shipment_id, product.getId(), productPrice, productQuantity);
-                    }
-                    catch (ProductNotFoundException e){
-                        int product_id = productManager.addProduct(Name.getText(), productPrice, 0);
+                try {
+                    Product product = productManager.fetchProduct(Name.getText());
+                    shipmentManager.addShipmentGood(shipment_id, product.getId(), productPrice, productQuantity);
+                }
+                catch (ProductNotFoundException e){
+                    int product_id = productManager.addProduct(Name.getText(), productPrice, 0);
+                    try{
                         shipmentManager.addShipmentGood(shipment_id, product_id, productPrice, productQuantity);
                     }
-
+                    catch(ShipmentNotFoundException ex){
+                        e.printStackTrace();
+                        return;
+                    }
                 }
                 catch (ShipmentNotFoundException e){
                     e.printStackTrace();
-                    return ;
+                    return;
                 }
+                
            }   
             goBack(event);
 

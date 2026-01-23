@@ -1,5 +1,5 @@
 create database if not exists pharmacy;
-
+use pharmacy;
 create table client
 (
     id      int auto_increment primary key,
