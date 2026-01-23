@@ -11,14 +11,25 @@ import javafx.scene.Node;
 import javafx.event.ActionEvent;
 
 
+import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.managers.UserManager;
 import com.gestionpharmacie.model.User;
-import com.gestionpharmacie.utilities.DatabaseConnection;
-public class LoginController {
 
+public class LoginController {
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Label errorLabel;
+    private Scene scene;
+
+    public LoginController(){
+        scene = Globals.scenes.loadScene("login.fxml", this);
+    }
+
+    public void show(){
+        Globals.stage.setTitle("Login");
+        Globals.stage.setScene(scene);
+    }
+
     @FXML
     private void handleLogin(ActionEvent event) {
         // Simple example check
@@ -31,7 +42,7 @@ public class LoginController {
                 String username = new String(usernameField.getText());
                 String password = new String(passwordField.getText());
 
-                UserManager usermanager = new UserManager(DatabaseConnection.getConnection());
+                UserManager usermanager = new UserManager(Globals.database.getConnection());
                 User user = usermanager.fetchUser(username);
 
                 if (user == null){
@@ -51,30 +62,8 @@ public class LoginController {
                 }
                 errorLabel.setVisible(false);
 
-                FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/gestionpharmacie/main.fxml")
-                );
-                loader.setControllerFactory(type -> {
-                    if (type == MainController.class) {
-                        return new MainController(user.getPrivilege());
-                    }
-                    return null;
-                });
-                Parent root = loader.load();
-
-
-
-                Scene scene = new Scene(root, 900, 600);
-                scene.getStylesheets().add(
-                        getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
-                );
-
-                Stage stage = (Stage) ((Node) event.getSource())
-                        .getScene().getWindow();
-
-                stage.setTitle("Pharmacy Stock Management");
-                stage.setScene(scene);
-
+                Globals.privilege = user.getPrivilege();
+                Globals.controllers.main.show();
             } catch (Exception e) {
                 e.printStackTrace();
             }

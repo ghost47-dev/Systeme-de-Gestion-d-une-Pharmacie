@@ -1,5 +1,6 @@
 package com.gestionpharmacie.managers;
 
+import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.exceptions.InsufficientStockException;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.model.Product;
@@ -11,8 +12,8 @@ public class ProductManager {
     private Connection connection;
     private final int quantityRiskThreshold = 10;
 
-    public ProductManager (Connection connection) {
-        this.connection = connection;
+    public ProductManager () {
+        this.connection = Globals.database.getConnection();
     }
 
     public int addProduct(String name, double price, int quant) {

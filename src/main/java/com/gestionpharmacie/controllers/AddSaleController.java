@@ -1,15 +1,12 @@
 package com.gestionpharmacie.controllers;
 
-
-
 import java.sql.Connection;
 
-
+import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.exceptions.InsufficientStockException;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.SaleManager;
-import com.gestionpharmacie.utilities.DatabaseConnection;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,8 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class SaleEntryController {
-
+public class AddSaleController {
     @FXML
     private Label errorLabel;
 
@@ -39,6 +35,16 @@ public class SaleEntryController {
 
     private String privilege;
     public void setPrivilege(String privilege){this.privilege = privilege;}
+
+    private Scene scene;
+
+    public AddSaleController(){
+        scene = Globals.scenes.loadScene("saleAdd.fxml", this);
+    }
+
+    public void show(){
+        Globals.stage.setScene(scene);
+    }
 
     @FXML
     public void initialize() {
@@ -87,8 +93,8 @@ public class SaleEntryController {
                 }
                 errorLabel.setVisible(false);
 
-                Connection connection = DatabaseConnection.getConnection();
-                ProductManager pm = new ProductManager(connection);
+                Connection connection = Globals.database.getConnection();
+                ProductManager pm = new ProductManager();
                 SaleManager sm = new SaleManager(pm, connection);
 
 
@@ -153,26 +159,7 @@ public class SaleEntryController {
 
     @FXML
     private void goBack(ActionEvent event) {
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gestionpharmacie/main.fxml"));
-            loader.setControllerFactory(type -> {
-                if (type == MainController.class) {
-                    System.out.println(privilege);
-                    return new MainController(privilege);
-                }
-                return null;
-            });
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
-            );
-            Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        Globals.controllers.main.show();
     }
 }
 

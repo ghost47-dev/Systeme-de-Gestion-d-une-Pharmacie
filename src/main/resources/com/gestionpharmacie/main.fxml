@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="com.gestionpharmacie.controllers.MainController" prefHeight="600.0" prefWidth="900.0">
+            prefHeight="600.0" prefWidth="900.0">
     <left>
         <HBox fx:id="sidePanelContainer">
             <VBox fx:id="sidePanel" styleClass="side-panel-bg" prefWidth="200.0" >

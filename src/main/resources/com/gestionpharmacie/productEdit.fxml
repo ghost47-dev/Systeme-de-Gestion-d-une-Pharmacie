@@ -10,7 +10,6 @@
 
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.gestionpharmacie.controllers.ProductController"
       spacing="20"
       alignment="CENTER"
       prefWidth="800"

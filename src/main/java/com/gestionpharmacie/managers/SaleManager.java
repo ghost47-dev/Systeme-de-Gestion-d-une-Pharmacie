@@ -55,7 +55,7 @@ public class SaleManager {
     }
 
     public int addSaleProduct(int sid, int pid, int quant) throws InsufficientStockException ,ProductNotFoundException{
-	    ProductManager p = new ProductManager(connection);
+	    ProductManager p = new ProductManager();
         Product product = p.fetchProduct(pid);
         if (product.getQuantity() < quant )
             throw new InsufficientStockException("Insufficient stock !");

@@ -7,10 +7,10 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.managers.ShipmentManager;
 import com.gestionpharmacie.model.Supplier;
-import com.gestionpharmacie.utilities.DatabaseConnection;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,10 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-
-
 public class EditShipmentController {
-
     @FXML
     private TextField supplierId ;
     @FXML
@@ -40,30 +37,20 @@ public class EditShipmentController {
     private int shipmentId ;
     private String privilege;
     public void setPrivilege(String privilege){this.privilege = privilege;}
+
+    private Scene scene;
+
+    public EditShipmentController(){
+        scene = Globals.scenes.loadScene("shipmentEdit.fxml", this);
+    }
+
+    public void show(){
+        Globals.stage.setScene(scene);
+    }
+
     @FXML
     private void goBack(ActionEvent event) {
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gestionpharmacie/main.fxml"));
-            loader.setControllerFactory(type -> {
-                if (type == MainController.class) {
-                    return new MainController(privilege);
-                }
-                return null;
-            });
-            Parent root = loader.load();
-            MainController mainController = loader.getController();
-
-            mainController.showShipmentsPage();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
-            );
-            Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        Globals.controllers.main.show();
     }
     @FXML
     public void showEdit(String shipment){
@@ -132,7 +119,7 @@ public class EditShipmentController {
             !pQuantity.isEmpty() &&
             !pPrice.isEmpty()
             ){
-            ShipmentManager shipmentManager = new ShipmentManager(DatabaseConnection.getConnection());
+            ShipmentManager shipmentManager = new ShipmentManager(Globals.database.getConnection());
 
             try {
                 supId = Integer.parseInt(supplier_id);

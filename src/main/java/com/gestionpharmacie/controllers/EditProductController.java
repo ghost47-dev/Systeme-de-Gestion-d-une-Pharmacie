@@ -1,12 +1,11 @@
 package com.gestionpharmacie.controllers;
 
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.managers.ProductManager;
-import com.gestionpharmacie.utilities.DatabaseConnection;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-public class ProductController {
+public class EditProductController {
 
     @FXML
     private TextField productName, productPrice, productQuantity;
@@ -29,6 +28,17 @@ public class ProductController {
     private int id;
     private String product ;
     public void setPrivilege(String privilege){this.privilege = privilege;}
+
+    private Scene scene;
+
+    public EditProductController(){
+        scene = Globals.scenes.loadScene("productEdit.fxml", this);
+    }
+
+    public void show(){
+        Globals.stage.setScene(scene);
+    }
+
     @FXML
     private void saveProduct() {
         String name = productName.getText();
@@ -59,7 +69,7 @@ public class ProductController {
                 return;
             }
 
-            ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
+            ProductManager productManager = new ProductManager();
             productManager.addProduct(name,Price,Quantity);
 
             productQuantity.clear();
@@ -70,28 +80,7 @@ public class ProductController {
 
     @FXML
     private void goBack(ActionEvent event) {
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gestionpharmacie/main.fxml"));
-            loader.setControllerFactory(type -> {
-                if (type == MainController.class) {
-                    return new MainController(privilege);
-                }
-                return null;
-            });
-            Parent root = loader.load();
-            MainController mainController = loader.getController();
-            mainController.showProductsPage();
-
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
-            );
-            Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        Globals.controllers.main.show();
     }
     @FXML
     public void showEdit(String product){
@@ -154,7 +143,7 @@ public class ProductController {
                 return;
             }
 
-            ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
+            ProductManager productManager = new ProductManager();
 
             try {
                 productManager.updateProduct(id ,name ,Price ,Quantity);

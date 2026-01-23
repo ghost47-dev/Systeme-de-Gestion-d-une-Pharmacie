@@ -4,12 +4,12 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.managers.ProductManager;
 import com.gestionpharmacie.managers.ShipmentManager;
 import com.gestionpharmacie.model.Product;
-import com.gestionpharmacie.utilities.DatabaseConnection;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,7 +24,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class AddShipmentController {
-
     @FXML
     private TextField supplierPhone , supplierName ;
     @FXML
@@ -44,6 +43,16 @@ public class AddShipmentController {
     @FXML
     public void initialize (){
         addGoodRow();
+    }
+
+    private Scene scene;
+
+    public AddShipmentController(){
+        scene = Globals.scenes.loadScene("shipmentAdd.fxml", this);
+    }
+
+    public void show(){
+        Globals.stage.setScene(scene);
     }
 
     @FXML
@@ -77,7 +86,6 @@ public class AddShipmentController {
         LocalDate arrivalDateTmp = arrivalDate.getValue();
         LocalDate requestDateTmp = requestDate.getValue();
         String phone = supplierPhone.getText();
-
 
         Date  arrival , request;
         int Phone;
@@ -117,8 +125,8 @@ public class AddShipmentController {
             errorLabel.setVisible(false);
 
 
-            ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
-            ShipmentManager shipmentManager = new ShipmentManager(DatabaseConnection.getConnection());
+            ProductManager productManager = new ProductManager();
+            ShipmentManager shipmentManager = new ShipmentManager(Globals.database.getConnection());
 
 
            for (Node row : shipmentsGoodContainer.getChildren()){
@@ -182,34 +190,11 @@ public class AddShipmentController {
                 }
            }
             goBack(event);
-
-
         }
     }
+
     @FXML
     private void goBack(javafx.event.ActionEvent event) {
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gestionpharmacie/main.fxml"));
-            loader.setControllerFactory(type -> {
-                if (type == MainController.class) {
-                    return new MainController(privilege);
-                }
-                return null;
-            });
-            Parent root = loader.load();
-            MainController mainController = loader.getController();
-            mainController.showShipmentsPage();
-
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                    getClass().getResource("/com/gestionpharmacie/styles.css").toExternalForm()
-            );
-            Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        Globals.controllers.main.show();
     }
 }
-

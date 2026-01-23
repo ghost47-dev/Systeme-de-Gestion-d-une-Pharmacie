@@ -3,10 +3,10 @@ import java.sql.*;
 import java.util.Date;
 import java.util.ArrayList;
 
+import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.model.Supplier;
-import com.gestionpharmacie.utilities.DatabaseConnection;
 import com.gestionpharmacie.model.Shipment;
 import com.gestionpharmacie.model.ShipmentGood;
 
@@ -183,7 +183,7 @@ public class ShipmentManager {
     public void cancelShipment(int id) throws ShipmentNotFoundException {
         ArrayList<ShipmentGood> shipmentGood = fetchShipmentGood(id);
         for (ShipmentGood sg : shipmentGood){
-            ProductManager productManager = new ProductManager(DatabaseConnection.getConnection());
+            ProductManager productManager = new ProductManager();
             try {
                 if (productManager.fetchProduct(sg.getProductId()).getQuantity() == 0){
                     //Delete this product
