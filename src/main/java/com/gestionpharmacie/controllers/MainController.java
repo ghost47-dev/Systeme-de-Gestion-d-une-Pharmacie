@@ -268,7 +268,6 @@ public class MainController {
         ProductManager pm = Globals.managers.product;
         try {
             pm.deleteProduct(id);
-            System.out.println("product deleted !");
             productsList.getItems().remove(product);
             editingBtns_product.getChildren().remove(1);
             editingBtns_product.getChildren().remove(1);
