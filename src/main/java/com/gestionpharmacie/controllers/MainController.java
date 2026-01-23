@@ -444,7 +444,7 @@ public class MainController {
 
                 shipmentGood = sm.fetchShipmentGood(s.getId());
 
-                if (shipmentGood.size() == 0) {System.out.println("shipmentGoodisEmpty"); return;}
+                if (shipmentGood.size() == 0) {System.out.println("shipmentGoodisEmpty");}
 
                 String shipmentGoodInfo = "";
                 ProductManager pm = Globals.managers.product;
