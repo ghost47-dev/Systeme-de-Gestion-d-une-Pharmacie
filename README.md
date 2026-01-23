@@ -13,14 +13,13 @@
         - [x] view suppliers perfermance
     - [x] exception to handle notFound error
     - [x] Exceptions on quantity related stuff in product and handling them.
-  - [ ] database:
+  - [x] database:
   - **Note:** **Database files will be stored in the database directory in the project**
   - **Note:** **All SQL commands of creating the db should be saved we will need them later**
-    - [ ] design the schema
-    - [ ] build the models (Produit, Client, ...)
-  - [ ] Integrate the database with received insight from previous step.
-    - [ ] Create a new class that abstracts over the requests (in other words remove ArrayList).
-    - [ ] Implement it into the code for persistent data [Example video](https://www.youtube.com/watch?v=dQw4w9WgXcQ).
+    - [x] design the schema
+    - [x] build the models (Produit, Client, ...)
+  - [x] Integrate the database with received insight from previous step.
+    - [x] Implement it into the code for persistent data [Example video](https://www.youtube.com/watch?v=dQw4w9WgXcQ).
   - [ ] The graphics (hopefully won't be hard, we need to finish other stuff asap to make sure we have ample time for this).
     - [ ] We need more steps here.
   - [ ] profit.
@@ -34,4 +33,6 @@ that'll be very hard to debug.
 
 ## BUGS:
   * ShipmentManager line 183 this function is missing a lot of the implementation (wtf it just has comments)
-  * Adding a shipment doesn't update the shipment page fsr.
+  * ShipmentManager line 170 what if the supplier already exists, this shit will fail miserably.
+  * Lots of stuff all around the place is unnecessarily public.
+  * What if some client buys a product and then we delete it?
