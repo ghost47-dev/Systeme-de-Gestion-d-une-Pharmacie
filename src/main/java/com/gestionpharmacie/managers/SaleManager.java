@@ -73,7 +73,15 @@ public class SaleManager {
                 p.removeFromProduct(pid,quant);
                 return keys.getInt(1);
             }
-
+	    sql="SELECT price from  Product where id = ?";
+	    PreparedStatement s= (connection.prepareStatement(sql));
+	    s.setInt(1,pid);
+	    ResultSet r= s.executeQuery();
+	    float price = r.getFloat("price");
+	    sql="UPDATE sale SET total_price = total_price + ?";
+	    PreparedStatement s1= (connection.prepareStatement(sql));
+	    s1.setFloat(1,price*quant);
+	    s.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
         }
