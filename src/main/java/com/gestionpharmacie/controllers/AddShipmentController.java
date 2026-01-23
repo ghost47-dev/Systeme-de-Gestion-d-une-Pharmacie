@@ -125,8 +125,8 @@ public class AddShipmentController {
             errorLabel.setVisible(false);
 
 
-            ProductManager productManager = new ProductManager();
-            ShipmentManager shipmentManager = new ShipmentManager(Globals.database.getConnection());
+            ProductManager productManager = Globals.managers.product;
+            ShipmentManager shipmentManager = Globals.managers.shipment;
 
 
            for (Node row : shipmentsGoodContainer.getChildren()){

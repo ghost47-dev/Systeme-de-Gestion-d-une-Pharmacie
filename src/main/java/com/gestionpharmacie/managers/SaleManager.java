@@ -6,6 +6,7 @@ import com.gestionpharmacie.model.Client;
 import com.gestionpharmacie.model.Product;
 import com.gestionpharmacie.model.Sale;
 import com.gestionpharmacie.model.SaleProduct;
+import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.exceptions.InsufficientStockException;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 
@@ -13,9 +14,9 @@ public class SaleManager {
     ProductManager productManager;
     Connection connection;
 
-    public SaleManager(ProductManager pm, Connection connection) {
-        this.connection = connection;
-        productManager = pm;
+    public SaleManager() {
+        this.connection = Globals.database.getConnection();
+        productManager = Globals.managers.product;
     }
 
     public int addClient(String name, String surname, int phoneNumber) {
@@ -55,7 +56,7 @@ public class SaleManager {
     }
 
     public int addSaleProduct(int sid, int pid, int quant) throws InsufficientStockException ,ProductNotFoundException{
-	    ProductManager p = new ProductManager();
+	    ProductManager p = Globals.managers.product;
         Product product = p.fetchProduct(pid);
         if (product.getQuantity() < quant )
             throw new InsufficientStockException("Insufficient stock !");

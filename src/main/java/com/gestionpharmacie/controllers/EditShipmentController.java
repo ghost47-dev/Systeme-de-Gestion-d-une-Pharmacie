@@ -119,7 +119,7 @@ public class EditShipmentController {
             !pQuantity.isEmpty() &&
             !pPrice.isEmpty()
             ){
-            ShipmentManager shipmentManager = new ShipmentManager(Globals.database.getConnection());
+            ShipmentManager shipmentManager = Globals.managers.shipment;
 
             try {
                 supId = Integer.parseInt(supplier_id);

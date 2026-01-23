@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.DriverManager;
 
 import com.gestionpharmacie.controllers.*;
+import com.gestionpharmacie.managers.*;
 
 public class Globals {
     private static Globals instance;
@@ -18,6 +19,7 @@ public class Globals {
     public static Database database;
     public static Stage stage;
     public static Controllers controllers;
+    public static Managers managers;
 
     public static String privilege;
 
@@ -32,6 +34,7 @@ public class Globals {
         scenes = new Scenes();
         database = new Database();
         controllers = new Controllers();
+        managers = new Managers();
     }
 
     public class Config {
@@ -100,14 +103,28 @@ public class Globals {
         public AddSaleController addSale;
 
         void init(){
-            addShipment = new AddShipmentController();
+            addShipment  = new AddShipmentController();
             editShipment = new EditShipmentController();
             editSupplier = new EditSupplierController();
-            login = new LoginController();
-            main = new MainController();
-            addProduct = new AddProductController();
-            editProduct = new EditProductController();
-            addSale = new AddSaleController();
+            login        = new LoginController();
+            main         = new MainController();
+            addProduct   = new AddProductController();
+            editProduct  = new EditProductController();
+            addSale      = new AddSaleController();
+        }
+    }
+
+    public class Managers {
+        public ProductManager product;
+        public SaleManager sale;
+        public ShipmentManager shipment;
+        public UserManager user;
+
+        void init(){
+            product  = new ProductManager();
+            sale     = new SaleManager();
+            shipment = new ShipmentManager();
+            user     = new UserManager();
         }
     }
 }

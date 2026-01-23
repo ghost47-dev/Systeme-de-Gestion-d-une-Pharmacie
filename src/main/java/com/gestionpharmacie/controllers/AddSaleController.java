@@ -93,10 +93,8 @@ public class AddSaleController {
                 }
                 errorLabel.setVisible(false);
 
-                Connection connection = Globals.database.getConnection();
-                ProductManager pm = new ProductManager();
-                SaleManager sm = new SaleManager(pm, connection);
-
+                ProductManager pm = Globals.managers.product;
+                SaleManager sm = Globals.managers.sale;
 
                 ObservableList<Node> productLabels = productsContainer.getChildren();
 

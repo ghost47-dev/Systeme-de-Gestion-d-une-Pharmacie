@@ -21,6 +21,7 @@ public class Main extends Application {
         Globals.scenes.loadStyles();
 
         Globals.controllers.init();
+        Globals.managers.init();
 
         launch(args);
     }

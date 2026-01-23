@@ -174,11 +174,9 @@ public class MainController {
 
     @FXML
     private void showSaleHistory() {
-        Connection conn = Globals.database.getConnection();
         try {
-
-            ProductManager productManager = new ProductManager();
-            SaleManager saleManager = new SaleManager(productManager,conn);
+            ProductManager productManager = Globals.managers.product;
+            SaleManager saleManager = Globals.managers.sale;
 
             ArrayList<Integer> sales = saleManager.getSaleIds();
 
@@ -217,7 +215,6 @@ public class MainController {
                         client.toString() + "\n" +
                         Products_Info
                         );
-
             }
 
             saleHistoryList.getItems().setAll(items);
@@ -251,8 +248,7 @@ public class MainController {
         catch(NumberFormatException e) {
             System.out.println("error while parsing id ");
         }
-        Connection conn = Globals.database.getConnection();
-        ProductManager pm = new ProductManager();
+        ProductManager pm = Globals.managers.product;
         try {
             pm.deleteProduct(id);
             System.out.println("product deleted !");
@@ -306,7 +302,7 @@ public class MainController {
 
         try {
 
-            ProductManager productManager = new ProductManager();
+            ProductManager productManager = Globals.managers.product;
 
             ArrayList<Product> products = productManager.viewStock();
 
@@ -408,9 +404,8 @@ public class MainController {
 
     @FXML
     public void showShipmentsPage() {
-        Connection conn = Globals.database.getConnection();
         try  {
-            ShipmentManager sm = new ShipmentManager(conn);
+            ShipmentManager sm = Globals.managers.shipment;
             ArrayList<Shipment> shipments = sm.fetchShipments();
             ObservableList<String> items = FXCollections.observableArrayList();
 
@@ -437,7 +432,7 @@ public class MainController {
                 if (shipmentGood.size() == 0) {System.out.println("shipmentGoodisEmpty"); return;}
 
                 String shipmentGoodInfo = "";
-                ProductManager pm = new ProductManager();
+                ProductManager pm = Globals.managers.product;
                 for (ShipmentGood sg : shipmentGood){
                     double price = sg.getPrice();
                     int quantity = sg.getQuantity();
@@ -546,8 +541,7 @@ public class MainController {
         }
 
         int shipment_id = Integer.parseInt(matcher.group(1));
-        Connection conn = Globals.database.getConnection();
-        ShipmentManager sm = new ShipmentManager(conn);
+        ShipmentManager sm = Globals.managers.shipment;
         try {
             sm.cancelShipment(shipment_id);
             shipmentsList.getItems().remove(shipment);
@@ -577,7 +571,7 @@ public class MainController {
 
         int shipment_id = Integer.parseInt(matcher.group(1));
 
-        ShipmentManager sm = new ShipmentManager(Globals.database.getConnection());
+        ShipmentManager sm = Globals.managers.shipment;
         try {
             sm.receiveShipment(
                     shipment_id,
@@ -632,7 +626,7 @@ public class MainController {
 
             ObservableList<String> items = FXCollections.observableArrayList();
 
-            ShipmentManager sm = new ShipmentManager(conn);
+            ShipmentManager sm = Globals.managers.shipment;
             ArrayList<String> suppliers = sm.viewSuppliersPerfermance();
             for (String s : suppliers){
                 items.add(s);
@@ -654,8 +648,8 @@ public class MainController {
         Connection conn = Globals.database.getConnection();
         try {
             double totalRevenue;
-            ProductManager pm = new ProductManager();
-            SaleManager sm = new SaleManager(pm, conn);
+            ProductManager pm = Globals.managers.product;
+            SaleManager sm = Globals.managers.sale;
             totalRevenue = sm.getTotalRevenue();
 
             NumberFormat nf = NumberFormat.getInstance(Locale.US);
@@ -670,9 +664,8 @@ public class MainController {
     @FXML
     private void handleSignUp(){
         clearAllErrors();
-        Connection conn = Globals.database.getConnection();
         boolean isValid = true;
-        UserManager userManager = new UserManager(conn);
+        UserManager userManager = Globals.managers.user;
 
         if (usernameField.getText().trim().isEmpty()) {
             usernameField.getStyleClass().add("error");

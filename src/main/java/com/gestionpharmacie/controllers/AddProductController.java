@@ -69,7 +69,7 @@ public class AddProductController {
                 return;
             }
 
-            ProductManager productManager = new ProductManager();
+            ProductManager productManager = Globals.managers.product;
             productManager.addProduct(name,Price,Quantity);
 
             productQuantity.clear();
@@ -143,7 +143,7 @@ public class AddProductController {
                 return;
             }
 
-            ProductManager productManager = new ProductManager();
+            ProductManager productManager = Globals.managers.product;
 
             try {
                 productManager.updateProduct(id ,name ,Price ,Quantity);

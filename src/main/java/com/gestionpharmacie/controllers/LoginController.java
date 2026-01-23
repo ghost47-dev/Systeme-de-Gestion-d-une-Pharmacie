@@ -42,7 +42,7 @@ public class LoginController {
                 String username = new String(usernameField.getText());
                 String password = new String(passwordField.getText());
 
-                UserManager usermanager = new UserManager(Globals.database.getConnection());
+                UserManager usermanager = Globals.managers.user;
                 User user = usermanager.fetchUser(username);
 
                 if (user == null){

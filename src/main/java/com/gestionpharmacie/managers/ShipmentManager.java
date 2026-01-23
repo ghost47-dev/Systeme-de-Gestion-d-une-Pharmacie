@@ -13,8 +13,8 @@ import com.gestionpharmacie.model.ShipmentGood;
 public class ShipmentManager {
     private Connection connection;
 
-    public ShipmentManager(Connection connection) {
-        this.connection = connection;
+    public ShipmentManager() {
+        this.connection = Globals.database.getConnection();
     }
 
     public int addSupplier(String name, int phoneNumber) {
@@ -183,7 +183,7 @@ public class ShipmentManager {
     public void cancelShipment(int id) throws ShipmentNotFoundException {
         ArrayList<ShipmentGood> shipmentGood = fetchShipmentGood(id);
         for (ShipmentGood sg : shipmentGood){
-            ProductManager productManager = new ProductManager();
+            ProductManager productManager = Globals.managers.product;
             try {
                 if (productManager.fetchProduct(sg.getProductId()).getQuantity() == 0){
                     //Delete this product

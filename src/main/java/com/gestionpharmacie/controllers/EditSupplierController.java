@@ -48,7 +48,7 @@ public class EditSupplierController{
 
         supplier_id = Integer.parseInt(matcher.group(1));
         String name = matcher.group(2);
-        ShipmentManager sm = new ShipmentManager(Globals.database.getConnection());
+        ShipmentManager sm = Globals.managers.shipment;
         Supplier supplier = sm.fetchSupplier(supplier_id);
 
         nameField.setText(name);
@@ -75,14 +75,8 @@ public class EditSupplierController{
         }
         errorLabel.setVisible(false);
 
-        try(Connection connection = Globals.database.getConnection()){
-            ShipmentManager sm = new ShipmentManager(connection);
-            sm.updateSupplier(supplier_id,name,Phone);
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-        }
-
+        ShipmentManager sm = Globals.managers.shipment;
+        sm.updateSupplier(supplier_id,name,Phone);
     }
 
 }

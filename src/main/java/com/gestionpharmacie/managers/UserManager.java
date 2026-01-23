@@ -1,5 +1,6 @@
 package com.gestionpharmacie.managers;
 
+import com.gestionpharmacie.Globals;
 import com.gestionpharmacie.model.User;
 
 import java.sql.Connection;
@@ -10,8 +11,8 @@ import java.sql.SQLException;
 public class UserManager {
     private Connection connection;
 
-    public UserManager(Connection connection) {
-        this.connection = connection;
+    public UserManager() {
+        this.connection = Globals.database.getConnection();
     }
 
     public User fetchUser(String login) {
