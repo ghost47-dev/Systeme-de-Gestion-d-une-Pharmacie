@@ -34,7 +34,7 @@ public class EditShipmentController {
     private CheckBox isReceived , notReceived;
     @FXML
     private Label errorLabel;
-
+    @FXML
     private VBox shipmentsGoodContainer;
 
     private int shipmentId ;
@@ -55,11 +55,9 @@ public class EditShipmentController {
     }
     @FXML
     public void showEdit(String shipment){
-
         Pattern pattern = Pattern.compile(
                 "(?s)Shipment id : (\\d+)\\n.*" 
         );
-
 
         Matcher matcher = pattern.matcher(shipment);
 
@@ -68,6 +66,7 @@ public class EditShipmentController {
             throw new IllegalArgumentException("Invalid shipment format");
         }
 
+        shipmentId = Integer.parseInt(matcher.group(1));
         ShipmentManager shipmentManager = Globals.managers.shipment;
         Shipment sh = shipmentManager.fetchShipment(shipmentId);
         ArrayList<ShipmentGood> shipmentGood = shipmentManager.fetchShipmentGood(shipmentId);
@@ -99,7 +98,7 @@ public class EditShipmentController {
         }
     }
     @FXML
-    private void editShipment(ActionEvent event ){
+    private void editShipment(ActionEvent event){
         LocalDate arrivalDateTmp = arrivalDate.getValue();
         LocalDate requestDateTmp = requestDate.getValue();
         String supplier_id = supplierId.getText();
@@ -113,7 +112,6 @@ public class EditShipmentController {
             requestDateTmp != null &&
             (isReceived.isSelected() ^ notReceived.isSelected()) 
             ){
-
             try {
                 supId = Integer.parseInt(supplier_id);
                 Supplier supplier = shipmentManager.fetchSupplier(supId);
@@ -144,7 +142,6 @@ public class EditShipmentController {
 
             request = Date.from(requestDateTmp.atStartOfDay(ZoneId.systemDefault()).toInstant());
             arrival = Date.from(arrivalDateTmp.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
 
             try {
                 shipmentManager.updateShipment(shipmentId ,
@@ -198,6 +195,7 @@ public class EditShipmentController {
                 errorLabel.setVisible(true);
                 return;
             }
+
             ShipmentGood sg = sgs.get(i++);
             try {
                 shipmentManager.updateShipmentGood(sg.getId() , sg.getProductId() , productQuantity , productPrice);

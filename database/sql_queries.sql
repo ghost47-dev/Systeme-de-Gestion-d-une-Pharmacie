@@ -1,6 +1,6 @@
 create database if not exists pharmacy;
 
-use phamacy;
+use pharmacy;
 
 create table client
 (
