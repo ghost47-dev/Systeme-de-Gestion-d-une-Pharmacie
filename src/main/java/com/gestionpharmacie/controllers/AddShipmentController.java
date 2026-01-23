@@ -125,12 +125,16 @@ public class AddShipmentController {
 
             ProductManager productManager = Globals.managers.product;
             ShipmentManager shipmentManager = Globals.managers.shipment;
+            int supplier_id = shipmentManager.fetchSupplierbyPhone(Phone);
+            if (supplier_id == -1) {
+                supplier_id = shipmentManager.addSupplier(name, Phone);
+            }
 
-            int supplier_id = shipmentManager.addSupplier(name,Phone);
             int shipment_id = shipmentManager.addShipment(supplier_id,
                     request,
                     isReceived.isSelected() && !notReceived.isSelected() ,
                     arrival
+
             );
 
 

@@ -98,6 +98,21 @@ public class ShipmentManager {
         return null;
     }
 
+    public int fetchSupplierbyPhone(int phone) {
+        String sql = "SELECT id FROM supplier WHERE phone = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, phone);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return -1;
+    }
+
     public ArrayList<ShipmentGood> fetchShipmentGood (int shipment_id) {
         String sql = "SELECT * FROM shipment_good where shipment_good.shipment_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)){
@@ -238,7 +253,9 @@ public class ShipmentManager {
             System.err.println("Error: " + e.getMessage());
         }
         Shipment ship = fetchShipment(id);
-        if (!d.equals(ship.getRecievalDate())) {
+        if (d.before(ship.getRecievalDate())) {
+            System.out.println(d);
+            System.out.println(ship.getRecievalDate());
             sql = "UPDATE supplier SET no_late_shipments = no_late_shipments + 1 WHERE id = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, ship.getSupplierId());
@@ -275,8 +292,8 @@ public class ShipmentManager {
                 );
                 int total = supplier.getTotalNoShipments(connection);
                 if (total != 0) {
-                    double onTimeDeliveryRate = ((double) (total - supplier.getNoLateShipments()) / total);
-                    output.add(supplier.getId()+": "+supplier.getName() + " - On time delivery rate: " + onTimeDeliveryRate);
+                    double onTimeDeliveryRate = ((double) (total - supplier.getNoLateShipments()) / total) * 100;
+                    output.add(supplier.getId()+": "+supplier.getName() + " - On time delivery rate: " + String.format("%.2f", onTimeDeliveryRate) + "%");
                 } else {
                     output.add(supplier.getName() + " - No interactions recorded!");
                 }

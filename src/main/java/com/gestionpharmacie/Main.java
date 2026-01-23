@@ -13,8 +13,8 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         Globals.init();
-        Globals.config.databaseUser = "pharma";
-        Globals.config.databasePassword = "StrongPassword123";
+        Globals.config.databaseUser = "root";
+        Globals.config.databasePassword = "admin";
         Globals.database.connect();
 
         Globals.config.resourcePath = "/com/gestionpharmacie/";
