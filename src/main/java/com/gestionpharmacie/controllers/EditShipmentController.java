@@ -38,7 +38,7 @@ public class EditShipmentController {
     private VBox shipmentsGoodContainer;
 
     private int shipmentId ;
-
+    private String shipment;
     private Scene scene;
 
     public EditShipmentController(){
@@ -58,7 +58,7 @@ public class EditShipmentController {
         Pattern pattern = Pattern.compile(
                 "(?s)Shipment id : (\\d+)\\n.*" 
         );
-
+        this.shipment = shipment;
         Matcher matcher = pattern.matcher(shipment);
 
         if (!matcher.find()) {
@@ -94,7 +94,7 @@ public class EditShipmentController {
             double productPrice = sg.getPrice();
             int productQuantity = sg.getQuantity();
 
-            addGoodRow(product_Id, productQuantity, productPrice);
+            addGoodRow(sg.getId() , product_Id, productQuantity, productPrice);
         }
     }
 
@@ -166,6 +166,8 @@ public class EditShipmentController {
 
             TextField priceField = (TextField)current_row.getChildren().get(2);
             TextField quantityField = (TextField)current_row.getChildren().get(1);
+            
+
             String price = priceField.getText();
             String quantity = quantityField.getText();
             int productQuantity;
@@ -196,7 +198,6 @@ public class EditShipmentController {
                 errorLabel.setVisible(true);
                 return;
             }
-
             ShipmentGood sg = sgs.get(i++);
             try {
                 shipmentManager.updateShipmentGood(sg.getId() , sg.getProductId() , productQuantity , productPrice);
@@ -211,7 +212,7 @@ public class EditShipmentController {
         goBack(event);
     }
     @FXML
-    private void addGoodRow(int id , int quantity , double price) {
+    private void addGoodRow(int shipmentGoodId , int id , int quantity , double price) {
 
         HBox goodRow = new HBox(10);
         goodRow.setAlignment(Pos.CENTER);
@@ -227,6 +228,11 @@ public class EditShipmentController {
 
         Button closeBtn = new Button("✕");
         closeBtn.getStyleClass().add("close-button");
+        closeBtn.setOnAction(eventRm ->{
+            removeShipmentGood(shipmentGoodId);
+            showEdit(shipment);
+            this.show(); 
+        });
 
         goodRow.getChildren().addAll(
                 idLabel ,pQuantity ,pPrice , closeBtn
@@ -234,4 +240,9 @@ public class EditShipmentController {
 
         shipmentsGoodContainer.getChildren().add(goodRow);
     }
+    
+    private void removeShipmentGood(int shipmentGoodId){
+        ShipmentManager shipmentManager = Globals.managers.shipment;
+        shipmentManager.deleteShipmentGood(shipmentGoodId);
+    } 
 }
