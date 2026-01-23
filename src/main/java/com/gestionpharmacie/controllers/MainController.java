@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import java.util.ArrayList;
 
 import com.gestionpharmacie.Globals;
+import com.gestionpharmacie.Globals.Tab;
 import com.gestionpharmacie.exceptions.ProductNotFoundException;
 import com.gestionpharmacie.exceptions.ShipmentNotFoundException;
 import com.gestionpharmacie.managers.ProductManager;
@@ -140,6 +141,26 @@ public class MainController {
     }
 
     void show(){
+        switch(Globals.currentTab) {
+            case Tab.SALE:
+                showSaleHistory();
+                break;
+            case Tab.STOCK:
+                showProductsPage();
+                break;
+            case Tab.SHIPMENTS:
+                showShipmentsPage();
+                break;
+            case Tab.SUPPLIERS:
+                showSuppliersPage();
+                break;
+            case Tab.REVENUE:
+                showTotalRevenuePage();
+                break;
+            case Tab.ACCOUNT:
+                showUserCreationPage();
+                break;
+        }
         Globals.stage.setTitle("Pharmacy Stock Management");
         Globals.stage.setScene(scene);
     }
@@ -173,7 +194,8 @@ public class MainController {
     }
 
     @FXML
-    private void showSaleHistory() {
+    public void showSaleHistory() {
+        Globals.currentTab = Tab.SALE;
         try {
             ProductManager productManager = Globals.managers.product;
             SaleManager saleManager = Globals.managers.sale;
@@ -298,10 +320,8 @@ public class MainController {
     }
     @FXML
     public void showProductsPage() {
-        Connection conn = Globals.database.getConnection();
-
+        Globals.currentTab = Tab.STOCK;
         try {
-
             ProductManager productManager = Globals.managers.product;
 
             ArrayList<Product> products = productManager.viewStock();
@@ -404,6 +424,7 @@ public class MainController {
 
     @FXML
     public void showShipmentsPage() {
+        Globals.currentTab = Tab.SHIPMENTS;
         try  {
             ShipmentManager sm = Globals.managers.shipment;
             ArrayList<Shipment> shipments = sm.fetchShipments();
@@ -602,7 +623,7 @@ public class MainController {
 
     @FXML
     public void showSuppliersPage() {
-        Connection conn = Globals.database.getConnection();
+        Globals.currentTab = Tab.SUPPLIERS;
         try {
             suppliersList.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
@@ -645,7 +666,7 @@ public class MainController {
 
     @FXML
     private void showTotalRevenuePage(){
-        Connection conn = Globals.database.getConnection();
+        Globals.currentTab = Tab.REVENUE;
         try {
             double totalRevenue;
             ProductManager pm = Globals.managers.product;
@@ -752,6 +773,7 @@ public class MainController {
     }
     @FXML
     private void showUserCreationPage(){
+        Globals.currentTab = Tab.ACCOUNT;
         ObservableList<String> items = FXCollections.observableArrayList(
                 "admin",
                 "employee"
@@ -780,7 +802,6 @@ public class MainController {
         totalRevenuePage.setVisible(false);
         userCreationPage.setVisible(false);
         pageToShow.setVisible(true);
-        show();
     }
 
     private void setActiveButton(Button activeBtn) {

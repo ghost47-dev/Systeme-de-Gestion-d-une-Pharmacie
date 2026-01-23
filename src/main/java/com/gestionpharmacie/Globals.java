@@ -20,6 +20,7 @@ public class Globals {
     public static Stage stage;
     public static Controllers controllers;
     public static Managers managers;
+    public static Tab currentTab;
 
     public static String privilege;
 
@@ -35,6 +36,7 @@ public class Globals {
         database = new Database();
         controllers = new Controllers();
         managers = new Managers();
+        currentTab = Tab.SALE;
     }
 
     public class Config {
@@ -126,5 +128,14 @@ public class Globals {
             shipment = new ShipmentManager();
             user     = new UserManager();
         }
+    }
+
+    public enum Tab {
+        SALE,
+        STOCK,
+        SHIPMENTS,
+        SUPPLIERS,
+        REVENUE,
+        ACCOUNT,
     }
 }
