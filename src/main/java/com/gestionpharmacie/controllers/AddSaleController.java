@@ -33,9 +33,6 @@ public class AddSaleController {
 
     private int productCount = 0;
 
-    private String privilege;
-    public void setPrivilege(String privilege){this.privilege = privilege;}
-
     private Scene scene;
 
     public AddSaleController(){

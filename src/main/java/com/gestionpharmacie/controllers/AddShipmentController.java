@@ -38,8 +38,6 @@ public class AddShipmentController {
     @FXML
     private VBox shipmentsGoodContainer;
     private int shipmentGoodCount = 0;
-    private String privilege;
-    public void setPrivilege(String privilege){this.privilege=privilege;}
     @FXML
     public void initialize (){
         addGoodRow();

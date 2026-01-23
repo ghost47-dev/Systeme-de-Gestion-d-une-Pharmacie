@@ -24,10 +24,8 @@ public class EditProductController {
     private Label errorLabel;
     @FXML TextField nameField , priceField , quantityField;
 
-    private String privilege;
     private int id;
     private String product ;
-    public void setPrivilege(String privilege){this.privilege = privilege;}
 
     private Scene scene;
 
